@@ -18,7 +18,7 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer';
 import { Link } from '@/i18n/routing';
- 
+
 
 export function CartDrawer() {
   const t = useTranslations('Cart');
@@ -44,7 +44,7 @@ export function CartDrawer() {
   return (
     <Drawer direction={direction}>
       <DrawerTrigger asChild>
-        <button className="relative p-2 rounded-full !m-0 hover:bg-black/5 dark:hover:bg-white/10 transition group">
+        <button className="relative cursor-pointer p-2 rounded-full !m-0 hover:bg-black/5 dark:hover:bg-white/10 transition group">
           <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
           {itemCount > 0 && (
             <motion.span
@@ -62,16 +62,16 @@ export function CartDrawer() {
         <div className="flex flex-col h-full w-full">
           <DrawerHeader className="p-8 border-b border-gray-100 dark:border-white/5">
             <div className="flex items-center justify-between">
-              <DrawerTitle className="text-3xl font-black uppercase tracking-tighter flex items-center gap-3">
-                 <ShoppingBag className="w-6 h-6 text-accent-500" />
-                 {t('title')}
+              <DrawerTitle className="text-2xl text-primary-500 font-black tracking-tighter flex items-center gap-3">
+                <ShoppingBag className="w-6 h-6 text-accent-500" />
+                {t('title')}
               </DrawerTitle>
               <div className="flex items-center gap-4">
                 <div className="bg-accent-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-accent-500/20">
-                   {itemCount} {itemCount === 1 ? t('item') : t('items')}
+                  {itemCount} {itemCount === 1 ? t('item') : t('items')}
                 </div>
                 <DrawerClose asChild>
-                  <button className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors group/close">
+                  <button className="p-2 hover:bg-black/5 cursor-pointer dark:hover:bg-white/10 rounded-full transition-colors group/close">
                     <X className="w-6 h-6 text-gray-400 group-hover/close:text-gray-900 dark:group-hover/close:text-white transition-colors" />
                   </button>
                 </DrawerClose>
@@ -109,7 +109,7 @@ export function CartDrawer() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ delay: index * 0.05 }}
-                    className="group relative flex items-center gap-6 bg-gray-50 dark:bg-white/5 p-5 rounded-[2.5rem] border border-transparent hover:border-accent-500/20 transition-all shadow-sm"
+                    className="group relative flex items-center gap-6 bg-gray-50 dark:bg-white/5 p-5 rounded-lg border border-transparent hover:border-accent-500/20 transition-all shadow-sm"
                   >
                     <div className="relative w-24 h-24 shrink-0 rounded-[1.5rem] overflow-hidden bg-black/5 dark:bg-black/40 shadow-sm">
                       <Image
@@ -163,33 +163,11 @@ export function CartDrawer() {
           {/* Footer Summary */}
           {items.length > 0 && (
             <DrawerFooter className="p-8 space-y-8 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 rounded-t-[3rem]">
-              <div className="space-y-4 w-full">
-                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                  <span>{t('subtotal')}</span>
-                  <span className="text-gray-900 dark:text-white">
-                    {tp('price', { price: subtotal.toFixed(2) })}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                  <span>{t('shippingEstimate')}</span>
-                  <span className="text-emerald-500">Complimentary</span>
-                </div>
-                <div className="h-px bg-gray-200 dark:bg-white/10 my-6" />
-                <div className="flex justify-between items-end">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-900 dark:text-white">{t('total')}</span>
-                    <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Inclusive of Taxes</p>
-                  </div>
-                  <span className="text-4xl font-black text-accent-500 tracking-tighter leading-none">
-                    {tp('price', { price: subtotal.toFixed(2) })}
-                  </span>
-                </div>
-              </div>
-
+               
               <div className="space-y-6 w-full">
-                <Link href="/checkout" className="block text-center w-full  py-5 bg-accent-500 text-white font-black tracking-[0.3em] rounded-full hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-accent-500/30 group">
+                <Link href="/checkout" className="block text-center w-full  py-5 bg-accent-500 text-white font-black tracking-[0.3em] rounded-md hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-accent-500/30 group">
                   {t('checkout')}
-                 </Link> 
+                </Link>
               </div>
             </DrawerFooter>
           )}

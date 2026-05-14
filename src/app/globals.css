@@ -2,15 +2,32 @@
 
 @theme {
   --font-sans: var(--font-cairo), ui-sans-serif, system-ui, sans-serif;
-  
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-900: #1e3a8a;
-  
-  --color-accent-500: #f59e0b;
+
+  --color-primary-50: #f8fafc;
+  --color-primary-100: #f1f5f9;
+  --color-primary-500: #6b8e6b;
+  /* Sage Green */
+  --color-primary-600: #5a7a5a;
+  --color-primary-700: #4a664a;
+  --color-primary-900: #1a1a1a;
+  /* Charcoal */
+
+  --color-accent-500: #6b8e6b;
+  --color-shopera-beige: #f9f9f9;
+  --color-shopera-green: #6b8e6b;
+  --color-shopera-dark: #1a1a1a;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -20,6 +37,7 @@
     --background: #ffffff;
     --foreground: #0f172a;
   }
+
   .dark {
     --background: #0f172a;
     --foreground: #f8fafc;
@@ -32,7 +50,8 @@ body {
   font-family: var(--font-cairo), sans-serif;
 }
 
-[dir="rtl"], [dir="ltr"] {
+[dir="rtl"],
+[dir="ltr"] {
   font-family: var(--font-cairo), sans-serif;
 }
 

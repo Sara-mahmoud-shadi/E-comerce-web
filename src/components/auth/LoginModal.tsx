@@ -12,6 +12,8 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 
+import DynamicInput from '@/components/shared/DynamicInput';
+
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -43,8 +45,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           {/* Header */}
           <DialogHeader className="mb-5 text-center space-y-0">
          
-            <DialogTitle className="text-3xl font-black tracking-tighter text-center  dark:text-white mb-2">
-              {t('welcomeBack')}
+            <DialogTitle className="text-3xl font-black text-primary-500 tracking-tighter text-center  dark:text-white mb-2">
+              {t('welcomeBack')} 👋
             </DialogTitle>
             <DialogDescription className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">
               {t('loginSubtitle')}
@@ -53,49 +55,30 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-600 ml-4">
-                {t('email')}
-              </label>
-              <div className="relative mt-4">
-                <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@example.com"
-                  className="w-full h-14 bg-gray-50 dark:bg-gray-900/50 border-transparent rounded-2xl px-14 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all outline-none"
-                />
-              </div>
-            </div>
+            <DynamicInput
+              label={t('email')}
+              icon={Mail}
+              type="email"
+              value={email}
+              onChange={setEmail}
+              placeholder="admin@example.com"
+              required
+            />
 
-            <div className="space-y-4">
-              <div className="flex justify-between items-center px-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-600">
-                  {t('password')}
-                </label>
-                {/* <button type="button" className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-500 transition-colors">
-                  {t('forgotPassword')}
-                </button> */}
-              </div>
-              <div className="relative">
-                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full h-14 bg-gray-50 dark:bg-gray-900/50 border-transparent rounded-2xl px-14 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all outline-none"
-                />
-              </div>
-            </div>
+            <DynamicInput
+              label={t('password')}
+              icon={Lock}
+              type="password"
+              value={password}
+              onChange={setPassword}
+              placeholder="••••••••"
+              required
+            />
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-16 bg-accent-500 text-white rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-blue-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3 mt-10"
+              className="w-full h-12 cursor-pointer bg-accent-500 text-white rounded-md font-black tracking-widest shadow-lg  hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3 mt-10"
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

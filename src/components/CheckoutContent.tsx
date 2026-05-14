@@ -1,13 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { ShieldCheck, MapPin, User, Mail, CheckCircle2 } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
+import { ShieldCheck, MapPin, User, Mail, CheckCircle2, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import DynamicInput from './shared/DynamicInput';
 
 export default function CheckoutContent() {
   const t = useTranslations('Checkout');
+  const locale = useLocale();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: ''
+  });
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,16 +28,8 @@ export default function CheckoutContent() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-4">
-      <div className="mb-12">
-        <h1 className="text-5xl font-black tracking-tighter uppercase dark:text-white mb-4">
-          {t('title')}
-        </h1>
-        <p className="text-sm font-bold text-gray-400 uppercase tracking-[0.2em]">
-          Secure your premium selection
-        </p>
-      </div> 
-      
+    <div className="max-w-4xl mx-auto py-10 mt-12 px-4">
+    
       <div className="space-y-8">
         <AnimatePresence>
           {isCompleted && (
@@ -38,12 +38,12 @@ export default function CheckoutContent() {
               animate={{ opacity: 1, height: 'auto', marginBottom: 32 }}
               exit={{ opacity: 0, height: 0, marginBottom: 0 }}
             >
-              <Alert variant="success" className="rounded-[2rem] p-8 border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-500/5">
+              <Alert variant="success" className="rounded-xl p-8 border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-500/5">
+                <AlertTitle className="text-xl flex items-center justify-center gap-4 font-black tracking-tight text-emerald-600 dark:text-emerald-400  mb-2">
                 <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-                <AlertTitle className="text-xl font-black uppercase tracking-tight text-emerald-600 dark:text-emerald-400 ml-4 mb-2">
                   {t('orderSuccessTitle')}
                 </AlertTitle>
-                <AlertDescription className="text-sm font-bold text-emerald-600/70 dark:text-emerald-400/70 ml-4">
+                <AlertDescription className="text-sm flex items-center justify-center font-bold text-emerald-600/70 dark:text-emerald-400/70 ml-4">
                   {t('orderSuccessMessage')}
                 </AlertDescription>
               </Alert>
@@ -55,65 +55,61 @@ export default function CheckoutContent() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-[#081640] rounded-[2.5rem] p-10 border border-gray-100 dark:border-white/5 shadow-2xl"
+          className="bg-white dark:bg-[#081640] rounded-xl p-10 border border-gray-100 dark:border-white/5 shadow"
         >
           <div className="flex items-center gap-4 mb-10">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <div className="w-12 h-12 rounded-2xl bg-[#f1f4f1] dark:bg-blue-500/10 flex items-center justify-center text-primary-500 dark:text-blue-400">
               <MapPin className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl font-black uppercase tracking-tight dark:text-white leading-none mb-1">
+              <h2 className="text-xl font-black text-primary-500 tracking-tight dark:text-white leading-none mb-1">
                 {t('shipping')}
               </h2>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Where should we send it?</span>
+              <span className="text-[10px] font-bold text-gray-400 tracking-widest">{t('shippingSub')}</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-3">
-              <label className="text-[15px] font-black uppercase tracking-widest text-gray-600">
-                {t('name')}
-              </label>
-              <div className="relative mt-4">
-                <User className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input 
-                  type="text" 
-                  placeholder="John Doe"
-                  className="w-full bg-gray-100/80 dark:bg-gray-900/50 border-transparent rounded-md px-14 py-4 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all outline-none" 
-                />
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+            <DynamicInput
+              label={t('name')}
+              icon={User}
+              placeholder={t('namePlaceholder')}
+              value={formData.name}
+              onChange={(val) => setFormData({ ...formData, name: val })}
+            />
             
-            <div className="space-y-4">
-              <label className="text-[15px] font-black uppercase tracking-widest text-gray-600">
-                {t('email')}
-              </label>
-              <div className="relative mt-3">
-                <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input 
-                  type="email" 
-                  placeholder="john@example.com"
-                  className="w-full bg-gray-100/80 dark:bg-gray-900/50 border-transparent rounded-md px-14 py-4 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all outline-none" 
-                />
-              </div>
-            </div>
+            <DynamicInput
+              label={t('email')}
+              icon={Mail}
+              type="email"
+              placeholder={t('emailPlaceholder')}
+              value={formData.email}
+              onChange={(val) => setFormData({ ...formData, email: val })}
+            />
 
-            <div className="space-y-3 md:col-span-2">
-              <label className="text-[15px] font-black uppercase tracking-widest text-gray-600">
-                {t('address')}
-              </label>
-              <input 
-                type="text" 
-                placeholder="123 Luxury Ave, Suite 456"
-                className="w-full bg-gray-100/80 dark:bg-gray-900/50 mt-4 border-transparent rounded-md px-8 py-4 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all outline-none" 
-              />
-            </div>
+            <DynamicInput
+              label={t('phone')}
+              icon={Phone}
+              type="tel"
+              placeholder={t('phonePlaceholder')}
+              value={formData.phone}
+              onChange={(val) => setFormData({ ...formData, phone: val })}
+            />
+
+            <DynamicInput
+              label={t('address')}
+              icon={MapPin}
+              placeholder={t('addressPlaceholder')}
+              value={formData.address}
+              onChange={(val) => setFormData({ ...formData, address: val })}
+             
+            />
           </div>
 
           <button 
             onClick={handleCompleteOrder}
             disabled={isLoading || isCompleted}
-            className="w-full h-16 bg-blue-600 cursor-pointer text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-500/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 mt-12 disabled:opacity-50 disabled:hover:scale-100"
+            className="w-full h-16 bg-accent-500 cursor-pointer text-white rounded-2xl font-black tracking-widest text-[14px] shadow-lg shadow-accent-500/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 mt-12 disabled:opacity-50 disabled:hover:scale-100"
           >
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

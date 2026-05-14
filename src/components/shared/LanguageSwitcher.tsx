@@ -27,7 +27,7 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex !m-0 items-center">
       <button
         onClick={handleSwitch}
         disabled={isPending}
