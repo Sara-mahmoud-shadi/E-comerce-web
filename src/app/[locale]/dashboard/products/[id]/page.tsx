@@ -1,4 +1,5 @@
-import ProductDetailsContent from '@/components/dashboard/products/ProductDetailsContent';
+ 
+import ProductForm from '@/components/dashboard/products/ProductForm';
 import {setRequestLocale} from 'next-intl/server';
 
 export default async function ProductDetailsPage({
@@ -9,5 +10,5 @@ export default async function ProductDetailsPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  return <ProductDetailsContent id={id} />;
+  return <ProductForm isEditing={true} productId={id} />;
 }

@@ -9,12 +9,7 @@ export default async function EditCategoryPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  const mockData = {
-    name: 'Serving & Hospitality',
-    nameAr: 'التقديم والضيافة',
-    slug: 'serving',
-    description: 'Premium serving tools and hospitality equipment.'
-  };
+  
 
-  return <CategoryForm initialData={mockData} isEditing={true} />;
+  return <CategoryForm id={id} isEditing={true} />;
 }

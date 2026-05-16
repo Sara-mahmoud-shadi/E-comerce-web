@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import React, { useEffect, useState } from 'react'; 
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Edit2, Trash2, Plus, FolderOpen } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Link } from '@/i18n/routing';
 import AppPagination from '@/components/shared/AppPagination';
+import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'; 
+import { useTranslations, useLocale } from 'next-intl';
+
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}categories`;
 
 const MOCK_CATEGORIES = [
   { id: 1, name: 'Serving & Hospitality', count: 12, slug: 'SERVING' },
@@ -23,15 +26,81 @@ const MOCK_CATEGORIES = [
 
 export default function CategoriesList() {
   const t = useTranslations('Dashboard');
+  const [categories, setCategories] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const totalItems = MOCK_CATEGORIES.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const [totalItems, setTotalItems] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const locale = useLocale();
+  const isRtl = locale === 'ar';
 
-  const currentItems = MOCK_CATEGORIES.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const itemsPerPage = 5;
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+
+  const fetchCategories = async () => {
+    setIsLoading(true);
+    try {
+      const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}categories/pagination`, window.location.origin);
+      url.searchParams.append('page', currentPage.toString());
+      url.searchParams.append('limit', itemsPerPage.toString());
+      if (searchTerm) {
+        url.searchParams.append('search', searchTerm);
+      }
+
+      const token = localStorage.getItem('token');
+      const res = await fetch(url.toString(), {
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      });
+      if (!res.ok) throw new Error('Failed to fetch categories');
+      const data = await res.json();
+      console.log(data);
+      const categoryList = Array.isArray(data) ? data : (data.data || []);
+      setCategories(categoryList);
+      setTotalItems(data.meta?.total || data.total || categoryList.length || 0);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchCategories();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [currentPage, itemsPerPage, searchTerm]);
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+
+    setIsDeleting(true);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/${deleteId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) throw new Error('Failed to delete category');
+      
+      setCategories(prev => prev.filter(c => c.id !== deleteId));
+      setDeleteId(null);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to delete');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+
 
   return (
     <div className="space-y-8">
@@ -46,7 +115,7 @@ export default function CategoriesList() {
         </div>
 
         <Link href="/dashboard/categories/new">
-          <button className="flex items-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-500/30 hover:scale-105 transition-transform">
+          <button className="flex items-center gap-3 px-8 py-4 bg-primary-500 text-white rounded-md font-black cursor-pointer tracking-widest text-[12px] shadow-lg hover:scale-105 transition-transform">
             <Plus className="w-4 h-4" />
             {t('create')}
           </button>
@@ -60,6 +129,8 @@ export default function CategoriesList() {
             <input
               type="text"
               placeholder={t('search')}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-gray-50 dark:bg-gray-900/50 border border-transparent focus:border-blue-500/50 rounded-xl py-3 pl-12 pr-6 text-sm outline-none transition-all"
             />
           </div>
@@ -76,18 +147,24 @@ export default function CategoriesList() {
             </TableHeader>
             <TableBody>
               <AnimatePresence mode="popLayout">
-                {currentItems.map((category, index) => (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center py-10 text-gray-500 font-bold">
+                      Loading...
+                    </TableCell>
+                  </TableRow>
+                ) : categories.map((category, index) => (
                   <TableRow
                     key={category.id}
                     className="group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border-b border-gray-100 dark:border-white/5 last:border-0"
                   >
                     <TableCell className="px-8 py-6">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-500">
+                        <div className="w-12 h-12 rounded-xl bg-primary-500/10 dark:bg-blue-500/10 flex items-center justify-center text-primary-500 group-hover:scale-110 transition-transform duration-500">
                           <FolderOpen className="w-5 h-5" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-black dark:text-white uppercase tracking-tight mb-1">{category.name}</h4>
+                          <h4 className="text-sm font-black dark:text-white uppercase tracking-tight mb-1">{isRtl ? category.name_en : category.name_ar}</h4>
                           <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                             SLUG: {category.slug}
                           </span>
@@ -104,11 +181,14 @@ export default function CategoriesList() {
                     <TableCell className="px-8 py-6 ">
                       <div className="flex items-center gap-3 opacity-40 group-hover:opacity-100 transition-opacity">
                         <Link href={`/dashboard/categories/${category.id}`}>
-                          <button className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-blue-600 hover:text-white transition-all">
+                          <button className="p-2.5 cursor-pointer rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-primary-500 hover:text-white transition-all">
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                         </Link>
-                        <button className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-red-600 hover:text-white transition-all">
+                        <button 
+                          onClick={() => setDeleteId(category.id)}
+                          className="p-2.5 cursor-pointer rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-red-600 hover:text-white transition-all"
+                        >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -126,6 +206,13 @@ export default function CategoriesList() {
         totalPages={totalPages}
         totalItems={totalItems}
         onPageChange={setCurrentPage}
+      />
+
+      <DeleteConfirmDialog
+        isOpen={!!deleteId}
+        isDeleting={isDeleting}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
       />
     </div>
   );

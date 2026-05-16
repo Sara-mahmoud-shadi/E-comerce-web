@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { User, Mail, Lock, LogIn, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
 import { useRouter } from '@/i18n/routing';
 import {
   Dialog,
@@ -19,23 +19,61 @@ interface LoginModalProps {
   onClose: () => void;
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api/';
+const API_LOGIN = baseUrl.endsWith('/') 
+  ? `${baseUrl}auth/login` 
+  : `${baseUrl}/auth/login`;
+
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const t = useTranslations('Auth');
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  // Form state
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleChange = (field: 'email' | 'password') => (value: string) =>
+    setFormData((prev) => ({ ...prev, [field]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg('');
     setIsLoading(true);
-    
-    // Simulate login delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsLoading(false);
-    onClose();
-    router.push('/dashboard');
+
+    try {
+      const res = await fetch(API_LOGIN, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email.trim(),
+          password: formData.password,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data?.message ?? `Login failed (${res.status})`);
+      }
+
+      console.log(data);
+      // Persist token — API may return it as access_token or token
+      const receivedToken = data?.access_token ?? data?.token;
+      if (receivedToken) {
+        localStorage.setItem('token', receivedToken);
+        // Set cookie for server-side/middleware access
+        document.cookie = `token=${receivedToken}; path=/; max-age=86400; SameSite=Lax`;
+      }
+
+      onClose();
+      console.log('PUSHING TO:', `/dashboard`);
+      router.push('/dashboard');
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -44,7 +82,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         <div className="p-10">
           {/* Header */}
           <DialogHeader className="mb-5 text-center space-y-0">
-         
+
             <DialogTitle className="text-3xl font-black text-primary-500 tracking-tighter text-center  dark:text-white mb-2">
               {t('welcomeBack')} 👋
             </DialogTitle>
@@ -55,12 +93,21 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+
+            {/* Error banner */}
+            {errorMsg && (
+              <div className="flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-400 text-xs font-bold">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                {errorMsg}
+              </div>
+            )}
+
             <DynamicInput
               label={t('email')}
               icon={Mail}
               type="email"
-              value={email}
-              onChange={setEmail}
+              value={formData.email}
+              onChange={handleChange('email')}
               placeholder="admin@example.com"
               required
             />
@@ -69,8 +116,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               label={t('password')}
               icon={Lock}
               type="password"
-              value={password}
-              onChange={setPassword}
+              value={formData.password}
+              onChange={handleChange('password')}
               placeholder="••••••••"
               required
             />
@@ -78,14 +125,12 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 cursor-pointer bg-accent-500 text-white rounded-md font-black tracking-widest shadow-lg  hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3 mt-10"
+              className="w-full h-12 cursor-pointer bg-accent-500 text-white rounded-md font-black tracking-widest shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3 mt-10"
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <>
-                  {t('login')} 
-                </>
+                t('login')
               )}
             </button>
           </form>

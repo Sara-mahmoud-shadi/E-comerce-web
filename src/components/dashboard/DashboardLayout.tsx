@@ -1,17 +1,27 @@
 'use client';
-
-import React from 'react';
+ 
+import React, { useEffect } from 'react';
 import Sidebar from './Sidebar';
 import { useTranslations } from 'next-intl';
 import LanguageSwitcher from '../shared/LanguageSwitcher';
 import { Search, Bell, User } from 'lucide-react';
-
+import { useRouter } from 'next/navigation';
+ 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
-
+ 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const t = useTranslations('Dashboard');
+  const router = useRouter();
+ 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    console.log('DASHBOARD AUTH CHECK:', !!token);
+    if (!token) {
+      // router.push('/');
+    }
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950 font-sans">
@@ -37,7 +47,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="h-10 w-px bg-gray-100 dark:bg-white/5" />
 
             <div className="flex items-center gap-3">
-                 <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                 <div className="w-10 h-10 rounded-xl bg-primary-500/10 dark:bg-blue-500/10 flex items-center justify-center text-primary-500 dark:text-blue-400">
                 <User className="w-5 h-5" />
               </div>
               <div className="text-right hidden md:block">

@@ -4,7 +4,25 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["192.168.0.195"],
+   allowedDevOrigins: ["192.168.0.195", "localhost:3001"],
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:3001/:path*',
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/ar',
+        permanent: true,
+      },
+    ];
+  },
+  
   images: {
     remotePatterns: [
       {

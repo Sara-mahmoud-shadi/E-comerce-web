@@ -1,9 +1,16 @@
 import createMiddleware from 'next-intl/middleware';
 import {routing} from './i18n/routing';
  
-export default createMiddleware(routing);
+const intlMiddleware = createMiddleware(routing);
+ 
+export default function middleware(request: any) {
+  console.log('MIDDLEWARE REQUEST:', request.nextUrl.pathname);
+  const response = intlMiddleware(request);
+  console.log('MIDDLEWARE RESPONSE:', response?.headers?.get('location') || 'No redirect');
+  return response;
+}
  
 export const config = {
   // Match only internationalized pathnames
-  matcher: ['/', '/(ar|en)/:path*', '/((?!_next|_vercel|.*\\..*).*)']
+  matcher: ['/', '/(ar|en)/:path*', '/((?!api|_next|_vercel|.*\\..*).*)']
 };

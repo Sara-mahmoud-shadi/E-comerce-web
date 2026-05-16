@@ -46,7 +46,7 @@ export default function Sidebar() {
               exit={{ opacity: 0, x: -20 }}
               className="flex items-center gap-3"
             >
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+              <div className="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <LayoutDashboard className="w-6 h-6 text-white" />
               </div>
               <span className="text-xl font-black tracking-tighter uppercase dark:text-white">Admin</span>
@@ -75,7 +75,7 @@ export default function Sidebar() {
               className={cn(
                 "flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative",
                 isActive 
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" 
+                  ? "bg-primary-500 text-white shadow-lg shadow-blue-500/20" 
                   : "text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
               )}
             >
