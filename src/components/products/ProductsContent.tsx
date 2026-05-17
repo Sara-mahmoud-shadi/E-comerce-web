@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -17,58 +17,7 @@ import AppPagination from '../shared/AppPagination';
 import { cn } from '@/lib/utils';
 import { ChevronDown, RefreshCcw, ShoppingCart, SlidersHorizontal } from 'lucide-react';
 
-const PRODUCTS = [
-  {
-    id: 1,
-    name: 'Artisan Plate',
-    price: 45.00,
-    discountPrice: 39.00,
-    category: 'serving',
-    image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80',
-    rating: 4.8,
-    reviews: 88,
-    badge: 'luxury',
-    asset: 'Ceramic Pro',
-    assetImg: 'https://images.unsplash.com/photo-1594913785162-e6785b42fbb1?w=200&q=80'
-  },
-  {
-    id: 2,
-    name: 'Espresso Master',
-    price: 899.00,
-    category: 'electrical',
-    image: 'https://images.unsplash.com/photo-1510972527921-ce03766a1cf1?w=800&q=80',
-    rating: 4.9,
-    reviews: 210,
-    badge: 'premium',
-    asset: 'Steam X-200',
-    assetImg: 'https://images.unsplash.com/photo-1510972527921-ce03766a1cf1?w=800&q=80'
-  },
-  {
-    id: 3,
-    name: 'Copper Set',
-    price: 350.00,
-    discountPrice: 299.00,
-    category: 'cooking',
-    image: 'https://images.unsplash.com/photo-1461344577544-4e5dc9487184?w=800&q=80',
-    rating: 5.0,
-    reviews: 145,
-    badge: 'premium',
-    asset: 'HeatFlow v3',
-    assetImg: 'https://images.unsplash.com/photo-1584990344321-27662ef2049e?w=200&q=80'
-  },
-  {
-    id: 4,
-    name: 'Chef Knife',
-    price: 120.00,
-    category: 'cooking',
-    image: 'https://images.unsplash.com/photo-1593618998160-e34014e67546?w=800&q=80',
-    rating: 4.7,
-    reviews: 92,
-    badge: 'luxury',
-    asset: 'Edge Elite',
-    assetImg: 'https://images.unsplash.com/photo-1593618998160-e34014e67546?w=800&q=80'
-  },
-];
+
 
 export default function ProductsContent() {
   const t = useTranslations('Products');
@@ -81,6 +30,71 @@ export default function ProductsContent() {
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState('');
+  
+  const [products, setProducts] = useState<any[]>([]);
+  const [categoriesList, setCategoriesList] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 6;
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
+        const res = await fetch(`${apiBase}/categories`);
+        if (res.ok) {
+          const resData = await res.json();
+          if (resData.data) {
+            setCategoriesList(resData.data);
+          } else if (Array.isArray(resData)) {
+            setCategoriesList(resData);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const fetchData = async (isReset = false) => {
+    setIsLoading(true);
+    try {
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
+      let queryStr = `?page=${isReset ? 1 : currentPage}&limit=${itemsPerPage}`;
+      
+      if (!isReset && sortBy) queryStr += `&sort=${sortBy}`;
+      
+      if (!isReset && selectedPriceRanges.length > 0) {
+        queryStr += `&priceRanges=${selectedPriceRanges.join(',')}`;
+      }
+      if (!isReset && selectedCategories.length > 0) {
+        queryStr += `&categories=${selectedCategories.join(',')}`;
+      }
+
+      const finalUrl = `${apiBase}/products/filter${queryStr}`;
+      
+      const res = await fetch(finalUrl);
+      if (res.ok) {
+        const resData = await res.json();
+        if (resData.data) {
+          setProducts(resData.data);
+          setTotalItems(resData.meta?.total || 0);
+          setTotalPages(resData.meta?.last_page || Math.ceil((resData.meta?.total || 0) / itemsPerPage));
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch data:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, sortBy]);
 
   const handlePriceChange = (range: string) => {
     setSelectedPriceRanges(prev =>
@@ -98,14 +112,26 @@ export default function ProductsContent() {
     setSelectedPriceRanges([]);
     setSelectedCategories([]);
     setSortBy('');
+    setCurrentPage(1);
+    fetchData(true);
   };
-
-  const tc = useTranslations('Categories');
+ 
   const tp = useTranslations('PriceRange');
 
   const breadcrumbItems = [
     { label: t('allProducts') }
   ];
+
+  if (isLoading && products.length === 0) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-[#f1f4f1] to-white dark:bg-[#080808] flex items-center justify-center">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-500 rounded-full animate-spin" />
+          <p className="text-gray-500 font-bold uppercase tracking-widest text-sm">Loading Products...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-[#f1f4f1] to-white dark:bg-[#080808]">
@@ -183,20 +209,20 @@ export default function ProductsContent() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="p-6 space-y-5">
-                    {['luxurySets', 'premiumTools', 'eliteServing', 'economySeries'].map((cat, idx) => (
-                      <label key={cat} className="flex items-center justify-between group cursor-pointer">
-                        <span className="text-xs font-medium text-gray-400">({(142 - idx * 40)})</span>
+                    {categoriesList.map((cat, idx) => (
+                      <label key={cat.id} className="flex items-center justify-between group cursor-pointer">
+                        <span className="text-xs font-medium text-gray-400"></span>
                         <span className={cn(
                           "text-sm font-bold text-gray-600 group-hover:text-primary-500 transition-colors mx-4 flex-grow",
                           isRtl ? "text-right" : "text-left"
                         )}>
-                          {tc(cat)}
+                          {isRtl ? (cat.name_ar || cat.name) : (cat.name_en || cat.name)}
                         </span>
                         <div className="relative w-6 h-6 flex items-center justify-center">
                           <input 
                             type="checkbox" 
-                            checked={selectedCategories.includes(cat)}
-                            onChange={() => handleCategoryChange(cat)}
+                            checked={selectedCategories.includes(cat.id.toString())}
+                            onChange={() => handleCategoryChange(cat.id.toString())}
                             className="peer absolute inset-0 opacity-0 cursor-pointer z-10" 
                           />
                           <div className="absolute inset-0 border-2 border-gray-100 dark:border-white/5 rounded-lg peer-checked:border-primary-500 peer-checked:bg-primary-500/5 transition-all duration-300" />
@@ -219,7 +245,7 @@ export default function ProductsContent() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="p-6 space-y-5">
-                    {['under50', '50-200', '200-500', 'over500'].map(range => (
+                    {['lessThan50', '50-200', '200-500', 'greaterThan500'].map(range => (
                       <label key={range} className="flex items-center justify-between group cursor-pointer">
                         <span className="text-xs font-medium text-gray-400">($)</span>
                         <span className={cn(
@@ -245,6 +271,14 @@ export default function ProductsContent() {
               </Accordion>
             </div>
 
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <button
+                onClick={()=>fetchData(false)}
+                className="w-full bg-primary-500 cursor-pointer hover:bg-primary-600 text-white font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-95"
+              >
+                {t('refineResults')}
+              </button>
+            </div>
           </div>
         </aside>
 
@@ -257,7 +291,7 @@ export default function ProductsContent() {
           >
             <div className="flex items-center gap-4">
                  <div className="w-12 h-12 bg-[#f1f4f1] shadow-inner  rounded-xl flex items-center justify-center text-primary-500 font-black text-xl shadow-inner">
-                {PRODUCTS.length}
+                {totalItems}
               </div>
               <div>
                 <h2 className="text-xl font-black tracking-tighter text-primary-500 dark:text-white leading-none mb-1">{t('masterSelection')}</h2>
@@ -273,13 +307,20 @@ export default function ProductsContent() {
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {PRODUCTS.map((product, i) => (
+            {products.map((product, i) => (
               <ProductCard key={product.id} product={product} index={i} />
             ))}
           </div>
 
           {/* Pagination */}
-          <AppPagination currentPage={1} totalPages={10} totalItems={PRODUCTS.length} onPageChange={() => { }} />
+          {totalPages > 1 && (
+            <AppPagination 
+              currentPage={currentPage} 
+              totalPages={totalPages} 
+              totalItems={totalItems} 
+              onPageChange={setCurrentPage} 
+            />
+          )}
         </div>
       </div>
     </div>

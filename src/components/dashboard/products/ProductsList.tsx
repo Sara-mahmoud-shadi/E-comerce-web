@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Search, Edit2, Trash2, Image as ImageIcon } from 'lucide-react';
 import { Link } from '@/i18n/routing';
@@ -20,11 +20,12 @@ export default function ProductsList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 10;
+  const itemsPerPage = 6;
   const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-
+ const locale = useLocale();
+  const isRtl = locale === 'ar';
   const fetchProducts = async () => {
     try {
       setIsLoading(true);
@@ -159,18 +160,18 @@ export default function ProductsList() {
                       </div>
                     </TableCell>
                     <TableCell className="px-8 py-6">
-                      <Badge variant="secondary" className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border-none">
-                        {product.category?.name || (product.categoryId ? String(product.categoryId) : 'Uncategorized')}
+                      <Badge variant="secondary" className="bg-primary-500/10 dark:bg-blue-500/10 text-primary-500 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border-none">
+                        {isRtl ? product.category?.name_ar : product.category?.name_en}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-8 py-6">
                       <div className="flex flex-col">
                         <span className={`text-sm font-black tracking-tighter ${product.price_discount ? 'text-emerald-500' : 'dark:text-white'}`}>
-                          ${parseFloat(product.price_discount || product.price || 0).toFixed(2)}
+                           {parseFloat(product.price_discount || product.price || 0).toFixed(2)} ر.س
                         </span>
                         {product.price_discount && (
                           <span className="text-[10px] font-bold text-gray-400 line-through tracking-widest">
-                            ${parseFloat(product.price || 0).toFixed(2)}
+                             {parseFloat(product.price || 0).toFixed(2)} ر.س
                           </span>
                         )}
                       </div>
@@ -186,13 +187,13 @@ export default function ProductsList() {
                     <TableCell className="px-8 py-6">
                       <div className="flex items-center  gap-2 opacity-40 group-hover:opacity-100 transition-opacity">
                         <Link href={`/dashboard/products/${product.id}`}>
-                          <button className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-blue-600 hover:text-white transition-all">
+                          <button className="p-2.5 cursor-pointer rounded-xl bg-primary-500/10 dark:bg-gray-900 text-gray-400 hover:bg-primary-500 hover:text-white transition-all">
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                         </Link>
                         <button 
                           onClick={() => setDeleteId(product.id)}
-                          className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-red-600 hover:text-white transition-all"
+                          className="p-2.5 cursor-pointer rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-red-600 hover:text-white transition-all"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

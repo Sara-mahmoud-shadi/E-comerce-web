@@ -4,25 +4,38 @@ import { useTranslations } from 'next-intl';
 import { ShoppingBag, Star, Eye } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Link } from '@/i18n/routing';
-import { cn } from '@/lib/utils';
+import { Link } from '@/i18n/routing'; 
 import { useCartStore } from '@/store/useCartStore';
+import { useEffect } from 'react';
 
-interface Product {
+export interface Product {
   id: number;
+  slug: string;
+  description: string;
   name: string;
   price: number;
-  discountPrice?: number;
+  price_discount?: number;
+  images: string[];
+  tax: number;
+  category: Category;
+  instock?: boolean;
+}
+interface Category {
+  id: number; 
+  name_ar: string;
+  name_en: string;
+  slug: string;
   image: string;
-  rating: number;
-  badge?: string;
 }
 
 interface ProductCardProps {
   product: Product;
   index: number;
 }
-
+ export const getImageUrl = (url?: string) => {
+    if (!url) return 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&h=300&fit=crop';
+    return url.replace(/^https?:\/\/(localhost|192\.168\.0\.195):\d+/, '');
+  };
 export function ProductCard({ product, index }: ProductCardProps) {
   const t = useTranslations('Products');
   const addItem = useCartStore((state) => state.addItem);
@@ -31,7 +44,8 @@ export function ProductCard({ product, index }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     addItem(product);
-  };
+  }; 
+
 
   return (
     <motion.div
@@ -43,7 +57,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
       {/* Product Image Background - Clickable Overlay */}
       <Link href={`/products/${product.id}`} className="absolute inset-0 z-0">
         <Image
-          src={product.image}
+          src={getImageUrl(product.images?.[0])}
           alt={product.name}
           fill
           className="object-cover opacity-60 group-hover:scale-105 transition-transform duration-[1000ms]"
@@ -59,7 +73,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
         {/* Centered Identity Overlay */}
         <div className="flex flex-col justify-center items-center text-center">
-          <h3 className="text-4xl font-black text-white tracking-tighter uppercase mb-2 group-hover:scale-110 transition-transform duration-700">
+          <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-2 group-hover:scale-110 transition-transform duration-700">
             {product.name}
           </h3>
         </div>
@@ -69,18 +83,18 @@ export function ProductCard({ product, index }: ProductCardProps) {
           <div>
             <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1">{t('basePrice')}</p>
             <div className="flex flex-col">
-              {product.discountPrice ? (
+              {product.price_discount ? (
                 <>
                   <p className="text-2xl font-black text-primary-500 tracking-tighter leading-none">
-                    {t('price', { price: product.discountPrice.toFixed(2) })}
+                    {t('price', { price: product.price_discount })}
                   </p>
                   <p className="text-[10px] font-bold text-white/40 line-through tracking-tighter mt-1">
-                    {t('price', { price: product.price.toFixed(2) })}
+                    {t('price', { price: product.price })}
                   </p>
                 </>
               ) : (
                 <p className="text-2xl font-black text-white tracking-tighter">
-                  {t('price', { price: product.price.toFixed(2) })}
+                  {t('price', { price: product.price })}
                 </p>
               )}
             </div>

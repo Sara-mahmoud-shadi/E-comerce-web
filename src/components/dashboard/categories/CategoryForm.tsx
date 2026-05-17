@@ -154,7 +154,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
               type="button"
               onClick={() => router.back()}
               disabled={isLoading}
-              className="flex items-center gap-3 px-6 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
+              className="flex items-center cursor-pointer gap-3 px-6 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 rounded-md font-black uppercase tracking-widest text-[10px] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
             >
               <X className="w-4 h-4" />
               {t('cancel')}
@@ -179,7 +179,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
         {status === 'success' && (
           <div className="mb-6 flex items-center gap-3 px-6 py-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-500 text-sm font-bold">
             <CheckCircle className="w-5 h-5 shrink-0" />
-            Category saved successfully! Redirecting…
+            Category saved successfully
           </div>
         )}
         {status === 'error' && errorMsg && (
@@ -244,7 +244,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
                 </h3>
               </div>
 
-              <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[2rem] p-12 text-center group hover:border-blue-500/50 transition-colors relative overflow-hidden h-[250px]">
+              <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[2rem] p-5 text-center group hover:border-blue-500/50 transition-colors relative overflow-hidden h-[300px]">
                 {formData.imagePreview ? (
                   <div className="relative w-full h-full rounded-xl overflow-hidden shadow-lg">
                     <img src={formData.imagePreview} alt="Preview" className="w-full h-full object-cover" />

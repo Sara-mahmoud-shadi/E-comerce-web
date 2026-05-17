@@ -5,9 +5,10 @@ export interface CartItem {
   id: number;
   name: string;
   price: number;
-  discountPrice?: number;
-  image: string;
+  price_discount?: number;
+  images: string[];
   quantity: number;
+  tax?: number;
 }
 
 interface CartState {
@@ -65,7 +66,7 @@ export const useCartStore = create<CartState>()(
 
       getTotalPrice: () => {
         return get().items.reduce((acc, item) => {
-          const price = item.discountPrice || item.price;
+          const price = item.price_discount || item.price;
           return acc + price * item.quantity;
         }, 0);
       },

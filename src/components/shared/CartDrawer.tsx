@@ -18,6 +18,7 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer';
 import { Link } from '@/i18n/routing';
+import { getImageUrl } from '../products/ProductCard';
 
 
 export function CartDrawer() {
@@ -33,12 +34,8 @@ export function CartDrawer() {
 
   const subtotal = getTotalPrice();
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
-
   if (!isHydrated) return null;
 
-  // Determine direction based on language: AR opens from Right (wait, in RTL, right is the start? no.)
-  // User asked: "open in right when lang is ar atherwise is left"
-  // direction="right" for ar, direction="left" otherwise.
   const direction = locale === 'ar' ? 'right' : 'left';
 
   return (
@@ -113,7 +110,7 @@ export function CartDrawer() {
                   >
                     <div className="relative w-24 h-24 shrink-0 rounded-[1.5rem] overflow-hidden bg-black/5 dark:bg-black/40 shadow-sm">
                       <Image
-                        src={item.image}
+                        src={getImageUrl(item.images[0])}
                         alt={item.name}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -127,7 +124,7 @@ export function CartDrawer() {
                         </h4>
                         <button
                           onClick={() => removeItem(item.id)}
-                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                          className="p-2 text-gray-400 cursor-pointer hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -137,20 +134,20 @@ export function CartDrawer() {
                         <div className="flex items-center gap-4 bg-white dark:bg-black/40 p-1.5 rounded-full border border-gray-100 dark:border-white/10 shadow-sm">
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                            className="w-8 h-8 flex items-center cursor-pointer justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
                           <span className="w-6 text-center font-black text-sm">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                            className="w-8 h-8 flex items-center cursor-pointer justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
                         </div>
                         <p className="font-black text-accent-500 text-lg tracking-tighter">
-                          {tp('price', { price: ((item.discountPrice || item.price) * item.quantity).toFixed(2) })}
+                          {tp('price', { price: ((item.price_discount || item.price) * item.quantity).toFixed(2) })}
                         </p>
                       </div>
                     </div>
@@ -163,7 +160,7 @@ export function CartDrawer() {
           {/* Footer Summary */}
           {items.length > 0 && (
             <DrawerFooter className="p-8 space-y-8 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 rounded-t-[3rem]">
-               
+
               <div className="space-y-6 w-full">
                 <Link href="/checkout" className="block text-center w-full  py-5 bg-accent-500 text-white font-black tracking-[0.3em] rounded-md hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-accent-500/30 group">
                   {t('checkout')}

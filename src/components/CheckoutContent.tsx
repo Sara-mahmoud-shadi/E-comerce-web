@@ -1,30 +1,112 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { ShieldCheck, MapPin, User, Mail, CheckCircle2, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import DynamicInput from './shared/DynamicInput';
+import { useCartStore } from '@/store/useCartStore';
+import { toast } from 'sonner';
 
 export default function CheckoutContent() {
   const t = useTranslations('Checkout');
   const locale = useLocale();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     name: '',
     email: '',
     phone: '',
-    address: ''
-  });
+    address: '',
+    items: []
+  }); 
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const clearCart = useCartStore((state) => state.clearCart);
+
+  const fetchCartItems = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
+      const res = await fetch(`${apiBase}/cart`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        const resData = await res.json();
+        // Based on Swagger response body being an array, get the first cart
+        const cart = Array.isArray(resData) ? resData[0] : resData;
+        if (cart && cart.CartItems) {
+          const mappedItems = cart.CartItems.map((item: any) => ({
+            productId: item.product?.id || item.productId,
+            quantity: item.quantity
+          }));
+          console.log(mappedItems);
+          setFormData((prev: any) => ({
+            ...prev,
+            items: mappedItems
+          }));
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch cart items:', err);
+    }
+  };
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
 
   const handleCompleteOrder = async () => {
+    if (!formData.name || !formData.email || !formData.phone || !formData.address) {
+      toast.error(t('shippingDetailsRequired'));
+      return;
+    }
+    if (formData.items.length === 0) {
+      toast.error(t('cartEmpty'));
+      return;
+    }
+
     setIsLoading(true);
-    // Simulate order processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsLoading(false);
-    setIsCompleted(true);
+    try {
+      const token = localStorage.getItem('token');
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
+      console.log(formData);
+      const res = await fetch(`${apiBase}/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (res.ok) {
+        setIsCompleted(true);
+        toast.success(t('orderSuccess'));
+        clearCart();
+        
+        // Clear cart in backend database
+        try {
+          await fetch(`${apiBase}/cart`, {
+            method: 'DELETE',
+            headers: {
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            }
+          });
+        } catch (dbErr) {
+          console.error('Failed to clear cart in backend database:', dbErr);
+        }
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        toast.error(errData.message || t('orderFailed'));
+      }
+    } catch (err) {
+      console.error('Failed to complete order:', err);
+      toast.error(t('somethingWentWrong'));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

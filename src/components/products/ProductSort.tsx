@@ -29,10 +29,10 @@ export function ProductSort({ value, onValueChange, isRtl }: ProductSortProps) {
         <SelectItem value="sort-label" disabled className="text-[10px] font-black tracking-widest opacity-50">
           {t('sortBy')}
         </SelectItem>
-        <SelectItem value="price-high" className="text-[10px] font-black tracking-widest focus:bg-primary-500/10 focus:text-primary-500 cursor-pointer">
+        <SelectItem value="price_desc" className="text-[10px] font-black tracking-widest focus:bg-primary-500/10 focus:text-primary-500 cursor-pointer">
           {t('highToLow')}
         </SelectItem>
-        <SelectItem value="price-low" className="text-[10px] font-black tracking-widest focus:bg-primary-500/10 focus:text-primary-500 cursor-pointer">
+        <SelectItem value="price_asc" className="text-[10px] font-black tracking-widest focus:bg-primary-500/10 focus:text-primary-500 cursor-pointer">
           {t('lowToHigh')}
         </SelectItem>
       </SelectContent>

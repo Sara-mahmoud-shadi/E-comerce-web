@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'; 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Edit2, Trash2, Plus, FolderOpen } from 'lucide-react';
+import { Search, Edit2, Trash2, Plus, FolderOpen, X } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Link } from '@/i18n/routing';
 import AppPagination from '@/components/shared/AppPagination';
@@ -37,7 +37,7 @@ export default function CategoriesList() {
   const locale = useLocale();
   const isRtl = locale === 'ar';
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
   const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
 
   const fetchCategories = async () => {
@@ -125,14 +125,23 @@ export default function CategoriesList() {
       <div className="bg-white dark:bg-[#081640] rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl overflow-hidden">
         <div className="p-8 border-b border-gray-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="relative w-full md:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 ${isRtl ? 'right-4' : 'left-4'}`} />
             <input
               type="text"
               placeholder={t('search')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-50 dark:bg-gray-900/50 border border-transparent focus:border-blue-500/50 rounded-xl py-3 pl-12 pr-6 text-sm outline-none transition-all"
+              className={`w-full bg-gray-50 dark:bg-gray-900/50 border border-transparent focus:border-blue-500/50 rounded-xl py-3 text-sm outline-none transition-all ${isRtl ? 'pr-12 pl-10' : 'pl-12 pr-10'}`}
             />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className={`absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer ${isRtl ? 'left-4' : 'right-4'}`}
+                aria-label="Clear search"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -164,7 +173,7 @@ export default function CategoriesList() {
                           <FolderOpen className="w-5 h-5" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-black dark:text-white uppercase tracking-tight mb-1">{isRtl ? category.name_en : category.name_ar}</h4>
+                          <h4 className="text-sm font-black dark:text-white uppercase tracking-tight mb-1">{isRtl ? category.name_ar : category.name_en}</h4>
                           <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                             SLUG: {category.slug}
                           </span>

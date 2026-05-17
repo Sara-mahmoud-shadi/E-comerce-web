@@ -260,7 +260,7 @@ export default function ProductDetailsContent({ id }: ProductDetailsContentProps
                     <Layers className="w-4 h-4" />
                     <span className="text-[10px] font-black uppercase tracking-widest">{t('category')}</span>
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-lg">
+                  <span className="text-[10px] font-black uppercase tracking-widest bg-primary-500/10 dark:bg-blue-500/10 text-primary-500 dark:text-blue-400 px-3 py-1 rounded-lg">
                     {tc(MOCK_PRODUCT.category)}
                   </span>
                 </div>

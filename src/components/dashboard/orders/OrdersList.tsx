@@ -9,7 +9,15 @@ import AppPagination from '@/components/shared/AppPagination';
 
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'; 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}orders`;
+export const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
 
+  const day = date.toISOString().split("T")[0]; // 2026-05-17
+
+  const time = date.toTimeString().slice(0, 5); // 13:08
+
+  return `${day} & ${time}`;
+};
 export default function OrdersList() {
   const t = useTranslations('Dashboard');
   const to = useTranslations('Orders');
@@ -145,43 +153,43 @@ export default function OrdersList() {
                     <TableCell className="px-8 py-6">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center font-black text-xs text-gray-400 uppercase">
-                          {customerName.charAt(0)}
+                          {order.name.charAt(0)}
                         </div>
-                        <span className="font-bold text-gray-900 dark:text-white">{customerName}</span>
+                        <span className="font-bold text-gray-900 dark:text-white">{order.name}</span>
                       </div>
                     </TableCell>
                     <TableCell className="px-8 py-6">
                       <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
                         <Clock className="w-3.5 h-3.5" />
                         <span className="text-[10px] font-bold uppercase tracking-widest">
-                          {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : order.date}
+                          {formatDate(order.createdAt  )}
                         </span>
                       </div>
                     </TableCell>
                     <TableCell className="px-8 py-6">
                       <div className="flex items-center gap-2">
-                        <div className={`w-1.5 h-1.5 rounded-full ${order.status === 'delivered' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`} />
-                        <span className={`text-[10px] font-black uppercase tracking-widest ${order.status === 'delivered' ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
-                          {to(`status_${order.status}`) || order.status || 'Pending'}
+                        <div className={`w-1.5 h-1.5 rounded-full ${order.status_order === 'delivered' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`} />
+                        <span className={`text-[10px] font-black uppercase tracking-widest ${order.status_order === 'delivered' ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                          {to(`status_${order.status_order}`) || order.status_order || 'Pending'}
                         </span>
                       </div>
                     </TableCell>
                     <TableCell className="px-8 py-6">
                       <span className="font-black text-gray-900 dark:text-white tracking-tighter">
-                        ${parseFloat(order.totalPrice || order.total || 0).toFixed(2)}
+                        {order.totalPrice}  ر.س
                       </span>
                     </TableCell>
                     <TableCell className="px-8 py-6 ">
                       <div className="flex items-center gap-3 opacity-40 group-hover:opacity-100 transition-opacity">
                         <Link
                           href={`/dashboard/orders/${order.id}`}
-                          className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-blue-600 hover:text-white transition-all"
+                          className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-primary-500/10 hover:text-primary-500 transition-all"
                         >
                           <Eye className="w-4 h-4" />
                         </Link>
                         <button 
                           onClick={() => setDeleteId(order.id)}
-                          className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-red-600 hover:text-white transition-all"
+                          className="p-2.5 cursor-pointer rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-red-600 hover:text-white transition-all"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

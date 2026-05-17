@@ -138,7 +138,12 @@
     "city": "المدينة",
     "cardNumber": "رقم البطاقة",
     "orderSuccessTitle": "تم إتمام الطلب بنجاح!",
-    "orderSuccessMessage": "شكراً لشرائك. تم استلام طلبك وهو قيد التنفيذ حالياً."
+    "orderSuccessMessage": "شكراً لشرائك. تم استلام طلبك وهو قيد التنفيذ حالياً.",
+    "shippingDetailsRequired": "يرجى ملء جميع تفاصيل الشحن.",
+    "cartEmpty": "حقيبة التسوق فارغة.",
+    "orderSuccess": "تم تقديم الطلب بنجاح!",
+    "orderFailed": "فشل في تقديم الطلب. يرجى المحاولة مرة أخرى.",
+    "somethingWentWrong": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
   },
   "Orders": {
     "title": "طلباتي",
@@ -158,6 +163,9 @@
     "subtotal": "المجموع الفرعي",
     "shipping": "الشحن",
     "free": "مجاني",
+    "product": "المنتج",
+    "price": "السعر",
+    "qty": "الكمية",
     "status_delivered": "تم التوصيل",
     "status_processing": "قيد المعالجة",
     "status_pending": "قيد الانتظار",
@@ -190,10 +198,10 @@
     "economySeries": "المجموعة الاقتصادية"
   },
   "PriceRange": {
-    "under50": "أقل من 50 ر.س",
+    "lessThan50": "أقل من 50 ر.س",
     "50-200": "50 - 200 ر.س",
     "200-500": "200 - 500 ر.س",
-    "over500": "أكثر من 500 ر.س"
+    "greaterThan500": "أكثر من 500 ر.س"
   },
   "Dashboard": {
     "title": "لوحة التحكم",
@@ -207,6 +215,7 @@
     "save": "حفظ التغييرات",
     "cancel": "إلغاء",
     "delete": "حذف",
+    "deleteConfirmTitle": "هل أنت متأكد تماماً؟",
     "search": "بحث...",
     "noData": "لا توجد بيانات متاحة",
     "status": "الحالة",

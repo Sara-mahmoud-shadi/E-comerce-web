@@ -1,143 +1,101 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { ShoppingBag, Star, ChevronLeft, ChevronRight, Maximize2, Minus, Plus, RefreshCcw } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
-import { Link } from '@/i18n/routing';
+import { useState, useEffect } from 'react'; 
 import { cn } from '@/lib/utils';
-import { useCartStore } from '@/store/useCartStore';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { useCartStore } from '@/store/useCartStore'; 
 import { ShopBreadcrumb } from '../shared/ShopBreadcrumb';
-
-const PRODUCTS = [
-  {
-    id: 1,
-    name: 'Artisan Plate',
-    price: 45.00,
-    discountPrice: 39.00,
-    inStock: true,
-    category: 'cooking',
-    description: 'Elevate your dining experience with our hand-glazed Artisan Plate. Each piece is unique, featuring subtle variations in texture and color that reflect its handcrafted origin. Perfect for both everyday use and special occasions.',
-    images: [
-      'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80',
-      'https://images.unsplash.com/photo-1580915411954-282cb1b0d780?w=800&q=80',
-      'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&q=80',
-      'https://images.unsplash.com/photo-1580915411954-282cb1b0d780?w=800&q=80',
-      'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&q=80',
-      'https://images.unsplash.com/photo-1580915411954-282cb1b0d780?w=800&q=80',
-      'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&q=80',
-      'https://images.unsplash.com/photo-1580915411954-282cb1b0d780?w=800&q=80',
-    ],
-    rating: 4.8,
-    reviews: 88,
-    badge: 'luxury',
-    type: 'Ceramic Pro'
-  },
-  {
-    id: 2,
-    name: 'Espresso Master',
-    price: 899.00,
-    inStock: false,
-    category: 'electrical',
-    description: 'The ultimate espresso machine for coffee connoisseurs. Features precision temperature control, a professional-grade steam wand, and a high-pressure pump to deliver café-quality espresso in the comfort of your home.',
-    images: [
-      'https://images.unsplash.com/photo-1510972527921-ce03766a1cf1?w=800&q=80',
-      'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80',
-      'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?w=800&q=80'
-    ],
-    rating: 4.9,
-    reviews: 210,
-    badge: 'premium',
-    type: 'Steam X-200'
-  },
-  {
-    id: 3,
-    name: 'Copper Set',
-    price: 350.00,
-    inStock: true,
-    discountPrice: 299.00,
-    category: 'cooking',
-    description: 'Professional-grade copper cookware set. Copper provides superior heat conductivity for precise temperature control, while the stainless steel lining ensures durability and ease of cleaning. A must-have for any serious chef.',
-    images: [
-      'https://images.unsplash.com/photo-1584990344321-27662ef2049e?w=800&q=80',
-      'https://images.unsplash.com/photo-1594913785162-e6785b42fbb1?w=200&q=80',
-      'https://images.unsplash.com/photo-1584990344321-27662ef2049e?w=800&q=80'
-    ],
-    rating: 5.0,
-    reviews: 145,
-    badge: 'premium',
-    type: 'HeatFlow v3'
-  },
-  {
-    id: 4,
-    name: 'Chef Knife',
-    price: 120.00,
-    inStock: true,
-    category: 'cooking',
-    description: 'Expertly balanced and razor-sharp, this professional chef knife is forged from high-carbon Japanese steel. The ergonomic handle provides a comfortable grip for effortless slicing, dicing, and chopping.',
-    images: [
-      'https://images.unsplash.com/photo-1593618998160-e34014e67546?w=800&q=80',
-      'https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=800&q=80',
-      'https://images.unsplash.com/photo-1593618998160-e34014e67546?w=800&q=80'
-    ],
-    rating: 4.7,
-    reviews: 92,
-    badge: 'luxury',
-    type: 'Edge Elite'
-  },
-];
+import { Product } from './ProductCard';
 
 export default function ProductDetailsContent() {
   const { id } = useParams();
   const t = useTranslations('Products');
   const tn = useTranslations('Navigation');
-  const { addItem, updateQuantity, items } = useCartStore();
-
-  const product = PRODUCTS.find(p => p.id === Number(id)) || PRODUCTS[0];
+  const { addItem, items } = useCartStore();
+ const locale = useLocale();
+  const isRtl = locale === 'ar';
+  const [product, setProduct] = useState<Product>();
+  const [isLoading, setIsLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
-  const nextImage = () => setActiveImage((prev) => (prev + 1) % product.images.length);
-  const prevImage = () => setActiveImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+  const getImageUrl = (url: string) => {
+    if (!url) return 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80';
+    return url.replace(/^https?:\/\/(localhost|192\.168\.0\.195):\d+/, '');
+  };
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      setIsLoading(true);
+      try {
+        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
+        const res = await fetch(`${apiBase}/products/${id}`);
+        if (res.ok) {
+          const resData = await res.json();
+          if (resData) {
+            // Assume the API returns the product directly, or wrapped in a data object
+            setProduct(resData.data || resData);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch product details:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (id) {
+      fetchProduct();
+    }
+  }, [id]);
+
+  const nextImage = () => {
+    if (!product?.images) return;
+    setActiveImage((prev) => (prev + 1) % product.images.length);
+  };
+  const prevImage = () => {
+    if (!product?.images) return;
+    setActiveImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+  };
 
   const syncQuantity = (newQty: number) => {
     const qty = Math.max(1, newQty);
     setQuantity(qty);
-    
-    // If the product is already in the cart, update its quantity there too
-    // const isInCart = items.some(item => item.id === product.id);
-    // if (isInCart) {
-    //   updateQuantity(product.id, qty);
-    // }
+     
   };
 
   const handleAddToCart = (customProduct?: any, customQuantity?: number) => {
-    // Check if called via event handler (first arg would be an event object)
-    const isEvent = customProduct && 'nativeEvent' in customProduct;
-    const p = !isEvent && customProduct ? customProduct : product;
-    const q = typeof customQuantity === 'number' ? customQuantity : quantity;
-
+    if (!product) return;
+    const p = customProduct || product;
+    const q = customQuantity || quantity;
+    
     addItem({
-      ...p,
-      image: p.images[0], // Adapt to CartItem interface
+      id: p.id,
+      name: p.name,
+      price: p.discountPrice || p.price,
+      image: getImageUrl(p.images?.[0] || ''), // Adapt to CartItem interface
       quantity: q
     }, q);
   };
 
-  const breadcrumbSteps = [
+  const breadcrumbSteps = product ? [
     { label: tn('products'), href: '/products' },
     { label: product.name }
-  ];
+  ] : [];
+
+  if (isLoading || !product) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-[#f1f4f1] to-white dark:bg-[#080808] flex items-center justify-center">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-500 rounded-full animate-spin" />
+          <p className="text-gray-500 font-bold uppercase tracking-widest text-sm">Loading Product...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section className="bg-linear-to-br to-white from-[#f1f4f1]">
@@ -169,7 +127,7 @@ export default function ProductDetailsContent() {
                     className="absolute inset-0"
                   >
                     <Image
-                      src={product.images[activeImage]}
+                      src={getImageUrl(product.images?.[activeImage] || '')}
                       alt={product.name}
                       fill
                       className="object-cover transition-transform duration-[3000ms] group-hover:scale-110"
@@ -202,12 +160,12 @@ export default function ProductDetailsContent() {
 
                 {/* Modern Progress Indicators */}
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                  {product.images.map((_, idx) => (
+                  {product.images.map((img: string, idx: number) => (
                     <div
                       key={idx}
                       className={cn(
                         "h-1.5 rounded-full transition-all duration-500",
-                        activeImage === idx ? "w-8 bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.5)]" : "w-1.5 bg-white/40"
+                        activeImage === idx ? "w-8 bg-primary-500 shadow-[0_0_12px_rgba(59,130,246,0.5)]" : "w-1.5 bg-white/40"
                       )}
                     />
                   ))}
@@ -217,7 +175,7 @@ export default function ProductDetailsContent() {
 
             {/* Staggered Interactive Thumbnails */}
             <div className="flex gap-5 overflow-x-auto pb-6 pt-2 no-scrollbar scroll-smooth px-2">
-              {product.images.map((img, idx) => (
+              {product.images.map((img, idx: number) => (
                 <motion.button
                   key={idx}
                   initial={{ opacity: 0, y: 20 }}
@@ -233,7 +191,7 @@ export default function ProductDetailsContent() {
                       : "border-transparent opacity-60 hover:opacity-100 grayscale hover:grayscale-0"
                   )}
                 >
-                  <Image src={img} alt={product.name} fill className="object-cover" />
+                  <Image src={getImageUrl(img || '')} alt={product.name} fill className="object-cover" />
                   {activeImage === idx && (
                     <div className="absolute inset-0 bg-accent-500/10 backdrop-blur-[2px]" />
                   )}
@@ -248,37 +206,37 @@ export default function ProductDetailsContent() {
             <div className="p-6 bg-gray-50/50 dark:bg-white/5 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm">
               {/* Title & Category */}
               <div className="space-y-1">
-                <div className='flex items-center gap-2'>
+                <div className='flex items-center flex-wrap gap-2'>
 
                   <h1 className="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">
                     {product.name}
                   </h1>
                   <span className={cn(
-                    "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm",
-                    product.inStock
+                    "px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest shadow-sm",
+                    product.instock
                       ? "bg-accent-500 text-white"
                       : "bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400"
                   )}>
-                    {product.inStock ? t('inStock') : t('outOfStock')}
+                    {product.instock ? t('inStock') : t('outOfStock')}
                   </span>
-                </div>
-                <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">
-                  {product.category}
+                <p className="text-[10px] font-black shadow-sm text-primary-500 bg-primary-500/10 inline-block px-3 py-1.5 rounded-full tracking-wider">
+                  {isRtl? product.category.name_ar : product.category.name_en}
                 </p>
+                </div>
 
               </div>
 
 
               {/* Pricing Section */}
               <div className="space-y-1 mt-3">
-                {product.discountPrice && (
+                {product.price_discount && (
                   <p className="text-lg font-medium text-gray-300 dark:text-gray-600 line-through tracking-tight">
-                    {t('price', { price: product.price.toFixed(2) })}
+                    {t('price', { price: product.price })}
                   </p>
                 )}
                 <div className="flex items-center gap-4 mb-4">
                   <span className="text-5xl font-bold text-[#F5A623] tracking-tight">
-                    {t('price', { price: (product.discountPrice || product.price).toFixed(2) })}
+                    {t('price', { price: (product.price_discount || product.price) })}
                   </span>
                 </div>
               </div>
@@ -318,10 +276,10 @@ export default function ProductDetailsContent() {
                 <div className="flex gap-4">
                   <button
                     onClick={handleAddToCart}
-                    disabled={!product.inStock}
+                    disabled={!product.instock}
                     className={cn(
                       "flex-grow h-14 rounded-full text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-3 transition-all shadow-lg active:scale-[0.98]",
-                      product.inStock
+                      product.instock
                         ? "bg-accent-500 cursor-pointer hover:bg-accent-600 text-white shadow-accent-500/20"
                         : "bg-gray-100 dark:bg-white/5 text-gray-400 cursor-not-allowed shadow-none"
                     )}

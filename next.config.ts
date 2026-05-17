@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         source: '/api/:path*',
         destination: 'http://localhost:3001/:path*',
       },
+      {
+        source: '/uploads/:path*',
+        destination: 'http://localhost:3001/uploads/:path*',
+      },
     ];
   },
   async redirects() {
@@ -48,6 +52,16 @@ const nextConfig: NextConfig = {
        {
         protocol: 'https',
         hostname: 'organic-food.bold-themes.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3001',
+      },
+      {
+        protocol: 'http',
+        hostname: '192.168.0.195',
+        port: '3001',
       },
     ],
   },

@@ -138,7 +138,12 @@
     "city": "City",
     "cardNumber": "Card Number",
     "orderSuccessTitle": "Order Successfully Placed!",
-    "orderSuccessMessage": "Thank you for your purchase. Your order has been received and is being processed."
+    "orderSuccessMessage": "Thank you for your purchase. Your order has been received and is being processed.",
+    "shippingDetailsRequired": "Please fill out all shipping details.",
+    "cartEmpty": "Your cart is empty.",
+    "orderSuccess": "Order placed successfully!",
+    "orderFailed": "Failed to place order. Please try again.",
+    "somethingWentWrong": "Something went wrong. Please try again."
   },
   "Orders": {
     "title": "My Orders",
@@ -158,6 +163,9 @@
     "subtotal": "Subtotal",
     "shipping": "Shipping",
     "free": "Free",
+    "product": "Product",
+    "price": "Price",
+    "qty": "Qty",
     "status_delivered": "Delivered",
     "status_processing": "Processing",
     "status_pending": "Pending",
@@ -190,10 +198,10 @@
     "economySeries": "Economy Series"
   },
   "PriceRange": {
-    "under50": "Under $50",
+    "<50": "Under $50",
     "50-200": "$50 - $200",
     "200-500": "$200 - $500",
-    "over500": "Over $500"
+    ">500": "Over $500"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -207,6 +215,7 @@
     "save": "Save Changes",
     "cancel": "Cancel",
     "delete": "Delete",
+    "deleteConfirmTitle": "Are you absolutely sure?",
     "search": "Search...",
     "noData": "No data available",
     "status": "Status",

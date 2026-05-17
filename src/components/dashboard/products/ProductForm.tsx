@@ -48,6 +48,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
               ...(token ? { 'Authorization': `Bearer ${token}` } : {})
             }
           });
+          console.log(res);
           if (res.ok) {
             const data = await res.json();
             console.log(data);
@@ -154,12 +155,18 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save product');
+        const errorData = await response.json(); 
+        throw new Error(
+          errorData.message ||
+          errorData.error ||
+          'Failed to save product'
+        );
       }
-
+  
       router.push('/dashboard/products');
       router.refresh();
     } catch (err: any) {
+    
       setError(err.message || 'An error occurred');
     } finally {
       setIsLoading(false);
@@ -183,7 +190,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
             type="button"
             onClick={() => router.back()}
             disabled={isLoading}
-            className="flex items-center gap-3 px-6 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
+            className="flex items-center gap-3 cursor-pointer px-6 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 rounded-md font-black uppercase tracking-widest text-[10px] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
           >
             <X className="w-4 h-4" />
             {t('cancel')}
@@ -191,7 +198,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
           <button
             type="submit"
             disabled={isLoading}
-            className="flex items-center gap-3 px-8 py-4 bg-primary-500 text-white rounded-md font-black cursor-pointer tracking-widest text-[12px] shadow-lg hover:scale-105 transition-transform disabled:opacity-50"
+            className="flex items-center gap-3 cursor-pointer px-8 py-4 bg-primary-500 text-white rounded-md font-black tracking-widest text-[12px] shadow-lg hover:scale-105 transition-transform disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
             {isLoading ? '...' : t('save')}
@@ -222,14 +229,14 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
             />
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2">{t('fullDescription')}</label>
+              <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-2">{t('fullDescription')}</label>
               <textarea
                 rows={6}
                 dir={isRtl ? 'rtl' : 'ltr'}
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 placeholder={t('fullDescription')}
-                className="w-full bg-gray-100/80 dark:bg-gray-900/50 border border-gray-200 dark:border-white/5 focus:border-primary-500/30 rounded-md py-4 px-6 text-sm font-bold outline-none transition-all resize-none dark:text-white"
+                className="w-full bg-gray-100/80 mt-2 dark:bg-gray-900/50 border border-gray-200 dark:border-white/5 focus:border-primary-500/30 rounded-md py-4 px-6 text-sm font-bold outline-none transition-all resize-none dark:text-white"
               />
             </div>
           </section>
@@ -322,7 +329,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
 
               <DynamicInput
                 label={t('discountPrice')}
-                icon={Percent}
+                icon={DollarSign}
                 type="number"
                 value={formData.price_discount}
                 onChange={(val) => handleInputChange('price_discount', val)}
@@ -331,7 +338,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
 
               <DynamicInput
                 label="Tax"
-                icon={Receipt}
+                icon={Percent}
                 type="number"
                 value={formData.tax}
                 onChange={(val) => handleInputChange('tax', val)}

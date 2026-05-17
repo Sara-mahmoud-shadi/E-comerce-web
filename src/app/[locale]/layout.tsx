@@ -7,6 +7,7 @@ import { Cairo } from "next/font/google";
 import "../globals.css";  
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
+import { Toaster } from '@/components/ui/sonner';
 
 const cairo = Cairo({ subsets: ["arabic", "latin"], variable: "--font-cairo" });
 
@@ -49,6 +50,7 @@ export default async function LocaleLayout({
           <main className="">
             {children}
           </main> 
+          <Toaster />
         </NextIntlClientProvider>
       </body>
     </html>
