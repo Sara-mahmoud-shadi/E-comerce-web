@@ -26,27 +26,7 @@ export default function SearchBar() {
   const isRtl = locale === 'ar';
 
   const showResults = isFocused && query.length > 1;
-
-  // Handle click outside to close results
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsFocused(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Debounced search query fetching
-  useEffect(() => {
-    if (query.trim().length <= 1) {
-      setResults([]);
-      setIsLoading(false);
-      return;
-    }
-
-    const delayDebounceFn = setTimeout(async () => {
+  const delayDebounceFn = setTimeout(async () => {
       setIsLoading(true);
       try {
         const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}products`, window.location.origin);
@@ -66,6 +46,26 @@ export default function SearchBar() {
         setIsLoading(false);
       }
     }, 300);
+  // Handle click outside to close results
+  function handleClickOutside(event: MouseEvent) {
+    if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      setIsFocused(false);
+    }
+  }
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Debounced search query fetching
+  useEffect(() => {
+    if (query.trim().length <= 1) {
+      setResults([]);
+      setIsLoading(false);
+      return;
+    }
+
+  
 
     return () => clearTimeout(delayDebounceFn);
   }, [query]);
@@ -163,7 +163,7 @@ export default function SearchBar() {
                   <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 dark:border-gray-800">
                     <Image
                       src={getImageUrl(product.images?.[0])}
-                      alt={product.name}
+                      alt={isRtl ? product.name_ar : product.name_en}
                       width={1000}
                       height={1000}
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
@@ -171,7 +171,7 @@ export default function SearchBar() {
                   </div>
                   <div className="flex-grow min-w-0">
                     <div className="text-sm font-bold truncate dark:text-gray-100">
-                      {product.name}
+                      {isRtl ? product.name_ar : product.name_en}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">
                       {isRtl ? product.category?.name_ar : product.category?.name_en}

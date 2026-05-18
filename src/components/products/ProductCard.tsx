@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { ShoppingBag, Star, Eye } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -12,7 +12,8 @@ export interface Product {
   id: number;
   slug: string;
   description: string;
-  name: string;
+  name_en: string;
+  name_ar: string;
   price: number;
   price_discount?: number;
   images: string[];
@@ -46,7 +47,8 @@ export function ProductCard({ product, index }: ProductCardProps) {
     addItem(product);
   }; 
 
-
+  const locale = useLocale();
+  const isRtl = locale === 'ar';
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -58,7 +60,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
       <Link href={`/products/${product.id}`} className="absolute inset-0 z-0">
         <Image
           src={getImageUrl(product.images?.[0])}
-          alt={product.name}
+          alt={product.name_en}
           fill
           className="object-cover opacity-60 group-hover:scale-105 transition-transform duration-[1000ms]"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -74,7 +76,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
         {/* Centered Identity Overlay */}
         <div className="flex flex-col justify-center items-center text-center">
           <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-2 group-hover:scale-110 transition-transform duration-700">
-            {product.name}
+            {isRtl ? product.name_ar : product.name_en}
           </h3>
         </div>
 

@@ -40,23 +40,23 @@ export default function ProductsContent() {
   const itemsPerPage = 6;
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-        const res = await apiFetch(`${apiBase}/categories`);
-        if (res.ok) {
-          const resData = await res.json();
-          if (resData.data) {
-            setCategoriesList(resData.data);
-          } else if (Array.isArray(resData)) {
-            setCategoriesList(resData);
-          }
+  const fetchCategories = async () => {
+    try {
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
+      const res = await apiFetch(`${apiBase}/categories`);
+      if (res.ok) {
+        const resData = await res.json();
+        if (resData.data) {
+          setCategoriesList(resData.data);
+        } else if (Array.isArray(resData)) {
+          setCategoriesList(resData);
         }
-      } catch (err) {
-        console.error('Failed to fetch categories:', err);
       }
-    };
+    } catch (err) {
+      console.error('Failed to fetch categories:', err);
+    }
+  };
+  useEffect(() => {
     fetchCategories();
   }, []);
 

@@ -82,7 +82,7 @@ export default function ProductDetailsContent() {
 
   const breadcrumbSteps = product ? [
     { label: tn('products'), href: '/products' },
-    { label: product.name }
+    { label:  isRtl ? product.name_ar : product.name_en }
   ] : [];
 
   if (isLoading || !product) {
@@ -127,7 +127,7 @@ export default function ProductDetailsContent() {
                   >
                     <Image
                       src={getImageUrl(product.images?.[activeImage] || '')}
-                      alt={product.name}
+                      alt={product.name_en}
                       fill
                       className="object-cover transition-transform duration-[3000ms] group-hover:scale-110"
                     />
@@ -190,7 +190,7 @@ export default function ProductDetailsContent() {
                       : "border-transparent opacity-60 hover:opacity-100 grayscale hover:grayscale-0"
                   )}
                 >
-                  <Image src={getImageUrl(img || '')} alt={product.name} fill className="object-cover" />
+                  <Image src={getImageUrl(img || '')} alt={product.name_en} fill className="object-cover" />
                   {activeImage === idx && (
                     <div className="absolute inset-0 bg-accent-500/10 backdrop-blur-[2px]" />
                   )}
@@ -208,7 +208,7 @@ export default function ProductDetailsContent() {
                 <div className='flex items-center flex-wrap gap-2'>
 
                   <h1 className="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">
-                    {product.name}
+                     {isRtl ? product.name_ar : product.name_en}
                   </h1>
                   <span className={cn(
                     "px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest shadow-sm",

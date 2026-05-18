@@ -23,7 +23,8 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
   const isRtl = locale === 'ar';
   const router = useRouter();
   const [formData, setFormData] = React.useState({
-    name: initialData?.name || '',
+    name_en: initialData?.name_en || '',
+    name_ar: initialData?.name_ar || '',
     description: initialData?.description || '',
     price: initialData?.price?.toString() || '',
     price_discount: initialData?.price_discount?.toString() || '',
@@ -56,7 +57,8 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
             console.log(data);
             const product = data.data || data;
             setFormData({
-              name: product.name || '',
+              name_en: product.name_en || '',
+              name_ar: product.name_ar || '',
               description: product.description || '',
               price: product.price?.toString() || '',
               price_discount: product.price_discount?.toString() || '',
@@ -138,7 +140,8 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
       setFieldErrors({});
 
       const submitData = new FormData();
-      submitData.append('name', formData.name);
+      submitData.append('name_en', formData.name_en);
+      submitData.append('name_ar', formData.name_ar);
       submitData.append('description', formData.description);
       submitData.append('price', formData.price);
       if (formData.price_discount) submitData.append('price_discount', formData.price_discount);
@@ -240,18 +243,28 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
               <h3 className="text-sm font-black uppercase tracking-widest dark:text-white">{t('productDetails')}</h3>
             </div>
 
-            <DynamicInput
-              label={t('productNameEn')}
-              icon={Type}
-              value={formData.name}
-              onChange={(val) => handleInputChange('name', val)}
-              onClearError={() => setFieldErrors(p => { const n={...p}; delete n['name']; return n; })}
-              placeholder={t('productNameEn')}
-              error={fieldErrors['name']}
-            />
-
+            <div className='grid lg:grid-cols-2 gap-4'>
+              <DynamicInput
+                label={t('productNameEn')}
+                icon={Type}
+                value={formData.name_en}
+                onChange={(val) => handleInputChange('name_en', val)}
+                onClearError={() => setFieldErrors(p => { const n={...p}; delete n['name_en']; return n; })}
+                placeholder={t('productNameEn')}
+                error={fieldErrors['name_en']}
+              />
+              <DynamicInput
+                label={t('productNameAr')}
+                icon={Type}
+                value={formData.name_ar}
+                onChange={(val) => handleInputChange('name_ar', val)}
+                onClearError={() => setFieldErrors(p => { const n={...p}; delete n['name_ar']; return n; })}
+                placeholder={t('productNameAr')}
+                error={fieldErrors['name_ar']}
+              /> 
+            </div> 
             <div className="space-y-2">
-              <label className={`text-[10px] font-black uppercase tracking-[0.2em] ml-2 ${
+              <label className={`text-[10px] font-black uppercase tracking-[0.2em]  ${
                 fieldErrors['description'] ? 'text-red-400' : 'text-gray-500'
               }`}>{t('fullDescription')}</label>
               <textarea

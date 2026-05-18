@@ -26,8 +26,8 @@ export function CartDrawer() {
   const tp = useTranslations('Products');
   const locale = useLocale();
   const { items, removeItem, updateQuantity, getTotalPrice } = useCartStore();
-  const [isHydrated, setIsHydrated] = useState(false);
-
+  const [isHydrated, setIsHydrated] = useState(false); 
+  const isRtl = locale === 'ar';
   useEffect(() => {
     setIsHydrated(true);
   }, []);
@@ -112,7 +112,7 @@ export function CartDrawer() {
                     <div className="relative w-24 h-24 shrink-0 rounded-[1.5rem] overflow-hidden bg-black/5 dark:bg-black/40 shadow-sm">
                       <Image
                         src={getImageUrl(item?.images?.[0])}
-                        alt={item?.name || 'Product image'}
+                        alt={item?.name_en || 'Product image'}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
                       />
@@ -121,7 +121,7 @@ export function CartDrawer() {
                     <div className="flex-grow space-y-3">
                       <div className="flex justify-between items-start">
                         <h4 className="font-black text-sm uppercase tracking-tight text-gray-900 dark:text-white line-clamp-1">
-                          {item.name}
+                          {isRtl ? item.name_ar : item.name_en}
                         </h4>
                         <button
                           onClick={() => removeItem(item.id)}
