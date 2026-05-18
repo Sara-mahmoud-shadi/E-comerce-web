@@ -1,4 +1,5 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
@@ -51,7 +52,7 @@ export default function CategoryDetailsContent() {
       }
 
       const finalUrl = decodeURIComponent(url.toString());
-      const res = await fetch(finalUrl);
+      const res = await apiFetch(finalUrl);
       if (res.ok) {
         const resData = await res.json();
 

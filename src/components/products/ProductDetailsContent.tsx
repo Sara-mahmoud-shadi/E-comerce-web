@@ -1,4 +1,5 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
@@ -33,7 +34,7 @@ export default function ProductDetailsContent() {
       setIsLoading(true);
       try {
         const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-        const res = await fetch(`${apiBase}/products/${id}`);
+        const res = await apiFetch(`${apiBase}/products/${id}`);
         if (res.ok) {
           const resData = await res.json();
           if (resData) {
@@ -69,14 +70,12 @@ export default function ProductDetailsContent() {
 
   const handleAddToCart = (customProduct?: any, customQuantity?: number) => {
     if (!product) return;
-    const p = customProduct || product;
-    const q = customQuantity || quantity;
-    
+    const isEvent = customProduct && typeof customProduct.preventDefault === 'function';
+    const p = (!customProduct || isEvent) ? product : customProduct;
+    const q = typeof customQuantity === 'number' ? customQuantity : quantity;
+    console.log(p)
     addItem({
-      id: p.id,
-      name: p.name,
-      price: p.discountPrice || p.price,
-      image: getImageUrl(p.images?.[0] || ''), // Adapt to CartItem interface
+     ...p,
       quantity: q
     }, q);
   };

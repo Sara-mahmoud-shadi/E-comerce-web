@@ -1,4 +1,5 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import React from 'react';
 import { useTranslations } from 'next-intl'; 
@@ -43,7 +44,7 @@ export default function OrdersList() {
         url.searchParams.append('search', searchTerm);
       }
       
-      const res = await fetch(url.toString(), {
+      const res = await apiFetch(url.toString(), {
         headers: { ...(token ? { 'Authorization': `Bearer ${token}` } : {}) }
       });
       if (res.ok) {
@@ -72,7 +73,7 @@ export default function OrdersList() {
     setIsDeleting(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_URL}/${deleteId}`, {
+      const res = await apiFetch(`${API_URL}/${deleteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

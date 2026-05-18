@@ -1,6 +1,7 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Save, X, Tag, Upload, ImageIcon, Trash2, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { useRouter } from '@/i18n/routing';
@@ -37,19 +38,14 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
     imagePreview: initialData?.image ?? null,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   // Fetch data if editing
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && id) {
       const fetchData = async () => {
         setStatus('loading');
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}categories/${id}`);
-          if (!res.ok) throw new Error('Failed to fetch category');
+          const res = await apiFetch(`${process.env.NEXT_PUBLIC_API_URL}categories/${id}`);
+          if (!res.ok) throw new Error(t('failedToFetchCategory'));
           const data = await res.json();
           setFormData({
             name_en: data.name_en || '',
@@ -59,7 +55,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
           });
           setStatus('idle');
         } catch (err) {
-          setErrorMsg(err instanceof Error ? err.message : 'Failed to fetch data');
+          setErrorMsg(err instanceof Error ? err.message : t('failedToFetchData'));
           setStatus('error');
         }
       };
@@ -70,6 +66,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
   // Submission state
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // ── Image helpers ────────────────────────────────────────────────────────────
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,10 +88,14 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
     e.preventDefault();
 
     if (!formData.name_en.trim() || !formData.name_ar.trim()) {
-      setErrorMsg('Both English and Arabic names are required.');
+      setFieldErrors({
+        ...(!formData.name_en.trim() ? { name_en: t('namesRequired') } : {}),
+        ...(!formData.name_ar.trim() ? { name_ar: t('namesRequired') } : {}),
+      });
       setStatus('error');
       return;
     }
+    setFieldErrors({});
 
     // Retrieve the Bearer token stored under "token" in localStorage
     const token =
@@ -112,24 +113,43 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
       const url = isEditing ? `${API_URL}/${id}` : API_URL;
       const method = isEditing ? 'PATCH' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
         headers: {
           Authorization: `Bearer ${token}`,
         },
         body,
-      });
-
+      }); 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
+        // Map field-level errors from backend [{ field, message }] array
+        if (Array.isArray(data?.errors) && data.errors.length > 0) {
+          const mapped: Record<string, string> = {};
+          data.errors.forEach((e: { field: string; message: string }) => {
+            // backend sends field: "name" — map to our field names
+            if (e.field === 'name' || e.field === 'name_en') mapped['name_en'] = e.message;
+            if (e.field === 'name_ar') mapped['name_ar'] = e.message;
+            if (e.field === 'description') mapped['description'] = e.message;
+          });
+          setFieldErrors(mapped);
+        }
         throw new Error(data?.message ?? `Request failed (${res.status})`);
       }
 
       setStatus('success');
       setTimeout(() => router.back(), 1500);
     } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong.');
+      setErrorMsg(err instanceof Error ? err.message : t('somethingWentWrong'));
       setStatus('error');
+    }
+  };
+
+  // Clear a single field error when the user starts typing
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => { const next = { ...prev }; delete next[name]; return next; });
     }
   };
 
@@ -170,7 +190,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
               ) : (
                 <Save className="w-4 h-4" />
               )}
-              {isLoading ? 'Saving…' : t('save')}
+              {isLoading ? t('saving') : t('save')}
             </button>
           </div>
         </header>
@@ -179,7 +199,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
         {status === 'success' && (
           <div className="mb-6 flex items-center gap-3 px-6 py-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-500 text-sm font-bold">
             <CheckCircle className="w-5 h-5 shrink-0" />
-            Category saved successfully
+            {t('categorySavedSuccess')}
           </div>
         )}
         {status === 'error' && errorMsg && (
@@ -210,10 +230,20 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
                   name="name_en"
                   value={formData.name_en}
                   onChange={handleChange}
-                  placeholder="e.g. Kitchen Supplies"
+                  placeholder={t('nameEnPlaceholder')}
                   required
-                  className="w-full bg-gray-50 mt-2 dark:bg-gray-900/50 border border-transparent focus:border-blue-500/50 rounded-2xl py-4 px-6 text-sm font-bold outline-none transition-all"
+                  className={`w-full bg-gray-50 mt-2 dark:bg-gray-900/50 border rounded-2xl py-4 px-6 text-sm font-bold outline-none transition-all ${
+                    fieldErrors['name_en']
+                      ? 'border-red-400 focus:border-red-500 animate-[shake_0.3s_ease-in-out]'
+                      : 'border-transparent focus:border-blue-500/50'
+                  }`}
                 />
+                {fieldErrors['name_en'] && (
+                  <p className="mt-1.5 ml-2 text-[11px] font-bold text-red-400 flex items-center gap-1">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400" />
+                    {fieldErrors['name_en']}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -225,11 +255,21 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
                   name="name_ar"
                   value={formData.name_ar}
                   onChange={handleChange}
-                  placeholder="مثال: مستلزمات المطبخ"
+                  placeholder={t('nameArPlaceholder')}
                   required
                   dir="rtl"
-                  className="w-full bg-gray-50 mt-2 dark:bg-gray-900/50 border border-transparent focus:border-blue-500/50 rounded-2xl py-4 px-6 text-sm font-bold outline-none transition-all text-right"
+                  className={`w-full bg-gray-50 mt-2 dark:bg-gray-900/50 border rounded-2xl py-4 px-6 text-sm font-bold outline-none transition-all text-right ${
+                    fieldErrors['name_ar']
+                      ? 'border-red-400 focus:border-red-500 animate-[shake_0.3s_ease-in-out]'
+                      : 'border-transparent focus:border-blue-500/50'
+                  }`}
                 />
+                {fieldErrors['name_ar'] && (
+                  <p className="mt-1.5 ml-2 text-[11px] font-bold text-red-400 flex items-center gap-1">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400" />
+                    {fieldErrors['name_ar']}
+                  </p>
+                )}
               </div>
             </div>
           </section>

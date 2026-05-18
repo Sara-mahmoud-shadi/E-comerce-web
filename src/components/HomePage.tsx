@@ -1,4 +1,5 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
@@ -44,7 +45,7 @@ export default function HomePage() {
     const fetchCategories = async () => {
       try {
         const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}categories`, window.location.origin);
-        const res = await fetch(url.toString());
+        const res = await apiFetch(url.toString());
         if (res.ok) {
           const data = await res.json();
           const list = Array.isArray(data) ? data : (data.data || []);
@@ -223,10 +224,9 @@ export default function HomePage() {
             )}
           </>
         ) : (
-          <div className="w-full h-64 flex items-center justify-center">
+          <div className="w-full h-32 flex items-center justify-center">
             <div className="animate-pulse flex flex-col items-center gap-4">
-              <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-500 rounded-full animate-spin" />
-              <p className="text-gray-500 font-bold uppercase tracking-widest text-sm">Loading Categories...</p>
+              <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-500 rounded-full animate-spin" /> 
             </div>
           </div>
         )}

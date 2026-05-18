@@ -1,4 +1,5 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import React, { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
@@ -37,7 +38,7 @@ export default function ProductsList() {
         url.searchParams.append('search', searchTerm);
       }
       
-      const res = await fetch(url.toString(), {
+      const res = await apiFetch(url.toString(), {
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         }
@@ -68,7 +69,7 @@ export default function ProductsList() {
     setIsDeleting(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API_URL}/${deleteId}`, {
+      const res = await apiFetch(`${API_URL}/${deleteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

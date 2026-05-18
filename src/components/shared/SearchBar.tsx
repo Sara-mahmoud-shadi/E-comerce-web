@@ -1,25 +1,29 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { Link } from '@/i18n/routing';
 
-// Mock results for demonstration
-const MOCK_RESULTS = [
-  { id: 1, name: 'Premium Leather Watch', price: '$120', category: 'Accessories', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop' },
-  { id: 2, name: 'Wireless Noise-Canceling Headphones', price: '$299', category: 'Electronics', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop' },
-  { id: 3, name: 'Minimalist Cotton T-Shirt', price: '$35', category: 'Apparel', image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=100&h=100&fit=crop' },
-];
+const getImageUrl = (url?: string) => {
+  if (!url) return 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&h=300&fit=crop';
+  return url.replace(/^https?:\/\/(localhost|192\.168\.0\.195):\d+/, '');
+};
 
 export default function SearchBar() {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [results, setResults] = useState<any[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const t = useTranslations('Search');
+  const tp = useTranslations('Products');
+  const locale = useLocale();
+  const isRtl = locale === 'ar';
 
   const showResults = isFocused && query.length > 1;
 
@@ -34,8 +38,41 @@ export default function SearchBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Debounced search query fetching
+  useEffect(() => {
+    if (query.trim().length <= 1) {
+      setResults([]);
+      setIsLoading(false);
+      return;
+    }
+
+    const delayDebounceFn = setTimeout(async () => {
+      setIsLoading(true);
+      try {
+        const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}products`, window.location.origin);
+        url.searchParams.append('search', query.trim());
+        url.searchParams.append('page', '1');
+        url.searchParams.append('limit', '8');
+
+        const res = await apiFetch(url.toString());
+        if (res.ok) {
+          const data = await res.json();
+          const productList = Array.isArray(data) ? data : (data.data || []);
+          setResults(productList);
+        }
+      } catch (err) {
+        console.error('Failed to fetch search results:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [query]);
+
   const handleClear = () => {
     setQuery('');
+    setResults([]);
     setIsFocused(true);
   };
 
@@ -59,9 +96,10 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
-            if (e.target.value.length > 0) {
+            if (e.target.value.length > 1) {
               setIsLoading(true);
-              setTimeout(() => setIsLoading(false), 500); // Fake loading
+            } else {
+              setIsLoading(false);
             }
           }}
           onFocus={() => setIsFocused(true)}
@@ -112,14 +150,19 @@ export default function SearchBar() {
             </div>
             
             <div className="space-y-1">
-              {MOCK_RESULTS.map((product) => (
-                <button
+              {results.map((product) => (
+                <Link
                   key={product.id}
+                  href={`/products/${product.id}`}
+                  onClick={() => {
+                    setIsFocused(false);
+                    setQuery('');
+                  }}
                   className="w-full flex items-center gap-3 p-2 rounded-xl cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-all group text-left rtl:text-right"
                 >
                   <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 dark:border-gray-800">
                     <Image
-                      src={product.image}
+                      src={getImageUrl(product.images?.[0])}
                       alt={product.name}
                       width={1000}
                       height={1000}
@@ -131,19 +174,23 @@ export default function SearchBar() {
                       {product.name}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {product.category}
+                      {isRtl ? product.category?.name_ar : product.category?.name_en}
                     </div>
                   </div>
                   <div className="text-sm font-black text-primary-600 dark:text-primary-400">
-                    {product.price}
+                    {tp('price', { price: product.price_discount || product.price })}
                   </div>
-                </button>
+                </Link>
               ))}
             </div>
 
-            <button className="w-full mt-2 cursor-pointer py-2 text-sm font-bold text-center text-primary-600 hover:text-primary-700 transition-colors border-t border-gray-100 dark:border-gray-800">
+            <Link
+              href={`/products?search=${encodeURIComponent(query)}`}
+              onClick={() => setIsFocused(false)}
+              className="block w-full mt-2 cursor-pointer py-2 text-sm font-bold text-center text-primary-600 hover:text-primary-700 transition-colors border-t border-gray-100 dark:border-gray-800"
+            >
               {t('view_all_results')}
-            </button>
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>

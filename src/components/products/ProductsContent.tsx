@@ -1,9 +1,12 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import { useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import {
   Accordion,
   AccordionContent,
@@ -20,10 +23,8 @@ import { ChevronDown, RefreshCcw, ShoppingCart, SlidersHorizontal } from 'lucide
 
 
 export default function ProductsContent() {
-  const t = useTranslations('Products');
-  const tca = useTranslations('Categories');
-  const tn = useTranslations('Home');
-  const tpr = useTranslations('PriceRange');
+  const t = useTranslations('Products'); 
+  const tn = useTranslations('Home'); 
   const locale = useLocale();
   const isRtl = locale === 'ar';
 
@@ -43,7 +44,7 @@ export default function ProductsContent() {
     const fetchCategories = async () => {
       try {
         const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-        const res = await fetch(`${apiBase}/categories`);
+        const res = await apiFetch(`${apiBase}/categories`);
         if (res.ok) {
           const resData = await res.json();
           if (resData.data) {
@@ -59,24 +60,33 @@ export default function ProductsContent() {
     fetchCategories();
   }, []);
 
+  const searchParams = useSearchParams();
+  const search = searchParams.get('search') || '';
+  const router = useRouter();
+
   const fetchData = async (isReset = false) => {
     setIsLoading(true);
     try {
       const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-      let queryStr = `?page=${isReset ? 1 : currentPage}&limit=${itemsPerPage}`;
       
-      if (!isReset && sortBy) queryStr += `&sort=${sortBy}`;
-      
-      if (!isReset && selectedPriceRanges.length > 0) {
-        queryStr += `&priceRanges=${selectedPriceRanges.join(',')}`;
+      let finalUrl = '';
+      if (search && !isReset) {
+        let queryStr = `?page=${isReset ? 1 : currentPage}&limit=${itemsPerPage}&search=${encodeURIComponent(search)}`;
+        if (sortBy) queryStr += `&sort=${sortBy}`;
+        finalUrl = `${apiBase}/products${queryStr}`;
+      } else {
+        let queryStr = `?page=${isReset ? 1 : currentPage}&limit=${itemsPerPage}`;
+        if (!isReset && sortBy) queryStr += `&sort=${sortBy}`;
+        if (!isReset && selectedPriceRanges.length > 0) {
+          queryStr += `&priceRanges=${selectedPriceRanges.join(',')}`;
+        }
+        if (!isReset && selectedCategories.length > 0) {
+          queryStr += `&categories=${selectedCategories.join(',')}`;
+        }
+        finalUrl = `${apiBase}/products/filter${queryStr}`;
       }
-      if (!isReset && selectedCategories.length > 0) {
-        queryStr += `&categories=${selectedCategories.join(',')}`;
-      }
-
-      const finalUrl = `${apiBase}/products/filter${queryStr}`;
       
-      const res = await fetch(finalUrl);
+      const res = await apiFetch(finalUrl);
       if (res.ok) {
         const resData = await res.json();
         if (resData.data) {
@@ -94,7 +104,7 @@ export default function ProductsContent() {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, sortBy]);
+  }, [currentPage, sortBy, search]);
 
   const handlePriceChange = (range: string) => {
     setSelectedPriceRanges(prev =>
@@ -113,26 +123,20 @@ export default function ProductsContent() {
     setSelectedCategories([]);
     setSortBy('');
     setCurrentPage(1);
-    fetchData(true);
+    if (search) {
+      router.push('/products');
+    } else {
+      fetchData(true);
+    }
   };
  
   const tp = useTranslations('PriceRange');
 
   const breadcrumbItems = [
-    { label: t('allProducts') }
+    { label: t('allProducts'), href: '/products' },
+    ...(search ? [{ label: `"${search}"` }] : [])
   ];
-
-  if (isLoading && products.length === 0) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-[#f1f4f1] to-white dark:bg-[#080808] flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-500 rounded-full animate-spin" />
-          <p className="text-gray-500 font-bold uppercase tracking-widest text-sm">Loading Products...</p>
-        </div>
-      </div>
-    );
-  }
-
+ 
   return (
     <div className="min-h-screen bg-linear-to-br from-[#f1f4f1] to-white dark:bg-[#080808]">
       {/* Editorial Header Section */}
@@ -146,7 +150,7 @@ export default function ProductsContent() {
               <ShopBreadcrumb items={breadcrumbItems} className="justify-center mb-2" />
 
               <h1 className="text-7xl md:text-8xl italic font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-[0.9] mb-8">
-                {t('allProducts')}
+                {search ? search : t('allProducts')}
               </h1>
               <p className="text-xl text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-2xl mx-auto italic">
                 {tn('heroSubtitle')}

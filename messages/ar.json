@@ -265,7 +265,15 @@
     "inStock": "متوفر",
     "lowStock": "مخزون منخفض",
     "outOfStock": "نفذ من المخزون",
-    "editProduct": "تعديل المنتج"
+    "editProduct": "تعديل المنتج",
+    "saving": "جاري الحفظ...",
+    "categorySavedSuccess": "تم حفظ التصنيف بنجاح",
+    "namesRequired": "الاسم باللغتين العربية والإنجليزية مطلوب.",
+    "somethingWentWrong": "حدث خطأ ما.",
+    "failedToFetchCategory": "فشل في جلب التصنيف",
+    "failedToFetchData": "فشل في جلب البيانات",
+    "nameEnPlaceholder": "مثال: Kitchen Supplies",
+    "nameArPlaceholder": "مثال: مستلزمات المطبخ"
   },
   "pagination": {
     "previous": "السابق",

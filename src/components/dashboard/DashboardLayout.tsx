@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex items-center gap-6">
             <LanguageSwitcher />
            
-            <div className="h-10 w-px bg-gray-100 dark:bg-white/5" />
+            <div className="h-10 w-px bg-gray-300 dark:bg-white/5" />
 
             <div className="flex items-center gap-3">
                  <div className="w-10 h-10 rounded-xl bg-primary-500/10 dark:bg-blue-500/10 flex items-center justify-center text-primary-500 dark:text-blue-400">

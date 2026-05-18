@@ -33,6 +33,7 @@ export function CartDrawer() {
   }, []);
 
   const subtotal = getTotalPrice();
+  console.log(items);
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
   if (!isHydrated) return null;
 
@@ -110,8 +111,8 @@ export function CartDrawer() {
                   >
                     <div className="relative w-24 h-24 shrink-0 rounded-[1.5rem] overflow-hidden bg-black/5 dark:bg-black/40 shadow-sm">
                       <Image
-                        src={getImageUrl(item.images[0])}
-                        alt={item.name}
+                        src={getImageUrl(item?.images?.[0])}
+                        alt={item?.name || 'Product image'}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
                       />
@@ -147,7 +148,7 @@ export function CartDrawer() {
                           </button>
                         </div>
                         <p className="font-black text-accent-500 text-lg tracking-tighter">
-                          {tp('price', { price: ((item.price_discount || item.price) * item.quantity).toFixed(2) })}
+                          {tp('price', { price: (item?.price_discount || item?.price) * item.quantity ||0})}
                         </p>
                       </div>
                     </div>

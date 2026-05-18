@@ -1,4 +1,5 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import React, { useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
@@ -34,6 +35,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
   const [imageFiles, setImageFiles] = React.useState<File[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
   const [categories, setCategories] = React.useState<{ value: string; label: string }[]>([]);
   const [mainImageIndex, setMainImageIndex] = React.useState<number>(0);
 
@@ -43,7 +45,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
         try {
           setIsLoading(true);
           const token = localStorage.getItem('token');
-          const res = await fetch(`/api/products/${productId}`, {
+          const res = await apiFetch(`/api/products/${productId}`, {
             headers: {
               ...(token ? { 'Authorization': `Bearer ${token}` } : {})
             }
@@ -76,7 +78,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch('/api/categories');
+      const res = await apiFetch('/api/categories');
       if (res.ok) {
         const data = await res.json();
         const categoryList = Array.isArray(data) ? data : (data.data || []);
@@ -99,6 +101,10 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
 
   const handleInputChange = (field: keyof typeof formData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear the field error as soon as the user modifies the value
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => { const next = { ...prev }; delete next[field as string]; return next; });
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,6 +135,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
     try {
       setIsLoading(true);
       setError(null);
+      setFieldErrors({});
 
       const submitData = new FormData();
       submitData.append('name', formData.name);
@@ -146,7 +153,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
       const token = localStorage.getItem('token');
       const url = isEditing && productId ? `/api/products/${productId}` : '/api/products';
 
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: isEditing ? 'PATCH' : 'POST',
         body: submitData,
         headers: {
@@ -155,7 +162,20 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
       });
 
       if (!response.ok) {
-        const errorData = await response.json(); 
+        const errorData = await response.json().catch(() => ({}));
+        // Map field-level errors from backend [{ field, message }] array
+        if (Array.isArray(errorData?.errors) && errorData.errors.length > 0) {
+          const mapped: Record<string, string> = {};
+          errorData.errors.forEach((e: { field: string; message: string }) => {
+            if (e.field === 'name')        mapped['name'] = e.message;
+            if (e.field === 'description') mapped['description'] = e.message;
+            if (e.field === 'price')       mapped['price'] = e.message;
+            if (e.field === 'price_discount') mapped['price_discount'] = e.message;
+            if (e.field === 'tax')         mapped['tax'] = e.message;
+            if (e.field === 'categoryId')  mapped['categoryId'] = e.message;
+          });
+          setFieldErrors(mapped);
+        }
         throw new Error(
           errorData.message ||
           errorData.error ||
@@ -225,19 +245,36 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
               icon={Type}
               value={formData.name}
               onChange={(val) => handleInputChange('name', val)}
+              onClearError={() => setFieldErrors(p => { const n={...p}; delete n['name']; return n; })}
               placeholder={t('productNameEn')}
+              error={fieldErrors['name']}
             />
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-2">{t('fullDescription')}</label>
+              <label className={`text-[10px] font-black uppercase tracking-[0.2em] ml-2 ${
+                fieldErrors['description'] ? 'text-red-400' : 'text-gray-500'
+              }`}>{t('fullDescription')}</label>
               <textarea
                 rows={6}
                 dir={isRtl ? 'rtl' : 'ltr'}
                 value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
+                onChange={(e) => {
+                  handleInputChange('description', e.target.value);
+                  if (fieldErrors['description']) setFieldErrors(p => { const n={...p}; delete n['description']; return n; });
+                }}
                 placeholder={t('fullDescription')}
-                className="w-full bg-gray-100/80 mt-2 dark:bg-gray-900/50 border border-gray-200 dark:border-white/5 focus:border-primary-500/30 rounded-md py-4 px-6 text-sm font-bold outline-none transition-all resize-none dark:text-white"
+                className={`w-full bg-gray-100/80 mt-2 dark:bg-gray-900/50 border rounded-md py-4 px-6 text-sm font-bold outline-none transition-all resize-none dark:text-white ${
+                  fieldErrors['description']
+                    ? 'border-red-400 focus:border-red-500'
+                    : 'border-gray-200 dark:border-white/5 focus:border-primary-500/30'
+                }`}
               />
+              {fieldErrors['description'] && (
+                <p className="ml-1 text-[11px] font-bold text-red-400 flex items-center gap-1.5">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                  {fieldErrors['description']}
+                </p>
+              )}
             </div>
           </section>
 
@@ -324,7 +361,9 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
                 type="number"
                 value={formData.price}
                 onChange={(val) => handleInputChange('price', val)}
+                onClearError={() => setFieldErrors(p => { const n={...p}; delete n['price']; return n; })}
                 placeholder="0.00"
+                error={fieldErrors['price']}
               />
 
               <DynamicInput
@@ -333,7 +372,9 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
                 type="number"
                 value={formData.price_discount}
                 onChange={(val) => handleInputChange('price_discount', val)}
+                onClearError={() => setFieldErrors(p => { const n={...p}; delete n['price_discount']; return n; })}
                 placeholder="0.00"
+                error={fieldErrors['price_discount']}
               />
 
               <DynamicInput
@@ -342,7 +383,9 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
                 type="number"
                 value={formData.tax}
                 onChange={(val) => handleInputChange('tax', val)}
+                onClearError={() => setFieldErrors(p => { const n={...p}; delete n['tax']; return n; })}
                 placeholder="0.00"
+                error={fieldErrors['tax']}
               />
             </div>
           </section>

@@ -265,7 +265,15 @@
     "inStock": "In Stock",
     "lowStock": "Low Stock",
     "outOfStock": "Out of Stock",
-    "editProduct": "Edit Product"
+    "editProduct": "Edit Product",
+    "saving": "Saving...",
+    "categorySavedSuccess": "Category saved successfully",
+    "namesRequired": "Both English and Arabic names are required.",
+    "somethingWentWrong": "Something went wrong.",
+    "failedToFetchCategory": "Failed to fetch category",
+    "failedToFetchData": "Failed to fetch data",
+    "nameEnPlaceholder": "e.g. Kitchen Supplies",
+    "nameArPlaceholder": "مثال: مستلزمات المطبخ"
   },
   "pagination": {
     "previous": "Previous",

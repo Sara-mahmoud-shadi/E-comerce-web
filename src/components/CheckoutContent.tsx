@@ -1,4 +1,5 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import React, { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
@@ -28,7 +29,7 @@ export default function CheckoutContent() {
       const token = localStorage.getItem('token');
       if (!token) return;
       const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-      const res = await fetch(`${apiBase}/cart`, {
+      const res = await apiFetch(`${apiBase}/cart`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -72,7 +73,7 @@ export default function CheckoutContent() {
       const token = localStorage.getItem('token');
       const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
       console.log(formData);
-      const res = await fetch(`${apiBase}/orders`, {
+      const res = await apiFetch(`${apiBase}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +89,7 @@ export default function CheckoutContent() {
         
         // Clear cart in backend database
         try {
-          await fetch(`${apiBase}/cart`, {
+          await apiFetch(`${apiBase}/cart`, {
             method: 'DELETE',
             headers: {
               ...(token ? { 'Authorization': `Bearer ${token}` } : {})

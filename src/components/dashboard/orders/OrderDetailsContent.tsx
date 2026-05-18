@@ -1,4 +1,5 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import React, { useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
@@ -55,7 +56,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
       try {
         setIsLoading(true);
         const token = localStorage.getItem('token');
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api/'}orders/${id}`, {
+        const res = await apiFetch(`${process.env.NEXT_PUBLIC_API_URL || '/api/'}orders/${id}`, {
           headers: {
             ...(token ? { 'Authorization': `Bearer ${token}` } : {})
           }
@@ -80,7 +81,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
     try {
       setIsUpdatingStatus(true);
       const token = localStorage.getItem('token');
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api/'}orders/${id}/status`, {
+      const res = await apiFetch(`${process.env.NEXT_PUBLIC_API_URL || '/api/'}orders/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -389,33 +390,6 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
               <div className="flex items-center gap-3 text-emerald-500">
                 <Truck className="w-4 h-4" />
                 <span className="text-[10px] font-black uppercase tracking-widest">Express Shipping</span>
-              </div>
-            </div>
-          </section>
-
-          {/* Payment Card */}
-          <section className="bg-white dark:bg-[#081640] p-10 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl space-y-8">
-            <div className="flex items-center gap-3">
-              <CreditCard className="w-5 h-5 text-blue-500" />
-              <h3 className="text-sm font-black uppercase tracking-widest dark:text-white">{to('paymentMethod')}</h3>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-10 rounded-lg bg-gray-50 dark:bg-gray-900 flex items-center justify-center border border-gray-100 dark:border-white/5">
-                <CreditCard className="w-6 h-6 text-gray-400" />
-              </div>
-              <div>
-                <h4 className="text-sm font-black dark:text-white uppercase tracking-tight">Cash on Delivery</h4>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Standard Cash Settlement</p>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-gray-100 dark:border-white/5">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">{to('paymentStatus')}</span>
-                <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${order.status_order === 'delivered' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400'}`}>
-                  {order.status_order === 'delivered' ? 'Paid' : 'Pending Payment'}
-                </span>
               </div>
             </div>
           </section>

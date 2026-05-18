@@ -1,4 +1,5 @@
 'use client';
+import { apiFetch } from '@/lib/api';
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -42,7 +43,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setIsLoading(true);
 
     try {
-      const res = await fetch(API_LOGIN, {
+      const res = await apiFetch(API_LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -96,7 +97,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
             {/* Error banner */}
             {errorMsg && (
-              <div className="flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-400 text-xs font-bold">
+              <div className="flex items-center gap-2 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-md text-red-400 text-xs font-bold">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 {errorMsg}
               </div>
