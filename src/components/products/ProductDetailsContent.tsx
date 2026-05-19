@@ -90,8 +90,7 @@ export default function ProductDetailsContent() {
       <div className="min-h-screen bg-linear-to-br from-[#f1f4f1] to-white dark:bg-[#080808] flex items-center justify-center">
         <div className="animate-pulse flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-500 rounded-full animate-spin" />
-          <p className="text-gray-500 font-bold uppercase tracking-widest text-sm">Loading Product...</p>
-        </div>
+         </div>
       </div>
     );
   }
@@ -129,33 +128,28 @@ export default function ProductDetailsContent() {
                       src={getImageUrl(product.images?.[activeImage] || '')}
                       alt={product.name_en}
                       fill
-                      className="object-cover transition-transform duration-[3000ms] group-hover:scale-110"
+                      className="object-contain transition-transform duration-[3000ms] group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
                   </motion.div>
                 </AnimatePresence>
 
                 {/* Navigation Controls */}
-                <div className="absolute inset-x-8 top-1/2 -translate-y-1/2 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute inset-x-8 top-1/2 -translate-y-1/2 flex justify-between items-center duration-500">
                   <button
                     onClick={prevImage}
-                    className="w-16 h-16 rounded-full cursor-pointer bg-white/10 backdrop-blur-2xl border border-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-all shadow-2xl"
+                    className="w-14 h-14 rounded-full cursor-pointer bg-primary-500 backdrop-blur-2xl border border-white/20 flex items-center justify-center text-white hover:bg-primary-500/80 hover:text-white transition-all shadow-2xl"
                   >
                     <ChevronLeft className="w-7 h-7 rtl:rotate-180 ltr:rotate-0" />
                   </button>
                   <button
                     onClick={nextImage}
-                    className="w-16 h-16 rounded-full cursor-pointer bg-white/10 backdrop-blur-2xl border border-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-all shadow-2xl"
+                    className="w-14 h-14 rounded-full cursor-pointer bg-primary-500 backdrop-blur-2xl border border-white/20 flex items-center justify-center text-white hover:bg-primary-500/80 hover:text-white transition-all shadow-2xl"
                   >
                     <ChevronRight className="w-7 h-7 rtl:rotate-180 ltr:rotate-0" />
                   </button>
                 </div>
-
-                <div className="absolute top-8 right-8 flex gap-3">
-                  <button className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all">
-                    <Maximize2 className="w-5 h-5" />
-                  </button>
-                </div>
+ 
 
                 {/* Modern Progress Indicators */}
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
@@ -186,8 +180,8 @@ export default function ProductDetailsContent() {
                   className={cn(
                     "relative min-w-[130px] cursor-pointer aspect-square rounded-[2.5rem] overflow-hidden transition-all duration-700 border-2",
                     activeImage === idx
-                      ? "border-accent-500 ring-8 ring-accent-500/10 shadow-2xl z-10"
-                      : "border-transparent opacity-60 hover:opacity-100 grayscale hover:grayscale-0"
+                      ? "border-accent-500 ring-8 ring-accent-500/10 shadow-md z-10"
+                      : "border border-gray-200  hover:opacity-100 grayscale hover:grayscale-0"
                   )}
                 >
                   <Image src={getImageUrl(img || '')} alt={product.name_en} fill className="object-cover" />
@@ -205,8 +199,7 @@ export default function ProductDetailsContent() {
             <div className="p-6 bg-gray-50/50 dark:bg-white/5 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm">
               {/* Title & Category */}
               <div className="space-y-1">
-                <div className='flex items-center flex-wrap gap-2'>
-
+                <div className='flex items-center flex-wrap gap-2'> 
                   <h1 className="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">
                      {isRtl ? product.name_ar : product.name_en}
                   </h1>
@@ -221,8 +214,7 @@ export default function ProductDetailsContent() {
                 <p className="text-[10px] font-black shadow-sm text-primary-500 bg-primary-500/10 inline-block px-3 py-1.5 rounded-full tracking-wider">
                   {isRtl? product.category.name_ar : product.category.name_en}
                 </p>
-                </div>
-
+                </div> 
               </div>
 
 
@@ -244,17 +236,16 @@ export default function ProductDetailsContent() {
               <div className="border-t border-gray-100 dark:border-white/10 py-6">
                 <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-xl">
                   {product.description}
-                </p>
-
+                </p> 
               </div>
 
               {/* Selectors */}
-              <div className="flex flex-col items-center gap-4 border-t mb-4 border-gray-100 dark:border-white/10 pt-6">
+              <div className="flex   items-center gap-4 border-t mb-4 border-gray-100 dark:border-white/10 pt-6">
 
                 <div className="flex items-center justify-between w-[200px] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full px-6 py-1">
                   <button
                     onClick={() => syncQuantity(quantity - 1)}
-                    className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-[#FF4F2D] transition-colors"
+                    className="w-8 h-8 cursor-pointer flex items-center justify-center text-gray-400 hover:text-primary-500 transition-colors"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
@@ -263,23 +254,19 @@ export default function ProductDetailsContent() {
                   </span>
                   <button
                     onClick={() => syncQuantity(quantity + 1)}
-                    className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-[#FF4F2D] transition-colors"
+                    className="w-8 h-8 cursor-pointer flex items-center justify-center text-gray-400 hover:text-primary-500 transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex flex-col gap-4 border-t border-gray-100 dark:border-white/10 pt-6">
-                <div className="flex gap-4">
+                  <div className="flex w-full gap-4">
                   <button
                     onClick={handleAddToCart}
                     disabled={!product.instock}
                     className={cn(
-                      "flex-grow h-14 rounded-full text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-3 transition-all shadow-lg active:scale-[0.98]",
+                      "flex-grow p-3 rounded-full text-sm font-bold tracking-widest flex items-center justify-center gap-3 transition-all shadow-lg active:scale-[0.98]",
                       product.instock
-                        ? "bg-accent-500 cursor-pointer hover:bg-accent-600 text-white shadow-accent-500/20"
+                        ? "bg-primary-500 cursor-pointer hover:bg-accent-600 text-white shadow-accent-500/20"
                         : "bg-gray-100 dark:bg-white/5 text-gray-400 cursor-not-allowed shadow-none"
                     )}
                   >
@@ -287,13 +274,9 @@ export default function ProductDetailsContent() {
                     {t('addToCart')}
                   </button>
                 </div>
-
-
-              </div>
-
+              </div> 
             </div>
-
-
+ 
           </div>
         </div>
       </div> 

@@ -50,8 +50,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                  <div className="w-10 h-10 rounded-xl bg-primary-500/10 dark:bg-blue-500/10 flex items-center justify-center text-primary-500 dark:text-blue-400">
                 <User className="w-5 h-5" />
               </div>
-              <div className="text-right hidden md:block">
-                <p className="text-xs font-black uppercase tracking-widest dark:text-white">Admin User</p>
+              <div className=" hidden md:block">
+                <p className="text-xs font-black text-primary-500 tracking-widest dark:text-white">Admin User</p>
                 <p className="text-[10px] font-bold text-gray-400">Super Admin</p>
               </div>
            

@@ -1,4 +1,5 @@
 'use client';
+// Modern Category details view and layout
 import { apiFetch } from '@/lib/api';
 
 import { useState, useEffect } from 'react';
@@ -25,8 +26,7 @@ export default function CategoryDetailsContent() {
   const { slug } = useParams();
   const locale = useLocale();
   const IsRtl = locale === 'ar';
-  const t = useTranslations('Products');
-  const tc = useTranslations('Categories');
+  const t = useTranslations('Products'); 
   const tH = useTranslations('Home');
   const tp = useTranslations('PriceRange');
   const isRtl = locale === 'ar';
@@ -55,11 +55,11 @@ export default function CategoryDetailsContent() {
       const res = await apiFetch(finalUrl);
       if (res.ok) {
         const resData = await res.json();
+        console.log(resData);
 
+        if (resData?.data[0]?.category) setCategory(resData?.data[0]?.category);
 
-        if (resData.data[0].category) setCategory(resData.data[0].category);
-
-        if (resData.data) {
+        if (resData?.data) {
           setProducts(resData.data);
           setTotalItems(resData.meta?.total || 0);
           setTotalPages(resData.meta?.lastPage || Math.ceil((resData.meta?.total || 0) / itemsPerPage));
@@ -80,16 +80,7 @@ export default function CategoryDetailsContent() {
     return url.replace(/^https?:\/\/(localhost|192\.168\.0\.195):\d+/, '');
   };
 
-  if (isLoading || !category) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-[#f1f4f1] to-white dark:bg-[#080808] flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-500 rounded-full animate-spin" />
-          <p className="text-gray-500 font-bold uppercase tracking-widest text-sm">Loading Category...</p>
-        </div>
-      </div>
-    );
-  }
+
 
 const handlePriceChange = (range: string) => {
   setSelectedPriceRanges(prev =>
@@ -100,103 +91,163 @@ const handlePriceChange = (range: string) => {
 };
 
   const handleReset = () => {
+    fetchData()
     setSelectedPriceRanges([]);
     setSortBy('');
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#f1f4f1] to-white dark:bg-[#080808]">
+    <div className="min-h-screen ">
 
-      {/* Refined Modern Header */}
-      <header className="relative pt-32 pb-20 overflow-hidden">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <ShopBreadcrumb
-                items={[{ label: IsRtl ? category.name_ar : category.name_en }]}
-                className="justify-center mb-8"
-              />
+      {/* Modern Premium Category Header */}
+      <header className="relative w-full min-h-[500px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-white dark:from-[#111c12] dark:via-[#19241b] dark:to-[#080808] overflow-hidden flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-gray-100/10 transition-colors duration-500 py-32">
+        {/* Abstract Glowing Accent Circles */}
+        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[350px] bg-primary-500/10 rounded-full blur-[80px] pointer-events-none animate-pulse-slow" />
+        <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-accent-500/10 rounded-full blur-[60px] pointer-events-none" />
 
-              <h1 className="text-7xl md:text-8xl italic font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-[0.9] mb-6">
-                {IsRtl ? category.name_ar : category.name_en}
-              </h1>
-              <p className="text-xl text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-2xl mx-auto italic">
-                {tH('heroSubtitle')}
-              </p>
-            </motion.div>
+        <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+            
+            {/* Left Content (Metadata & Titles) */}
+            <div className="flex-1 max-w-2xl text-center flex flex-col items-center lg:items-start">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="space-y-6"
+              >
+                {/* Shop Breadcrumb */}
+                <ShopBreadcrumb
+                  items={[{ label: IsRtl ? category?.name_ar : category?.name_en }]}
+                  className="justify-center lg:justify-start"
+                />
+
+                {/* Subtitle Badge Row */}
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                  <span className="bg-primary-500 text-white font-extrabold tracking-widest text-[10px] px-3.5 py-1.5 rounded-full shadow-sm uppercase">
+                    {IsRtl ? 'تصنيف مميز' : 'Featured Category'}
+                  </span>
+                  <span className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md text-primary-600 dark:text-primary-400 border border-primary-500/10 font-bold text-[10px] px-3.5 py-1.5 rounded-full shadow-sm animate-pulse">
+                    {products.length} {IsRtl ? 'منتج متاح' : 'Products Available'}
+                  </span>
+                </div>
+
+                {/* Main Headline */}
+                <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-start text-gray-900 dark:text-white leading-[1.1] tracking-tight uppercase">
+                  {IsRtl ? category?.name_ar : category?.name_en}
+                </h1>
+
+                {/* Description */}
+                <p className="text-base text-start sm:text-lg text-gray-600 dark:text-gray-300 font-medium leading-relaxed max-w-lg">
+                  {IsRtl 
+                    ? `اكتشف تشكيلتنا الحصرية من ${category?.name_ar || ''} المصممة خصيصاً لتمنحك الجودة والأناقة التي تستحقها.` 
+                    : `Explore our handpicked curation of ${category?.name_en || ''}, meticulously designed for culinary perfection and exceptional performance.`}
+                </p>
+              </motion.div>
+            </div>
+
+            {/* Right Content (Modern 3D Interactive Framed Image) */}
+            <div className="flex-1 w-full max-w-md lg:max-w-none flex items-center justify-center ">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, rotate: 3 }}
+                animate={{ opacity: 1, scale: 1, rotate: IsRtl ? -3 : 3 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className="relative w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] group select-none cursor-pointer"
+              >
+                {/* Glowing Background Glow Card */}
+                <div className="absolute inset-0 bg-primary-500/20 rounded-[2.5rem] blur-xl group-hover:scale-105 transition-transform duration-500 animate-pulse" />
+                
+                {/* Elegant White Outer Container with Glassmorphism */}
+                <div className="absolute inset-0 bg-white dark:bg-slate-800 border-4 border-white dark:border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] rounded-[2.5rem] overflow-hidden group-hover:rotate-0 transition-transform duration-700">
+                  <Image
+                    src={getImageUrl(category?.image)}
+                    alt={(IsRtl ? category?.name_ar : category?.name_en) || ""}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                    sizes="320px"
+                    priority
+                  />
+                  {/* Subtle Gradient Overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10" />
+                </div>
+
+                {/* Ornamental Floating Shapes */}
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-accent-500 rounded-2xl shadow-lg -rotate-12 animate-float pointer-events-none" />
+                <div className="absolute -bottom-4 -right-4 w-16 h-16 border-4 border-primary-500 rounded-full shadow-lg rotate-45 pointer-events-none" />
+              </motion.div>
+            </div>
+
           </div>
-        </div>
-
-        {/* Dynamic Background Image Overlay */}
-        <div className="absolute top-0 right-0 w-1/3 h-full opacity-10 grayscale pointer-events-none ltr:rotate-12 rtl:-rotate-12">
-          <Image src={getImageUrl(category.image)} alt="" fill className="object-cover" />
         </div>
       </header>
 
-      <div className="flex flex-col lg:flex-row gap-12 container mx-auto px-4 py-12">
-        {/* Filters Sidebar */}
-        <aside className="w-full lg:w-80 shrink-0 space-y-4">
-          <div className=' bg-white rounded-xl p-6 border border-gray-100 shadow-sm'>
+      <div className="flex flex-col bg-white relative rounded-3xl shadow lg:top-[-100px] lg:flex-row gap-12 container mx-auto px-4 py-8">
+        
+        {/* Modern Sidebar Filters */}
+        <aside className="w-full lg:w-80 shrink-0">
+          <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-[2rem] p-6 border border-gray-100 dark:border-slate-800/80 shadow-[0_20px_50px_rgba(0,0,0,0.01)] dark:shadow-none space-y-6">
+            
             {/* Main Sidebar Header */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className=" flex items-center justify-between"
+              className="flex items-center justify-between"
             >
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-[#f1f4f1] flex items-center justify-center">
-                  <SlidersHorizontal className="w-6 h-6 text-primary-500" />
+                <div className="w-10 h-10 rounded-2xl bg-primary-500/10 flex items-center justify-center text-primary-500 dark:text-primary-400">
+                  <SlidersHorizontal className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-md font-bold text-primary-500 leading-tight">{t('filters')}</h4>
-                  <p className="text-[11px] font-medium text-gray-400">{t('refineResults')}</p>
+                  <h4 className="text-sm font-black text-primary-600 dark:text-primary-400 leading-tight uppercase tracking-wider">{t('filters')}</h4>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('refineResults')}</p>
                 </div>
               </div>
 
               <motion.button
                 whileTap={{ rotate: 180 }}
                 onClick={handleReset}
-                className="text-gray-300 cursor-pointer hover:text-primary-500 transition-colors"
+                className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-500 dark:text-gray-400 flex items-center justify-center transition-colors cursor-pointer"
               >
-                <RefreshCcw className="w-5 h-5" />
+                <RefreshCcw className="w-4 h-4" />
               </motion.button>
             </motion.div>
 
+            {/* Accordion Filter Wrapper */}
             <div className="space-y-4 mt-6">
               <Accordion type="multiple" defaultValue={['price']} dir={isRtl ? 'rtl' : 'ltr'} className="space-y-4">
-
+                
                 {/* Price Filter */}
-                <AccordionItem value="price" className="bg-white rounded-xl border shadow-sm overflow-hidden border-gray-100">
-                  <AccordionTrigger className="p-5 hover:no-underline border-b bg-[#f1f4f1] border-gray-50 [&>svg]:hidden">
+                <AccordionItem value="price" className="border border-gray-100 dark:border-slate-800/80 rounded-2xl overflow-hidden bg-white/50 dark:bg-slate-900/30">
+                  <AccordionTrigger className="px-5 py-4.5 hover:no-underline bg-gray-50/50 dark:bg-slate-800/30 border-b border-gray-100 dark:border-slate-800/80 [&>svg]:hidden">
                     <div className="flex items-center justify-between w-full">
-                      <div className="flex items-center gap-2">
-                        <ShoppingCart className="w-4 h-4 text-primary-500" />
-                        <span className="text-sm font-bold text-[#1a3a5f]">{t('priceRangeTitle')}</span>
+                      <div className="flex items-center gap-3">
+                        <ShoppingBag className="w-4 h-4 text-primary-500 dark:text-primary-400" />
+                        <span className="text-xs font-black text-gray-800 dark:text-gray-200 uppercase tracking-wider">{t('priceRangeTitle')}</span>
                       </div>
-                      <ChevronDown className="w-4 h-4 text-gray-300 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                      <ChevronDown className="w-4 h-4 text-gray-400 transition-transform duration-300 group-data-[state=open]:rotate-180" />
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="p-6 space-y-5">
+                  
+                  <AccordionContent className="p-6 space-y-4">
                     {['lessThan50', '50-200', '200-500', 'greaterThan500'].map(range => (
                       <label key={range} className="flex items-center justify-between group cursor-pointer">
-                         <span className={cn(
-                          "text-sm font-bold text-gray-600 group-hover:text-primary-500 transition-colors mx-4 flex-grow",
+                        <span className={cn(
+                          "text-xs font-bold text-gray-600 dark:text-gray-300 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors mx-4 flex-grow",
                           isRtl ? "text-right" : "text-left"
                         )}>
                           {tp(range)}
                         </span>
-                        <div className="relative w-6 h-6 flex items-center justify-center">
+                        
+                        {/* Premium custom checkbox */}
+                        <div className="relative w-5 h-5 flex items-center justify-center flex-shrink-0">
                           <input
                             type="checkbox"
                             checked={selectedPriceRanges.includes(range)}
                             onChange={() => handlePriceChange(range)}
                             className="peer absolute inset-0 opacity-0 cursor-pointer z-10"
                           />
-                          <div className="absolute inset-0 border-2 border-gray-200 rounded-lg peer-checked:border-primary-500 transition-all" />
-                          <div className="w-2.5 h-2.5 bg-primary-500 rounded-sm scale-0 peer-checked:scale-100 transition-transform" />
+                          <div className="absolute inset-0 border-2 border-gray-200 dark:border-slate-700 rounded-lg peer-checked:border-primary-500 dark:peer-checked:border-primary-400 peer-checked:bg-primary-500/10 transition-all duration-300" />
+                          <div className="w-2 h-2 bg-primary-500 dark:bg-primary-400 rounded-[3px] scale-0 peer-checked:scale-100 transition-transform duration-300" />
                         </div>
                       </label>
                     ))}
@@ -205,10 +256,11 @@ const handlePriceChange = (range: string) => {
               </Accordion>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-100">
+            {/* Sidebar CTA Action */}
+            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-800/80">
               <button
                 onClick={fetchData}
-                className="w-full bg-primary-500 cursor-pointer hover:bg-primary-600 text-white font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-95"
+                className="w-full bg-primary-500 hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-black text-xs uppercase tracking-widest py-4.5 rounded-2xl transition-all shadow-[0_10px_25px_rgba(107,142,107,0.15)] dark:shadow-none hover:-translate-y-0.5 active:scale-98 cursor-pointer"
               >
                 {t('refineResults')}
               </button>
@@ -217,44 +269,70 @@ const handlePriceChange = (range: string) => {
           </div>
         </aside>
 
-        <div className="flex-grow space-y-8">
-          {/* Modern Utility Bar */}
+        {/* Products Display Area */}
+        <div className="flex-grow space-y-10">
+          
+          {/* Modern Results Header Utility Bar */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex items-center justify-between"
+            className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-[2rem] p-5 sm:p-6 border border-gray-100 dark:border-slate-800/80 shadow-[0_20px_50px_rgba(0,0,0,0.01)] dark:shadow-none flex flex-col sm:flex-row items-center justify-between gap-6"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[#f1f4f1] shadow-inner rounded-xl flex items-center justify-center text-primary-500 font-black text-xl">
+              <div className="w-14 h-14 bg-primary-500/10 shadow-inner rounded-2xl flex items-center justify-center text-primary-500 dark:text-primary-400 font-black text-2xl">
                 {totalItems}
               </div>
-              <div>
-                <h2 className="text-xl font-black tracking-tighter text-primary-500 dark:text-white leading-none mb-1">{t('masterSelection')}</h2>
-                <p className="text-[10px] font-bold text-gray-400 tracking-[0.3em]">{t('selectionSubtitle')}</p>
+              <div className="text-center sm:text-left rtl:text-right">
+                <h2 className="text-lg font-black tracking-tight text-gray-900 dark:text-white leading-tight mb-1">{t('masterSelection')}</h2>
+                <p className="text-[12px] font-bold text-gray-400 ">{t('selectionSubtitle')}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-full sm:w-auto">
               <ProductSort value={sortBy} onValueChange={setSortBy} isRtl={isRtl} />
             </div>
           </motion.div>
-          {/* Main Grid Area */}
+
+          {/* Dynamic Grid Layout */}
           <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {products.map((product, i) => (
-                <ProductCard key={product.id} product={product} index={i} />
-              ))}
-            </div>
+            {products.length === 0 ? (
+              /* Beautiful Modern Empty State */
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-full min-h-[400px] flex flex-col items-center justify-center text-center p-8 bg-white/40 dark:bg-slate-900/20 backdrop-blur-md rounded-[2.5rem] border border-dashed border-gray-200 dark:border-slate-800"
+              >
+                <div className="w-20 h-20 bg-primary-500/10 rounded-full flex items-center justify-center text-primary-500 mb-6 animate-pulse">
+                  <ShoppingBag className="w-8 h-8" />
+                </div>
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight">
+                  {IsRtl ? 'لم نجد أي منتجات' : 'No Products Found'}
+                </h3>
+                <p className="text-sm font-semibold text-gray-400 dark:text-gray-500 max-w-sm mb-8 leading-relaxed">
+                  {IsRtl 
+                    ? 'جرب تعديل نطاق الأسعار أو إعادة تعيين الفلاتر لعرض التشكيلة الكاملة.' 
+                    : 'Try resetting the active price filters or sorting parameters to discover our full product catalogue.'}
+                </p> 
+              </motion.div>
+            ) : (
+              /* High-end Responsive 3-Column Grid */
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 sm:gap-10">
+                {products.map((product, i) => (
+                  <ProductCard key={product.id} product={product} index={i} />
+                ))}
+              </div>
+            )}
 
-            {/* Pagination Placeholder */}
-
+            {/* Pagination Segment */}
             {totalPages > 1 && (
-              <AppPagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                onPageChange={setCurrentPage}
-              />
+              <div className="pt-6">
+                <AppPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
             )}
           </div>
         </div>

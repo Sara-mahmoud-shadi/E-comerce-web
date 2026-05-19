@@ -10,7 +10,8 @@ import {
   ShoppingCart, 
   LogOut,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ShoppingBag
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -38,21 +39,15 @@ export default function Sidebar() {
     >
       {/* Header */}
       <div className="h-24 flex items-center justify-between px-6 border-b border-gray-100 dark:border-white/5">
-        <AnimatePresence mode="wait">
+    
           {!isCollapsed && (
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="flex items-center gap-3"
-            >
-              <div className="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-                <LayoutDashboard className="w-6 h-6 text-white" />
+          <Link href="/" dir="ltr" className="flex items-center gap-2 text-4xl font-black tracking-tight text-primary-500">
+              <div className="w-10 h-10 bg-primary-500/10 dark:bg-primary-500/10 rounded-xl flex items-center justify-center text-primary-500 dark:text-primary-400">
+                <ShoppingBag className="w-6 h-6" />
               </div>
-              <span className="text-xl font-black tracking-tighter uppercase dark:text-white">Admin</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <span>Go<span className="text-2xl text-black dark:text-white">Shop</span></span>
+            </Link> 
+          )} 
         
         <button 
           onClick={() => setIsCollapsed(!isCollapsed)}

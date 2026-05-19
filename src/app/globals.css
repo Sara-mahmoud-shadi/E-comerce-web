@@ -5,7 +5,7 @@
 
   --color-primary-50: #f8fafc;
   --color-primary-100: #f1f5f9;
-  --color-primary-500: #6b8e6b;
+  --color-primary-500: #156b15;
   /* Sage Green */
   --color-primary-600: #5a7a5a;
   --color-primary-700: #4a664a;
@@ -37,8 +37,48 @@
     }
   }
 
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+  }
+
+  @keyframes float-delayed {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulse-slow {
+    0%, 100% {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-delayed: float-delayed 8s ease-in-out infinite 1s;
+  --animate-spin-slow: spin-slow 35s linear infinite;
+  --animate-pulse-slow: pulse-slow 4s ease-in-out infinite;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

@@ -198,10 +198,10 @@
     "economySeries": "Economy Series"
   },
   "PriceRange": {
-    "<50": "Under $50",
+    "lessThan50": "Under $50",
     "50-200": "$50 - $200",
     "200-500": "$200 - $500",
-    ">500": "Over $500"
+    "greaterThan500": "Over $500"
   },
   "Dashboard": {
     "title": "Dashboard",

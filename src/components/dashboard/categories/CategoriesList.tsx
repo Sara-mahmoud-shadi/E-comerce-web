@@ -175,7 +175,7 @@ export default function CategoriesList() {
                         </div>
                         <div>
                           <h4 className="text-sm font-black dark:text-white uppercase tracking-tight mb-1">{isRtl ? category.name_ar : category.name_en}</h4>
-                          <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg">
+                          <span className="text-[12px] font-bold text-gray-400 uppercase tracking-widest bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                             SLUG: {category.slug}
                           </span>
                         </div>

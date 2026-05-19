@@ -9,7 +9,7 @@ export default function ShopLayout({
   return (
     <>
       <Header />
-      <main className="flex-grow  pt-8 pb-12 w-full">
+      <main className="flex-grow  pt-8 w-full">
         {children}
       </main>
       <Footer />

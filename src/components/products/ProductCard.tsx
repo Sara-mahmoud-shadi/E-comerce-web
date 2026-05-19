@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { ShoppingBag, Star, Eye } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Link } from '@/i18n/routing'; 
+import { Link } from '@/i18n/routing';
 import { useCartStore } from '@/store/useCartStore';
 import { useEffect } from 'react';
 
@@ -22,7 +22,7 @@ export interface Product {
   instock?: boolean;
 }
 interface Category {
-  id: number; 
+  id: number;
   name_ar: string;
   name_en: string;
   slug: string;
@@ -33,10 +33,10 @@ interface ProductCardProps {
   product: Product;
   index: number;
 }
- export const getImageUrl = (url?: string) => {
-    if (!url) return 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&h=300&fit=crop';
-    return url.replace(/^https?:\/\/(localhost|192\.168\.0\.195):\d+/, '');
-  };
+export const getImageUrl = (url?: string) => {
+  if (!url) return 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&h=300&fit=crop';
+  return url.replace(/^https?:\/\/(localhost|192\.168\.0\.195):\d+/, '');
+};
 export function ProductCard({ product, index }: ProductCardProps) {
   const t = useTranslations('Products');
   const addItem = useCartStore((state) => state.addItem);
@@ -45,7 +45,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     addItem(product);
-  }; 
+  };
 
   const locale = useLocale();
   const isRtl = locale === 'ar';
@@ -75,22 +75,22 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
         {/* Centered Identity Overlay */}
         <div className="flex flex-col justify-center items-center text-center">
-          <h3 className="text-2xl font-black text-white tracking-tighter uppercase mb-2 group-hover:scale-110 transition-transform duration-700">
-            {isRtl ? product.name_ar : product.name_en}
+          <h3 className="text-2xl font-black text-white tracking-tighter text-shadow-2xs mb-2 group-hover:scale-110 transition-transform duration-700">
+            {isRtl ? product?.name_ar : product?.name_en}
           </h3>
         </div>
 
         {/* Bottom Action Bar */}
         <div className="bg-white/10 backdrop-blur-2xl border border-white/10 rounded-3xl p-4 flex items-center justify-between pointer-events-auto">
           <div>
-            <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1">{t('basePrice')}</p>
+            <p className="text-[8px] font-black text-white/90 text-shadow-2xs tracking-widest mb-1">{t('basePrice')}</p>
             <div className="flex flex-col">
               {product.price_discount ? (
                 <>
-                  <p className="text-2xl font-black text-primary-500 tracking-tighter leading-none">
+                  <p className="text-2xl font-black text-white tracking-tighter leading-none">
                     {t('price', { price: product.price_discount })}
                   </p>
-                  <p className="text-[10px] font-bold text-white/40 line-through tracking-tighter mt-1">
+                  <p className="text-[10px] font-bold text-white/60 line-through tracking-tighter mt-1">
                     {t('price', { price: product.price })}
                   </p>
                 </>
@@ -101,12 +101,11 @@ export function ProductCard({ product, index }: ProductCardProps) {
               )}
             </div>
           </div>
-          <button 
+          <button
             onClick={handleAddToCart}
-            className="bg-white text-black px-6 py-4 cursor-pointer rounded-full flex items-center gap-3 hover:bg-accent-500 hover:text-white transition-all group/btn active:scale-95"
+            className="bg-primary-500 text-white w-10 h-10 cursor-pointer rounded-full flex items-center justify-center gap-3 hover:bg-accent-500 hover:text-white transition-all group/btn active:scale-95"
           >
             <ShoppingBag className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
-            <span className="text-[10px] font-black uppercase tracking-widest">{t('addToCart')}</span>
           </button>
         </div>
       </div>

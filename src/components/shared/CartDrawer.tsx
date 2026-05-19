@@ -27,6 +27,7 @@ export function CartDrawer() {
   const locale = useLocale();
   const { items, removeItem, updateQuantity, getTotalPrice } = useCartStore();
   const [isHydrated, setIsHydrated] = useState(false); 
+  const [open, setOpen] = useState(false);
   const isRtl = locale === 'ar';
   useEffect(() => {
     setIsHydrated(true);
@@ -40,7 +41,7 @@ export function CartDrawer() {
   const direction = locale === 'ar' ? 'right' : 'left';
 
   return (
-    <Drawer direction={direction}>
+    <Drawer open={open} onOpenChange={setOpen} direction={direction}>
       <DrawerTrigger asChild>
         <button className="relative cursor-pointer p-2 rounded-full !m-0 hover:bg-black/5 dark:hover:bg-white/10 transition group">
           <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -48,7 +49,7 @@ export function CartDrawer() {
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-black leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-accent-500 rounded-full border-2 border-white dark:border-black"
+              className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-black leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary-500 rounded-full border-2 border-white dark:border-black"
             >
               {itemCount}
             </motion.span>
@@ -56,9 +57,9 @@ export function CartDrawer() {
         </button>
       </DrawerTrigger>
 
-      <DrawerContent className="h-full !w-full lg:!max-w-xl bg-white dark:bg-[#050b2e] border-white/10 backdrop-blur-3xl">
+      <DrawerContent className="h-full !w-full lg:!max-w-xl overflow-hidden bg-white dark:bg-[#050b2e] border-white/10 backdrop-blur-3xl">
         <div className="flex flex-col h-full w-full">
-          <DrawerHeader className="p-8 border-b border-gray-100 dark:border-white/5">
+          <DrawerHeader className="p-8 bg-gray-50 border-b border-gray-100 dark:border-white/5">
             <div className="flex items-center justify-between">
               <DrawerTitle className="text-2xl text-primary-500 font-black tracking-tighter flex items-center gap-3">
                 <ShoppingBag className="w-6 h-6 text-accent-500" />
@@ -163,7 +164,7 @@ export function CartDrawer() {
             <DrawerFooter className="p-8 space-y-8 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 rounded-t-[3rem]">
 
               <div className="space-y-6 w-full">
-                <Link href="/checkout" className="block text-center w-full  py-5 bg-accent-500 text-white font-black tracking-[0.3em] rounded-md hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-accent-500/30 group">
+                <Link href="/checkout" onClick={() => setOpen(false)} className="block text-center w-full  py-4 bg-primary-500 text-white font-black tracking-[0.3em] rounded-lg hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-accent-500/30 group">
                   {t('checkout')}
                 </Link>
               </div>

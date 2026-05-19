@@ -26,26 +26,6 @@ export default function SearchBar() {
   const isRtl = locale === 'ar';
 
   const showResults = isFocused && query.length > 1;
-  const delayDebounceFn = setTimeout(async () => {
-      setIsLoading(true);
-      try {
-        const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}products`, window.location.origin);
-        url.searchParams.append('search', query.trim());
-        url.searchParams.append('page', '1');
-        url.searchParams.append('limit', '8');
-
-        const res = await apiFetch(url.toString());
-        if (res.ok) {
-          const data = await res.json();
-          const productList = Array.isArray(data) ? data : (data.data || []);
-          setResults(productList);
-        }
-      } catch (err) {
-        console.error('Failed to fetch search results:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    }, 300);
   // Handle click outside to close results
   function handleClickOutside(event: MouseEvent) {
     if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -65,7 +45,26 @@ export default function SearchBar() {
       return;
     }
 
-  
+    const delayDebounceFn = setTimeout(async () => {
+      setIsLoading(true);
+      try {
+        const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}products`, window.location.origin);
+        url.searchParams.append('search', query.trim());
+        url.searchParams.append('page', '1');
+        url.searchParams.append('limit', '8');
+
+        const res = await apiFetch(url.toString());
+        if (res.ok) {
+          const data = await res.json();
+          const productList = Array.isArray(data) ? data : (data.data || []);
+          setResults(productList);
+        }
+      } catch (err) {
+        console.error('Failed to fetch search results:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300);
 
     return () => clearTimeout(delayDebounceFn);
   }, [query]);
