@@ -1,29 +1,18 @@
 'use client';
 import { apiFetch } from '@/lib/api';
 
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Edit2, Trash2, Plus, FolderOpen, X } from 'lucide-react';
+import { Search, Edit2, Trash2, Plus, FolderOpen, X, PackageX } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Link } from '@/i18n/routing';
 import AppPagination from '@/components/shared/AppPagination';
-import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog'; 
+import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
 import { useTranslations, useLocale } from 'next-intl';
+import LoaderIcon from '@/components/shared/LoaderIcon';
+import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}categories`;
-
-const MOCK_CATEGORIES = [
-  { id: 1, name: 'Serving & Hospitality', count: 12, slug: 'SERVING' },
-  { id: 2, name: 'Electrical Equipment', count: 8, slug: 'ELECTRICAL' },
-  { id: 3, name: 'Cooking Tools', count: 15, slug: 'COOKING' },
-  { id: 4, name: 'Coffee Section', count: 6, slug: 'COFFEE' },
-  { id: 5, name: 'Bakery & Sweets', count: 10, slug: 'BAKERY' },
-  { id: 6, name: 'Kitchen Appliances', count: 22, slug: 'KITCHEN' },
-  { id: 7, name: 'Home Decor', count: 45, slug: 'DECOR' },
-  { id: 8, name: 'Tableware', count: 30, slug: 'TABLEWARE' },
-  { id: 9, name: 'Furniture', count: 5, slug: 'FURNITURE' },
-  { id: 10, name: 'Lighting', count: 18, slug: 'LIGHTING' },
-];
 
 export default function CategoriesList() {
   const t = useTranslations('Dashboard');
@@ -91,7 +80,7 @@ export default function CategoriesList() {
       });
 
       if (!res.ok) throw new Error('Failed to delete category');
-      
+
       setCategories(prev => prev.filter(c => c.id !== deleteId));
       setDeleteId(null);
     } catch (err) {
@@ -104,45 +93,51 @@ export default function CategoriesList() {
 
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h1 className="text-4xl font-black tracking-tighter uppercase dark:text-white mb-2">
-            {t('categories')}
-          </h1>
-          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">
-            Organize your products into meaningful sections
-          </p>
-        </div>
+    <div className="space-y-8 container mx-auto">
+      <ShopBreadcrumb
+        items={[
+          { label: t('dashboard'), href: '/dashboard' },
+          { label: t('categories') }
+        ]}
+      />
 
-        <Link href="/dashboard/categories/new">
-          <button className="flex items-center gap-3 px-8 py-4 bg-primary-500 text-white rounded-md font-black cursor-pointer tracking-widest text-[12px] shadow-lg hover:scale-105 transition-transform">
-            <Plus className="w-4 h-4" />
-            {t('create')}
-          </button>
-        </Link>
-      </div>
 
-      <div className="bg-white dark:bg-[#081640] rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl overflow-hidden">
+      <div className="bg-white dark:bg-[#081640] rounded-[1rem] shadow border border-gray-100 dark:border-white/5 overflow-hidden">
         <div className="p-8 border-b border-gray-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="relative w-full md:w-96">
-            <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 ${isRtl ? 'right-4' : 'left-4'}`} />
-            <input
-              type="text"
-              placeholder={t('search')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full bg-gray-50 dark:bg-gray-900/50 border border-transparent focus:border-blue-500/50 rounded-xl py-3 text-sm outline-none transition-all ${isRtl ? 'pr-12 pl-10' : 'pl-12 pr-10'}`}
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm('')}
-                className={`absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer ${isRtl ? 'left-4' : 'right-4'}`}
-                aria-label="Clear search"
-              >
-                <X className="w-4 h-4" />
+          <div className="flex md:flex-row justify-between items-start w-full md:items-center gap-6">
+            <div>
+              <h1 className="text-xl font-black tracking-tighter dark:text-white mb-1">
+                {t('categories')}
+              </h1>
+              <p className="text-[12px] font-bold text-gray-400 tracking-widest">
+                {t('categoriesListDesc')}
+              </p>
+            </div>
+            <div className="relative w-3xl">
+              <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 ${isRtl ? 'right-4' : 'left-4'}`} />
+              <input
+                type="text"
+                placeholder={t('search')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={`w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-200 rounded-md py-3  px-6 text-sm outline-none transition-all ${isRtl ? 'pr-12 pl-10' : 'pl-12 pr-10'}`}
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className={`absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer ${isRtl ? 'left-4' : 'right-4'}`}
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            <Link href="/dashboard/categories/new">
+              <button className="flex items-center gap-3 px-8 py-4 bg-primary-500 text-white rounded-md font-black cursor-pointer tracking-widest text-[12px] shadow-lg hover:scale-105 transition-transform">
+                <Plus className="w-4 h-4" />
+                {t('create')}
               </button>
-            )}
+            </Link>
           </div>
         </div>
 
@@ -159,8 +154,41 @@ export default function CategoriesList() {
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center py-10 text-gray-500 font-bold">
-                      Loading...
+                    <TableCell colSpan={3} className="text-center py-10">
+                      <LoaderIcon />
+                    </TableCell>
+                  </TableRow>
+                ) : categories.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="py-12 text-center">
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="flex flex-col items-center justify-center gap-3"
+                      >
+                        <motion.div
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 15 }}
+                          className="w-16 h-16 rounded-2xl bg-gray-50 dark:bg-slate-800/50 flex items-center justify-center text-gray-400 dark:text-gray-500 mb-2"
+                        >
+                          <PackageX className="w-8 h-8" strokeWidth={1.5} />
+                        </motion.div>
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.2 }}
+                          className="flex flex-col items-center gap-1"
+                        >
+                          <p className="text-gray-500 dark:text-gray-400 font-bold text-sm">
+                            {isRtl ? 'لا توجد أقسام حالياً' : 'No categories found'}
+                          </p>
+                          <p className="text-gray-400 dark:text-gray-500 text-xs font-medium">
+                            {isRtl ? 'لم يتم العثور على أي أقسام مطابقة' : 'No matching categories were found'}
+                          </p>
+                        </motion.div>
+                      </motion.div>
                     </TableCell>
                   </TableRow>
                 ) : categories.map((category, index) => (
@@ -184,7 +212,7 @@ export default function CategoriesList() {
                     <TableCell className="px-8 py-6">
                       <div className="flex items-center gap-2">
                         <div className="px-3 py-1 rounded-full bg-gray-50 dark:bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-500">
-                          {category.count} {t('products')}
+                          {category.products.length} {t('products')}
                         </div>
                       </div>
                     </TableCell>
@@ -195,7 +223,7 @@ export default function CategoriesList() {
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                         </Link>
-                        <button 
+                        <button
                           onClick={() => setDeleteId(category.id)}
                           className="p-2.5 cursor-pointer rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-red-600 hover:text-white transition-all"
                         >

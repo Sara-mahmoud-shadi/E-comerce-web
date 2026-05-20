@@ -221,7 +221,7 @@ export default function CheckoutContent() {
                     animate={{ opacity: 1, height: 'auto', marginBottom: 32 }}
                     exit={{ opacity: 0, height: 0, marginBottom: 0 }}
                   >
-                    <Alert variant="success" className="rounded-[2.5rem] p-8 border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-500/5 shadow-2xl">
+                    <Alert variant="success" className="rounded-[2rem] p-8 border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-500/5 shadow-2xl">
                       <div className="flex flex-col items-center text-center space-y-4">
                         <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 dark:text-emerald-400 shadow-inner">
                           <CheckCircle2 className="w-8 h-8" />
@@ -301,7 +301,7 @@ export default function CheckoutContent() {
                   <button
                     onClick={handleCompleteOrder}
                     disabled={isLoading || isCompleted}
-                    className="w-full h-16 bg-primary-500 hover:bg-primary-600 text-white rounded-[2rem] font-black tracking-[0.2em] text-[14px] shadow-2xl shadow-primary-500/20 active:scale-95 transition-all flex items-center justify-center gap-3 mt-8 disabled:opacity-50 disabled:hover:scale-100 cursor-pointer"
+                    className="w-full h-16 bg-primary-500 hover:bg-primary-600 text-white rounded-[1rem] font-black tracking-[0.2em] text-[14px] shadow-md shadow-primary-500/20 active:scale-95 transition-all flex items-center justify-center gap-3 mt-8 disabled:opacity-50 disabled:hover:scale-100 cursor-pointer"
                   >
                     {isLoading ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

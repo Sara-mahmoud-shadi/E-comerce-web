@@ -53,7 +53,7 @@ export default function DynamicInput({
           }}
           placeholder={placeholder}
           className={cn(
-            "w-full py-3 bg-gray-100/80 dark:bg-gray-900/50 rounded-md border px-14 text-sm font-bold placeholder:text-gray-400 transition-all outline-none dark:text-white",
+            "w-full py-3 bg-gray-100/80 dark:bg-gray-900/50 rounded-md border px-14 text-sm placeholder:text-gray-400 transition-all outline-none dark:text-white",
             error
               ? "border-red-400 focus:border-red-500"
               : "border-gray-200 dark:border-white/5 focus:border-primary-500/30"
@@ -61,7 +61,7 @@ export default function DynamicInput({
         />
       </div>
       {error && (
-        <p className="mt-1 ml-1 text-[11px] font-bold text-red-400 flex items-center gap-1.5">
+        <p className="mt-1 ml-1 text-[11px] text-red-400 flex items-center gap-1.5">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
           {error}
         </p>

@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Package, Image as ImageIcon } from 'lucide-react';
+import { Package, Image as ImageIcon, PackageX } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
+import LoaderIcon from '../shared/LoaderIcon';
 
 export default function RecentProductsTable() {
   const locale = useLocale();
@@ -70,7 +71,7 @@ export default function RecentProductsTable() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="bg-white col-span-1 xl:col-span-3 dark:bg-slate-900/60 backdrop-blur-2xl p-8 rounded-[3rem] border border-gray-100 dark:border-slate-800/80 shadow-xl space-y-6"
+      className="bg-white col-span-1 xl:col-span-3 dark:bg-slate-900/60 backdrop-blur-2xl p-8 rounded-[1rem] border border-gray-100 dark:border-slate-800/80 shadow space-y-6"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -89,26 +90,55 @@ export default function RecentProductsTable() {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left rtl:text-right border-collapse">
+        <table className="w-fullborder-collapse w-full">
           <thead>
             <tr className="border-b bg-gray-50 border-gray-100 dark:border-slate-800/80 text-[12px] font-black text-primary-500 dark:text-gray-500 tracking-wider">
               <th className="p-3">{isRtl ? 'المنتج' : 'Product'}</th>
               <th className="p-3">{isRtl ? 'القسم' : 'Category'}</th>
-              <th className="p-3">{isRtl ? 'السعر' : 'Price'}</th> 
+              <th className="p-3">{isRtl ? 'السعر' : 'Price'}</th>
               <th className="p-3">{isRtl ? 'الحالة' : 'Status'}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50 dark:divide-slate-800/40 text-sm">
             {isLoading ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-gray-400 font-bold">
-                  {isRtl ? 'جاري التحميل...' : 'Loading recent products...'}
+                <td colSpan={4} className="py-10 text-center">
+                  <div className="flex justify-center">
+                    <LoaderIcon />
+                  </div>
                 </td>
               </tr>
             ) : products.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-gray-400 font-bold">
-                  {isRtl ? 'لا توجد منتجات حالياً' : 'No products found'}
+                <td colSpan={5} className="py-12 text-center">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="flex flex-col items-center justify-center gap-3"
+                  >
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 15 }}
+                      className="w-16 h-16 rounded-2xl bg-gray-50 dark:bg-slate-800/50 flex items-center justify-center text-gray-400 dark:text-gray-500 mb-2"
+                    >
+                      <PackageX className="w-8 h-8" strokeWidth={1.5} />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="flex flex-col items-center gap-1"
+                    >
+                      <p className="text-gray-500 dark:text-gray-400 font-bold text-sm">
+                        {isRtl ? 'لا توجد منتجات حالياً' : 'No products found'}
+                      </p>
+                      <p className="text-gray-400 dark:text-gray-500 text-xs font-medium">
+                        {isRtl ? 'لم يتم العثور على أي منتجات مطابقة' : 'No matching products were found'}
+                      </p>
+                    </motion.div>
+                  </motion.div>
                 </td>
               </tr>
             ) : (
@@ -116,13 +146,13 @@ export default function RecentProductsTable() {
                 // Safely extract numeric stock from instock status or product fields
                 const rawStock = typeof product.stock !== 'undefined' ? Number(product.stock) : (product.instock ? 100 : 0);
                 const stockPercent = Math.min(100, Math.max(0, rawStock));
-                
+
                 const imageUrl = product.images?.[0] || product.image;
                 const productName = locale === 'ar' ? (product.name_ar || product.nameAr || product.name) : (product.name || product.nameEn);
                 const skuCode = product.sku || `PROD-${product.id?.toString().padStart(4, '0')}`;
-                const categoryName = locale === 'ar' 
-                  ? (product.category?.name_ar  ) 
-                  : (product.category?.name_en );
+                const categoryName = locale === 'ar'
+                  ? (product.category?.name_ar)
+                  : (product.category?.name_en);
 
                 return (
                   <tr key={product.id} className="group hover:bg-gray-50/50 dark:hover:bg-slate-800/20 transition-colors">
@@ -130,8 +160,8 @@ export default function RecentProductsTable() {
                       <div className="flex items-center gap-3">
                         <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-800 shrink-0 border border-gray-100 dark:border-slate-800/50 shadow-sm flex items-center justify-center">
                           {imageUrl ? (
-                            <img 
-                              src={imageUrl} 
+                            <img
+                              src={imageUrl}
                               alt={productName}
                               className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
                             />
@@ -155,9 +185,9 @@ export default function RecentProductsTable() {
                       </span>
                     </td>
                     <td className="py-4 font-black text-gray-900 dark:text-white">
-                       {product.price_discount || product.price || 0} ر.س
+                      {product.price_discount || product.price || 0} ر.س
                     </td>
-                  
+
                     <td className="py-4">
                       {getStockBadge(stockPercent)}
                     </td>

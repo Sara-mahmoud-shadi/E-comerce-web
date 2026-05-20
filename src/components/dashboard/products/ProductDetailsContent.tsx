@@ -3,16 +3,16 @@
 import React, { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ArrowLeft, 
-  Edit3, 
-  Package, 
-  Tag, 
-  Layers, 
-  Box, 
-  TrendingUp, 
-  Eye, 
-  ShoppingCart, 
+import {
+  ArrowLeft,
+  Edit3,
+  Package,
+  Tag,
+  Layers,
+  Box,
+  TrendingUp,
+  Eye,
+  ShoppingCart,
   DollarSign,
   ChevronRight,
   ChevronLeft,
@@ -61,7 +61,7 @@ export default function ProductDetailsContent({ id }: ProductDetailsContentProps
   const locale = useLocale();
   const isRtl = locale === 'ar';
   const router = useRouter();
-  
+
   const [activeImage, setActiveImage] = useState(0);
 
   const getStockStatus = (stock: number) => {
@@ -77,7 +77,7 @@ export default function ProductDetailsContent({ id }: ProductDetailsContentProps
       {/* Header */}
       <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="space-y-4">
-          <button 
+          <button
             onClick={() => router.back()}
             className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-blue-600 transition-colors"
           >
@@ -93,11 +93,11 @@ export default function ProductDetailsContent({ id }: ProductDetailsContentProps
               {status.label}
             </div>
           </div>
-          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+          <p className="text-sm font-bold text-gray-400 tracking-widest flex items-center gap-2">
             {t('sku')}: {MOCK_PRODUCT.sku}
           </p>
         </div>
-        
+
         <div className="flex items-center gap-4 w-full md:w-auto">
           <Link href={`/dashboard/products/${id}/edit`} className="flex-1 md:flex-none">
             <button className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-500/30 hover:scale-105 transition-transform">
@@ -114,23 +114,23 @@ export default function ProductDetailsContent({ id }: ProductDetailsContentProps
           {/* Gallery */}
           <section className="bg-white dark:bg-[#081640] rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl overflow-hidden p-8">
             <div className="relative aspect-[16/9] rounded-3xl overflow-hidden mb-6 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-white/5">
-              <motion.img 
+              <motion.img
                 key={activeImage}
                 initial={{ opacity: 0, scale: 1.1 }}
                 animate={{ opacity: 1, scale: 1 }}
-                src={MOCK_PRODUCT.images[activeImage]} 
-                alt="" 
+                src={MOCK_PRODUCT.images[activeImage]}
+                alt=""
                 className="w-full h-full object-cover"
               />
-              
+
               <div className="absolute inset-0 flex items-center justify-between px-4 pointer-events-none">
-                <button 
+                <button
                   onClick={() => setActiveImage(prev => (prev === 0 ? MOCK_PRODUCT.images.length - 1 : prev - 1))}
                   className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white pointer-events-auto hover:bg-white/40 transition-colors"
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
-                <button 
+                <button
                   onClick={() => setActiveImage(prev => (prev === MOCK_PRODUCT.images.length - 1 ? 0 : prev + 1))}
                   className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white pointer-events-auto hover:bg-white/40 transition-colors"
                 >
@@ -138,10 +138,10 @@ export default function ProductDetailsContent({ id }: ProductDetailsContentProps
                 </button>
               </div>
             </div>
-            
+
             <div className="flex gap-4 overflow-x-auto pb-2">
               {MOCK_PRODUCT.images.map((img, index) => (
-                <button 
+                <button
                   key={index}
                   onClick={() => setActiveImage(index)}
                   className={`relative w-24 aspect-square rounded-2xl overflow-hidden border-2 transition-all flex-shrink-0 ${activeImage === index ? 'border-blue-500 scale-95' : 'border-transparent'}`}
@@ -169,7 +169,7 @@ export default function ProductDetailsContent({ id }: ProductDetailsContentProps
               <Layers className="w-5 h-5 text-purple-500" />
               <h3 className="text-sm font-black uppercase tracking-widest dark:text-white">{t('specifications')}</h3>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {MOCK_PRODUCT.attributes.map((attr, index) => (
                 <div key={index} className="flex flex-col gap-2 p-6 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-transparent hover:border-blue-500/20 transition-all">
@@ -189,7 +189,7 @@ export default function ProductDetailsContent({ id }: ProductDetailsContentProps
               <TrendingUp className="w-5 h-5 text-emerald-500" />
               <h3 className="text-sm font-black uppercase tracking-widest dark:text-white">{t('performance')}</h3>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-gray-400">
@@ -228,7 +228,7 @@ export default function ProductDetailsContent({ id }: ProductDetailsContentProps
               <Tag className="w-5 h-5 text-amber-500" />
               <h3 className="text-sm font-black uppercase tracking-widest dark:text-white">{t('pricing')}</h3>
             </div>
-            
+
             <div className="space-y-6">
               <div className="flex justify-between items-end">
                 <div className="space-y-1">

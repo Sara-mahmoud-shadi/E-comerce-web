@@ -63,9 +63,16 @@ const nextConfig: NextConfig = {
         hostname: '192.168.0.195',
         port: '3001',
       },
+       {
+        protocol: 'https',
+        hostname: 'cdn.vectorstock.com',
+      },
+       {
+        protocol: 'https',
+        hostname: 'pngimg.com',
+      },
     ],
   },
 };
 
-export default withNextIntl(nextConfig);
- 
+export default withNextIntl(nextConfig); 

@@ -8,19 +8,23 @@ import {
   Tag, 
   Package, 
   ShoppingCart, 
+  Settings,
   LogOut,
   ChevronLeft,
   ChevronRight,
-  ShoppingBag
+  ShoppingBag,
+  ArrowRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'overview' },
   { href: '/dashboard/categories', icon: Tag, label: 'categories' },
   { href: '/dashboard/products', icon: Package, label: 'products' },
   { href: '/dashboard/orders', icon: ShoppingCart, label: 'orders' },
+  { href: '/dashboard/settings', icon: Settings, label: 'settings' },
 ];
 
 export default function Sidebar() {
@@ -51,16 +55,18 @@ export default function Sidebar() {
         
         <button 
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+          className="p-2 rounded-xl cursor-pointer hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
         >
-          {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+          {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5 ltr:rotate-180" />}
         </button>
       </div>
 
       {/* Navigation */}
       <nav className="flex-grow py-8 px-4 space-y-2">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = item.href === '/dashboard' 
+            ? pathname === '/dashboard' 
+            : pathname.startsWith(item.href);
           const Icon = item.icon;
 
           return (
@@ -93,17 +99,31 @@ export default function Sidebar() {
         })}
       </nav>
 
+      {/* Premium Banner */}
+      {!isCollapsed && (
+        <div className="mx-4 mb-4 relative overflow-hidden min-h-[180px]  ">
+        
+            <Image 
+            src={"https://pngimg.com/uploads/shopping_cart/shopping_cart_PNG73.png"}
+              // src="https://cdn.vectorstock.com/i/500p/08/29/full-shopping-cart-with-parcels-vector-80829.jpg" 
+              alt="Premium Features" 
+              fill 
+              className="object-contain object-bottom" 
+            /> 
+        </div>
+      )}
+
       {/* Footer */}
       <div className="p-4 border-t border-gray-100 dark:border-white/5">
         <Link
           href="/"
           className={cn(
-            "flex items-center gap-4 px-4 py-3.5 rounded-2xl text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/5 transition-all duration-300",
+            "flex items-center gap-4 px-4 py-3.5 rounded-lg text-red-500 bg-red-50 dark:hover:bg-red-500/5 transition-all duration-300",
             isCollapsed && "justify-center"
           )}
         >
           <LogOut className="w-5 h-5" />
-          {!isCollapsed && <span className="font-bold text-sm tracking-wide uppercase">Exit Admin</span>}
+          {!isCollapsed && <span className="font-bold text-sm tracking-wide ">{t('exitAdmin')}</span>}
         </Link>
       </div>
     </motion.aside>

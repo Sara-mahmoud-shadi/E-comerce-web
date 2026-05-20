@@ -10,8 +10,8 @@ import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useCartStore } from '@/store/useCartStore'; 
 import { ShopBreadcrumb } from '../shared/ShopBreadcrumb';
-import { Product } from './ProductCard';
-
+import { Product } from './ProductCard';  
+import LoaderIcon from '../shared/LoaderIcon';
 export default function ProductDetailsContent() {
   const { id } = useParams();
   const t = useTranslations('Products');
@@ -87,11 +87,7 @@ export default function ProductDetailsContent() {
 
   if (isLoading || !product) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-[#f1f4f1] to-white dark:bg-[#080808] flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-500 rounded-full animate-spin" />
-         </div>
-      </div>
+      <LoaderIcon/>
     );
   }
 

@@ -4,18 +4,20 @@ import { apiFetch } from '@/lib/api';
 import React, { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Edit2, Trash2, Image as ImageIcon } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Image as ImageIcon, PackageX } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import AppPagination from '@/components/shared/AppPagination';
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
+import LoaderIcon from '@/components/shared/LoaderIcon';
+import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}products`;
 
 
 export default function ProductsList() {
-  const t = useTranslations('Dashboard'); 
+  const t = useTranslations('Dashboard');
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,7 +27,7 @@ export default function ProductsList() {
   const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
- const locale = useLocale();
+  const locale = useLocale();
   const isRtl = locale === 'ar';
   const fetchProducts = async () => {
     try {
@@ -37,7 +39,7 @@ export default function ProductsList() {
       if (searchTerm) {
         url.searchParams.append('search', searchTerm);
       }
-      
+
       const res = await apiFetch(url.toString(), {
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
@@ -62,8 +64,8 @@ export default function ProductsList() {
     }, 300);
     return () => clearTimeout(timer);
   }, [currentPage, itemsPerPage, searchTerm]);
- 
- const handleDelete = async () => {
+
+  const handleDelete = async () => {
     if (!deleteId) return;
 
     setIsDeleting(true);
@@ -86,17 +88,36 @@ export default function ProductsList() {
     }
   };
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+    <div className="space-y-8 container mx-auto">
+      <ShopBreadcrumb
+        items={[
+          { label: t('dashboard'), href: '/dashboard' },
+          { label: t('products') }
+        ]}
+      />
+     
+
+      <div className="bg-white dark:bg-[#081640] rounded-[1rem] shadow border border-gray-100 dark:border-white/5 overflow-hidden">
+        <div className="p-8 border-b border-gray-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex flex-col md:flex-row justify-between w-full items-start md:items-center gap-6">
         <div>
-          <h1 className="text-4xl font-black tracking-tighter uppercase dark:text-white mb-2">
+          <h1 className="text-xl font-black tracking-tighter dark:text-white mb-1">
             {t('products')}
           </h1>
-          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">
-            Manage your store inventory and availability
+          <p className="text-[12px] font-bold text-gray-400 tracking-widest">
+            {t('productsListDesc')}
           </p>
         </div>
-
+ <div className="relative w-full md:w-3xl">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder={t('search')}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-200 rounded-md py-3  px-6 text-sm outline-none transition-all"
+            />
+          </div>
         <Link href="/dashboard/products/new">
           <button className="flex items-center gap-3 px-8 py-4 bg-primary-500 text-white rounded-md font-black cursor-pointer tracking-widest text-[12px] shadow-lg hover:scale-105 transition-transform">
             <Plus className="w-4 h-4" />
@@ -104,19 +125,6 @@ export default function ProductsList() {
           </button>
         </Link>
       </div>
-
-      <div className="bg-white dark:bg-[#081640] rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl overflow-hidden">
-        <div className="p-8 border-b border-gray-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="relative w-full md:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder={t('search')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-50 dark:bg-gray-900/50 border border-transparent focus:border-blue-500/50 rounded-xl py-3 pl-12 pr-6 text-sm outline-none transition-all"
-            />
-          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -134,8 +142,41 @@ export default function ProductsList() {
               <AnimatePresence mode="popLayout">
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-10 text-gray-500 font-bold">
-                      Loading...
+                    <TableCell colSpan={5} className="text-center py-10">
+                      <LoaderIcon />
+                    </TableCell>
+                  </TableRow>
+                ) : products.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="py-12 text-center">
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="flex flex-col items-center justify-center gap-3"
+                      >
+                        <motion.div
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 15 }}
+                          className="w-16 h-16 rounded-2xl bg-gray-50 dark:bg-slate-800/50 flex items-center justify-center text-gray-400 dark:text-gray-500 mb-2"
+                        >
+                          <PackageX className="w-8 h-8" strokeWidth={1.5} />
+                        </motion.div>
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.2 }}
+                          className="flex flex-col items-center gap-1"
+                        >
+                          <p className="text-gray-500 dark:text-gray-400 font-bold text-sm">
+                            {isRtl ? 'لا توجد منتجات حالياً' : 'No products found'}
+                          </p>
+                          <p className="text-gray-400 dark:text-gray-500 text-xs font-medium">
+                            {isRtl ? 'لم يتم العثور على أي منتجات مطابقة' : 'No matching products were found'}
+                          </p>
+                        </motion.div>
+                      </motion.div>
                     </TableCell>
                   </TableRow>
                 ) : products.map((product, index) => (
@@ -168,11 +209,11 @@ export default function ProductsList() {
                     <TableCell className="px-8 py-6">
                       <div className="flex flex-col">
                         <span className={`text-sm font-black tracking-tighter ${product.price_discount ? 'text-emerald-500' : 'dark:text-white'}`}>
-                           {parseFloat(product.price_discount || product.price || 0).toFixed(2)} ر.س
+                          {parseFloat(product.price_discount || product.price || 0).toFixed(2)} ر.س
                         </span>
                         {product.price_discount && (
                           <span className="text-[10px] font-bold text-gray-400 line-through tracking-widest">
-                             {parseFloat(product.price || 0).toFixed(2)} ر.س
+                            {parseFloat(product.price || 0).toFixed(2)} ر.س
                           </span>
                         )}
                       </div>
@@ -192,7 +233,7 @@ export default function ProductsList() {
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                         </Link>
-                        <button 
+                        <button
                           onClick={() => setDeleteId(product.id)}
                           className="p-2.5 cursor-pointer rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-red-600 hover:text-white transition-all"
                         >
@@ -214,14 +255,14 @@ export default function ProductsList() {
         totalItems={totalItems}
         onPageChange={setCurrentPage}
       />
-      
-   
-         <DeleteConfirmDialog
-           isOpen={!!deleteId}
-           isDeleting={isDeleting}
-           onClose={() => setDeleteId(null)}
-           onConfirm={handleDelete}
-         />
+
+
+      <DeleteConfirmDialog
+        isOpen={!!deleteId}
+        isDeleting={isDeleting}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

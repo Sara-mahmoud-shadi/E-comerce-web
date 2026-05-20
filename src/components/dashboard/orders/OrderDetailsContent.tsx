@@ -20,6 +20,7 @@ import {
 import { useRouter } from '@/i18n/routing';
 import { toast } from 'sonner';
 import DynamicSelect from '@/components/shared/DynamicSelect';
+import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 
 interface OrderDetailsContentProps {
   id: string;
@@ -179,34 +180,39 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
   };
 
   return (
-    <div className="max-w-6xl mx-auto pb-20">
-      <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="space-y-4">
+      <div className="container 2xl:max-w-5xl mx-auto mt-4 pb-20">
+        <ShopBreadcrumb 
+          items={[
+            { label: t('dashboard'), href: '/dashboard' },
+            { label: t('orders'), href: '/dashboard/orders' },
+            { label: `#${order.order_number?.replace('ORD-', '') || order.id}` }
+          ]} 
+        />
+        <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="space-y-3">
           <button 
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-blue-600 transition-colors"
+            className="flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-primary-500 transition-colors"
           >
-            <ArrowLeft className="w-3 h-3" />
+            <ArrowLeft className="w-4 h-4" />
             {to('backToOrders')}
           </button>
           <div className="flex items-center gap-4 flex-wrap">
-            <h1 className="text-4xl font-black tracking-tighter uppercase dark:text-white">
-              {to('orderId')}: #{order.order_number?.replace('ORD-', '') || order.id}
+            <h1 className="text-3xl font-black tracking-tighter uppercase dark:text-white">
+              {to('orderId')}: #{order.order_number || order.id}
             </h1>
-            <div className={`px-4 py-1.5 bg-primary-500/10  text-primary-500 rounded-full text-[10px] font-black tracking-widest flex items-center gap-2 shadow ${getStatusColors(order.status_order)}`}>
+            <div className={`px-3 py-1 bg-primary-500/10 text-primary-600 dark:text-primary-400 rounded-lg text-xs font-bold flex items-center gap-2 ${getStatusColors(order.status_order)}`}>
               <div className={`w-1.5 h-1.5 rounded-full ${order.status_order === 'delivered' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`} />
               {to(`status_${order.status_order}`) || order.status_order || 'Pending'}
             </div>
           </div>
-          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+          <p className="text-sm font-medium text-gray-500 flex items-center gap-2">
             <Clock className="w-4 h-4" />
             {formatDate(order.createdAt)}
           </p>
         </div>
         
         <div className="flex items-center gap-4 w-full md:w-auto">
-        
-
           {isEditingStatus ? (
             <div className="flex items-end gap-2 w-full md:w-auto">
               <DynamicSelect
@@ -223,7 +229,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
               />
               <button
                 onClick={() => setIsEditingStatus(false)}
-                className="px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 rounded-md cursor-pointer font-black text-[10px] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors h-[46px] flex items-center justify-center"
+                className="px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 rounded-lg cursor-pointer font-bold text-sm hover:bg-gray-200 dark:hover:bg-white/10 transition-colors h-[46px] flex items-center justify-center"
               >
                 {t('cancel')}
               </button>
@@ -231,7 +237,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
           ) : (
             <button
               onClick={() => setIsEditingStatus(true)}
-              className="flex-1 md:flex-none flex items-center cursor-pointer justify-center gap-3 px-8 py-4 bg-primary-500 text-white rounded-md font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-transform"
+              className="flex-1 md:flex-none flex items-center cursor-pointer justify-center gap-2 px-6 py-3 bg-primary-500 text-white rounded-lg font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
             >
               {to('updateStatus')}
             </button>
@@ -239,26 +245,26 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-10">
+        <div className="lg:col-span-2 space-y-8">
           {/* Items Section */}
-          <section className="bg-white dark:bg-[#081640] rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl overflow-hidden">
-            <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-              <div className="flex items-center gap-3">
+          <section className="bg-white dark:bg-[#081640] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
+            <div className="p-6 md:p-8 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
+              <div className="flex items-center gap-2">
                 <Package className="w-5 h-5 text-primary-500" />
-                <h3 className="text-sm font-black uppercase tracking-widest dark:text-white">{to('orderItems')}</h3>
+                <h2 className="text-lg font-bold dark:text-white">{to('orderItems')}</h2>
               </div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">{t('productsCount')}: {(order.items || []).length}</span>
+              <span className="text-sm font-medium text-gray-500">{t('productsCount')}: {(order.items || []).length}</span>
             </div>
             
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-gray-900/20">
-                    <th className="px-8 py-6 text-start text-[10px] font-black uppercase tracking-widest text-gray-400">{to('product')}</th>
-                    <th className="px-8 py-6 text-start text-[10px] font-black uppercase tracking-widest text-gray-400">{to('qty')}</th>
-                    <th className="px-8 py-6 text-start text-[10px] font-black uppercase tracking-widest text-gray-400">{to('total')}</th>
+                  <tr className="border-b border-gray-100 dark:border-white/5">
+                    <th className="px-6 md:px-8 py-4 text-start text-xs font-bold text-gray-500">{to('product')}</th>
+                    <th className="px-6 md:px-8 py-4 text-start text-xs font-bold text-gray-500">{to('qty')}</th>
+                    <th className="px-6 md:px-8 py-4 text-start text-xs font-bold text-gray-500">{to('total')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -269,23 +275,23 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
                     const productImage = product.images?.[0] || 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?w=200&h=200&fit=crop';
                     
                     return (
-                      <tr key={item.id || index} className="group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                        <td className="px-8 py-6">
+                      <tr key={item.id || index} className="group hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                        <td className="px-6 md:px-8 py-6">
                           <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-2xl overflow-hidden border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-gray-900">
+                            <div className="w-14 h-14 rounded-xl overflow-hidden border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-gray-900">
                               <img src={productImage} alt={productName} className="w-full h-full object-cover" />
                             </div>
                             <div>
-                              <h4 className="text-sm font-black dark:text-white uppercase tracking-tight">{productName}</h4>
-                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{categoryName}</p>
+                              <h4 className="text-sm font-bold dark:text-white">{productName}</h4>
+                              <p className="text-xs font-medium text-gray-500 mt-0.5">{categoryName}</p>
                             </div>
                           </div>
                         </td> 
-                        <td className="px-8 py-6">
-                          <span className="text-sm font-black dark:text-white"> {item.quantity}</span>
+                        <td className="px-6 md:px-8 py-6">
+                          <span className="text-sm font-bold dark:text-white">{item.quantity}</span>
                         </td>
-                        <td className="px-8 py-6 flex gap-2 items-center">
-                          <span className="text-sm font-black text-primary-500 dark:text-blue-400"> {Number(item.price * item.quantity).toFixed(2)} ر.س</span>
+                        <td className="px-6 md:px-8 py-6">
+                          <span className="text-sm font-bold text-gray-900 dark:text-white">{Number(item.price * item.quantity).toFixed(2)} ر.س</span>
                         </td>
                       </tr>
                     );
@@ -294,39 +300,40 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
               </table>
             </div>
 
-            <div className="p-10 bg-gray-50/50 dark:bg-gray-900/20 space-y-4">
+            <div className="p-6 md:p-8 bg-gray-50/50 dark:bg-white/[0.02] border-t border-gray-100 dark:border-white/5 space-y-3">
               <div className="flex justify-between items-center text-sm">
-                <span className="font-bold text-gray-400 uppercase tracking-widest text-[10px]">{to('subtotal')}</span>
-                <span className="font-black dark:text-white"> {subtotal.toFixed(2)} ر.س</span>
+                <span className="font-medium text-gray-500">{to('subtotal')}</span>
+                <span className="font-bold dark:text-white">{subtotal.toFixed(2)} ر.س</span>
               </div>
               <div className="flex justify-between items-center text-sm">
-                <span className="font-bold text-gray-400 uppercase tracking-widest text-[10px]">{to('shipping')}</span>
-                <span className="font-black text-emerald-500 uppercase tracking-widest text-[10px]">{to('free')}</span>
+                <span className="font-medium text-gray-500">{to('shipping')}</span>
+                <span className="font-bold text-emerald-500">{to('free')}</span>
               </div>
-              <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-white/5">
-                <span className="font-black uppercase tracking-widest dark:text-white">{to('total')}</span>
-                <span className="text-2xl font-black text-primary-500 dark:text-blue-400 tracking-tighter">{total.toFixed(2)} ر.س</span>
+              <div className="flex justify-between items-center pt-4 mt-2 border-t border-gray-200 dark:border-white/5">
+                <span className="font-bold text-gray-900 dark:text-white">{to('total')}</span>
+                <span className="text-xl font-black text-primary-500 dark:text-primary-400">{total.toFixed(2)} ر.س</span>
               </div>
             </div>
           </section>
 
           {/* Timeline Section */}
-          <section className="bg-white dark:bg-[#081640] p-10 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl">
-            <div className="flex items-center gap-3 mb-10">
-              <Clock className="w-5 h-5 text-amber-500" />
-              <h3 className="text-sm font-black uppercase tracking-widest dark:text-white">{to('orderTimeline')}</h3>
+          <section className="bg-white dark:bg-[#081640] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
+            <div className="p-6 md:p-8 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+              <h2 className="text-lg font-bold dark:text-white flex items-center gap-2">
+                <Clock className="w-5 h-5 text-amber-500" />
+                {to('orderTimeline')}
+              </h2>
             </div>
-            
-            <div className="space-y-8 relative before:absolute before:left-[17px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-100 dark:before:bg-white/5">
+            <div className="p-6 md:p-8 space-y-8 relative before:absolute ltr:before:right-10 rtl:before:left-auto rtl:before:left-10 before:top-10 before:bottom-10 before:w-px before:bg-gray-200 dark:before:bg-white/10">
               {timelineSteps.map((item, index) => (
-                <div key={index} className={`relative pl-12 ${!item.active ? 'opacity-50' : ''}`}>
-                  <div className={`absolute left-0 top-1 w-9 h-9 rounded-full flex items-center justify-center z-10 border-4 border-white dark:border-[#081640] ${item.active ? 'bg-primary-500 text-white' : 'bg-gray-100 dark:bg-gray-900 text-gray-400'}`}>
-                    {item.active && index === timelineSteps.filter(s => s.active).length - 1 ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-2 h-2 rounded-full bg-current" />}
+                <div key={index} className={`relative rtl:pl-12 ltr:pr-12 ${!item.active ? 'opacity-40' : ''}`}>
+                  <div className={`absolute rtl:-left-1 ltr:-right-1 top-1 w-6 h-6 rounded-full flex items-center justify-center z-10 border-[3px] border-white dark:border-[#081640] ${item.active ? 'bg-primary-500 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-500'}`}>
+                    {item.active && index === timelineSteps.filter(s => s.active).length - 1 ? <CheckCircle2 className="w-3 h-3" /> : <div className="w-1.5 h-1.5 rounded-full bg-current" />}
                   </div>
                   <div>
-                    <h4 className="text-xs font-black dark:text-white uppercase tracking-widest">{to(item.status)}</h4>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">{item.date}</p>
-                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mt-2">{item.note}</p>
+                    <h4 className="text-sm font-bold dark:text-white">{to(item.status)}</h4>
+                    <p className="text-xs font-medium text-gray-500 mt-1">{item.date}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1.5 leading-relaxed">{item.note}</p>
                   </div>
                 </div>
               ))}
@@ -335,66 +342,59 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
         </div>
 
         {/* Sidebar Info */}
-        <div className="space-y-10">
+        <div className="space-y-8">
           {/* Customer Card */}
-          <section className="bg-white dark:bg-[#081640] p-10 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl space-y-8">
-            <div className="flex items-center gap-3">
-              <User className="w-5 h-5 text-purple-500" />
-              <h3 className="text-sm font-black uppercase tracking-widest dark:text-white">{to('customerDetails')}</h3>
+          <section className="bg-white dark:bg-[#081640] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+              <h2 className="text-lg font-bold dark:text-white flex items-center gap-2">
+                <User className="w-5 h-5 text-purple-500" />
+                {to('customerDetails')}
+              </h2>
             </div>
             
-            <div className="flex items-center gap-4">
-              <img src={`https://i.pravatar.cc/150?u=${order.email}`} className="w-16 h-16 rounded-2xl object-cover" alt="" />
-              <div>
-                <h4 className="text-sm font-black dark:text-white uppercase tracking-tight">{order.name}</h4>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Customer ID: #CUST-{order.id}</p>
+            <div className="p-6 space-y-6">
+              <div className="flex items-center gap-4">
+                <img src={`https://i.pravatar.cc/150?u=${order.email}`} className="w-14 h-14 rounded-full object-cover shadow-sm border border-gray-100 dark:border-white/5" alt="" />
+                <div>
+                  <h4 className="text-base font-bold dark:text-white">{order.name}</h4>
+                  <p className="text-xs font-medium text-gray-500 mt-0.5">ID: #CUST-{order.id}</p>
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-4 pt-4 border-t border-gray-100 dark:border-white/5">
-              <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
-                <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                  <Mail className="w-4 h-4" />
+              <div className="space-y-4 pt-6 border-t border-gray-100 dark:border-white/5">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-500">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium text-gray-500">Email Address</span>
+                    <span className="text-sm font-bold text-gray-900 dark:text-white truncate">{order.email}</span>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[8px] font-black uppercase tracking-[0.2em] text-gray-400">Email Address</span>
-                  <span className="text-xs font-bold truncate">{order.email}</span>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-500">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium text-gray-500">Phone Number</span>
+                    <span className="text-sm font-bold text-gray-900 dark:text-white">{order.phone}</span>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
-                <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                  <Phone className="w-4 h-4" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[8px] font-black uppercase tracking-[0.2em] text-gray-400">Phone Number</span>
-                  <span className="text-xs font-bold">{order.phone}</span>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-500">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium text-gray-500">Address</span>
+                    <span className="text-sm font-bold text-gray-900 dark:text-white line-clamp-2">{order.address}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
-
-          {/* Shipping Card */}
-          <section className="bg-white dark:bg-[#081640] p-10 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-2xl space-y-8">
-            <div className="flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-emerald-500" />
-              <h3 className="text-sm font-black uppercase tracking-widest dark:text-white">{to('shippingAddress')}</h3>
-            </div>
-            
-            <div className="space-y-2">
-              <p className="text-sm font-bold dark:text-white leading-relaxed">
-                {order.address}
-              </p>
-            </div>
-
-            <div className="pt-4 border-t border-gray-100 dark:border-white/5">
-              <div className="flex items-center gap-3 text-emerald-500">
-                <Truck className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Express Shipping</span>
-              </div>
-            </div>
-          </section>
+ 
         </div>
       </div>
-    </div>
+    </div> 
   );
 }
