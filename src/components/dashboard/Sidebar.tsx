@@ -74,7 +74,7 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative",
+                "flex items-center gap-4 px-4 py-3.5 rounded-lg transition-all duration-300 group relative",
                 isActive 
                   ? "bg-primary-500 text-white shadow-lg shadow-blue-500/20" 
                   : "text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"

@@ -6,14 +6,14 @@ import { useTranslations } from 'next-intl';
 import LanguageSwitcher from '../shared/LanguageSwitcher';
 import { Search, Bell, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import DashboardHeader from './DashboardHeader';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const t = useTranslations('Dashboard');
-  const router = useRouter();
+  const t = useTranslations('Dashboard'); 
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -29,36 +29,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       <main className="flex-grow flex flex-col h-screen overflow-hidden">
         {/* Dashboard Header */}
-        <header className="h-24 shrink-0 bg-white dark:bg-[#081640] border-b border-gray-100 dark:border-white/5 flex items-center justify-between px-10">
-          <div className="flex items-center gap-8 flex-grow max-w-2xl">
-            <div className="relative w-full group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-              <input
-                type="text"
-                placeholder={t('search')}
-                className="w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-200  rounded-md py-3 pl-12 pr-6 text-sm outline-none transition-all"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <LanguageSwitcher />
-
-            <div className="h-10 w-px bg-gray-300 dark:bg-white/5" />
-
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary-500/10 dark:bg-blue-500/10 flex items-center justify-center text-primary-500 dark:text-blue-400">
-                <User className="w-5 h-5" />
-              </div>
-              <div className=" hidden md:block">
-                <p className="text-xs font-black text-primary-500 tracking-widest dark:text-white">Admin User</p>
-                <p className="text-[10px] font-bold text-gray-400">Super Admin</p>
-              </div>
-
-            </div>
-          </div>
-        </header>
-
+        <DashboardHeader/>
         {/* Dashboard Content */}
         <section className="flex-grow  overflow-y-auto pt-5 px-5 scrollbar-hide">
           <div className="flex-grow">
@@ -66,7 +37,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
 
           <footer className="mt-10 py-3 border-t text-center border-gray-200 dark:border-white/10 flex flex-col md:flex-row items-center justify-center text-gray-400 text-sm font-bold">
-            <p>© {new Date().getFullYear()} E-Commerce. {t('rights')}</p>
+            <p>{new Date().getFullYear()} ©  E-Commerce. {t('rights')}</p>
           </footer>
         </section>
       </main>

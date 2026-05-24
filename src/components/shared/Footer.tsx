@@ -8,7 +8,7 @@ export default function Footer() {
   const t = useTranslations('Footer');
 
   return (
-    <div>
+    <div className="print:hidden">
       {/* Enhanced SVG Wave Divider */}
       <div className="w-full overflow-hidden leading-[0] pointer-events-none select-none -mb-[2px] relative z-10">
         <style dangerouslySetInnerHTML={{ __html: `` }} />

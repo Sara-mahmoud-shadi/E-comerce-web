@@ -12,8 +12,8 @@ import { toast } from 'sonner';
 import Image from 'next/image';
 import { getImageUrl } from './products/ProductCard';
 import { Link } from '@/i18n/routing';
-import { cn } from '@/lib/utils';
 import { ShopBreadcrumb } from './shared/ShopBreadcrumb';
+import ModernInvoice from './ModernInvoice';
 
 export default function CheckoutContent() {
   const t = useTranslations('Checkout');
@@ -35,6 +35,7 @@ export default function CheckoutContent() {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [orderData, setOrderData] = useState<any>(null);
 
   useEffect(() => {
     setIsHydrated(true);
@@ -114,6 +115,24 @@ export default function CheckoutContent() {
       });
 
       if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        console.log(data)
+        setOrderData({
+          id: data.id || `INV-${Math.floor(100000 + Math.random() * 900000)}`,
+          items: [...items],
+          subtotal: getTotalPrice(),
+          shippingCost: 0,
+          order_number: data.order_number,
+          total: getTotalPrice(),
+          customer: {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+          },
+          date: new Date().toISOString()
+        });
+
         setIsCompleted(true);
         toast.success(t('orderSuccess'));
         clearCart();
@@ -165,82 +184,90 @@ export default function CheckoutContent() {
         <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-accent-500/5 rounded-full blur-[80px] pointer-events-none" />
 
         <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full">
-          <div className="flex flex-col items-center justify-center text-center gap-6 max-w-3xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+            <div className="flex flex-col   justify-center  gap-6 max-w-3xl  ">
 
-            {/* Centered Content (Metadata & Titles) */}
-            <div className="w-full flex flex-col items-center justify-center">
+              {/* Centered Content (Metadata & Titles) */}
+              <div className="w-full flex flex-col items-center justify-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="space-y-6 flex flex-col  "
+                >
+                  {/* Shop Breadcrumb */}
+                  <ShopBreadcrumb
+                    items={[{ label: t('title') }]}
+                    className="justify-center"
+                  />
+
+                  {/* Subtitle Badge Row */}
+                  <div className="flex flex-wrap  gap-3">
+                    <span className="bg-primary-600 text-white font-extrabold tracking-widest text-[10px] px-3.5 py-1.5 rounded-full shadow-sm uppercase">
+                      {isRtl ? 'إتمام الدفع الآمن' : 'SECURE CHECKOUT'}
+                    </span>
+                    <span className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md text-primary-600 dark:text-primary-400 border border-primary-500/10 font-bold text-[10px] px-3.5 py-1.5 rounded-full shadow-sm animate-pulse">
+                      {itemCount} {itemCount === 1 ? tc('item') : tc('items')}
+                    </span>
+                  </div>
+
+                  {/* Main Headline */}
+                  <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold  text-gray-900 dark:text-white leading-[1.1] tracking-tight uppercase">
+                    {t('title')}
+                  </h1>
+
+                  {/* Description */}
+                  <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 font-medium leading-relaxed max-w-xl ">
+                    {t('subtitle')}
+                  </p>
+                </motion.div>
+              </div>
+
+            </div>
+            {/* Right Content (Modern 3D Interactive Framed Image Collage) */}
+            <div className="flex-1 max-w-2xl text-center flex flex-col items-center  ">
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="space-y-6 flex flex-col items-center"
+                initial={{ opacity: 0, scale: 0.9, rotate: 3 }}
+                animate={{ opacity: 1, scale: 1, rotate: isRtl ? -3 : 3 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className="relative w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] group select-none cursor-pointer"
               >
-                {/* Shop Breadcrumb */}
-                <ShopBreadcrumb
-                  items={[{ label: t('title') }]}
-                  className="justify-center"
-                />
+                {/* Glowing Background Accent */}
+                <div className="absolute inset-0 bg-primary-500/20 rounded-[2.5rem] blur-xl group-hover:scale-105 transition-transform duration-500 animate-pulse" />
 
-                {/* Subtitle Badge Row */}
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                  <span className="bg-primary-500 text-white font-extrabold tracking-widest text-[10px] px-3.5 py-1.5 rounded-full shadow-sm uppercase">
-                    {isRtl ? 'إتمام الدفع الآمن' : 'SECURE CHECKOUT'}
-                  </span>
-                  <span className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md text-primary-600 dark:text-primary-400 border border-primary-500/10 font-bold text-[10px] px-3.5 py-1.5 rounded-full shadow-sm animate-pulse">
-                    {itemCount} {itemCount === 1 ? tc('item') : tc('items')}
-                  </span>
+                {/* Elegant White Outer Container with Glassmorphism */}
+                <div className="absolute inset-0 bg-white dark:bg-slate-800 border-4 border-white dark:border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] rounded-[2.5rem] overflow-hidden group-hover:rotate-0 transition-transform duration-700">
+                  <Image
+                    src={"https://pngimg.com/uploads/shopping_cart/shopping_cart_PNG73.png"}
+                    alt="allProducts"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                    sizes="320px"
+                    priority
+                  />
+                  {/* Subtle Gradient Overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10" />
                 </div>
 
-                {/* Main Headline */}
-                <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-center text-gray-900 dark:text-white leading-[1.1] tracking-tight uppercase">
-                  {t('title')}
-                </h1>
-
-                {/* Description */}
-                <p className="text-base text-center sm:text-lg text-gray-600 dark:text-gray-300 font-medium leading-relaxed max-w-xl mx-auto">
-                  {t('subtitle')}
-                </p>
+                {/* Ornamental Floating Shapes */}
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-accent-500 rounded-2xl shadow-lg -rotate-12 animate-float pointer-events-none" />
+                <div className="absolute -bottom-4 -right-4 w-16 h-16 border-4 border-primary-500 rounded-full shadow-lg rotate-45 pointer-events-none" />
               </motion.div>
             </div>
-
           </div>
         </div>
       </header>
 
       {/* Main Slide-Up HUD Content Container */}
-      <div className="relative -top-20  dark:bg-[#0d1510] transition-colors duration-500 pb-24">
+      <div className="relative -top-10  dark:bg-[#0d1510] transition-colors duration-500 pb-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          {isCompleted && orderData ? (
+            <ModernInvoice order={orderData} />
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
-            {/* Left Side: Shipping & Checkout Form */}
-            <div className="lg:col-span-7 space-y-8">
-              <AnimatePresence>
-                {isCompleted && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                    animate={{ opacity: 1, height: 'auto', marginBottom: 32 }}
-                    exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  >
-                    <Alert variant="success" className="rounded-[2rem] p-8 border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-500/5 shadow-2xl">
-                      <div className="flex flex-col items-center text-center space-y-4">
-                        <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 dark:text-emerald-400 shadow-inner">
-                          <CheckCircle2 className="w-8 h-8" />
-                        </div>
-                        <div>
-                          <AlertTitle className="text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400 mb-2">
-                            {t('orderSuccessTitle')}
-                          </AlertTitle>
-                          <AlertDescription className="text-base font-bold text-emerald-600/70 dark:text-emerald-400/70">
-                            {t('orderSuccessMessage')}
-                          </AlertDescription>
-                        </div>
-                      </div>
-                    </Alert>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {!isCompleted && (
+              {/* Left Side: Shipping & Checkout Form */}
+              <div className="lg:col-span-7 space-y-8">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -313,124 +340,124 @@ export default function CheckoutContent() {
                     )}
                   </button>
                 </motion.div>
-              )}
-            </div>
+              </div>
 
-            {/* Right Side: High-End Printed-Ticket Boarding-Pass Summary Card */}
-            <div className="lg:col-span-5">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="relative bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border border-gray-100 dark:border-slate-800/80 rounded-3xl p-8 shadow-[0_30px_70px_rgba(0,0,0,0.02)] space-y-6 overflow-hidden"
-              >
-                {/* Visual Ticket Cutout Accents (Left & Right Side Holes) */}
-                <div className="absolute top-[28%] -left-3.5 w-7 h-7 rounded-full bg-white dark:bg-[#0d1510] border border-gray-100 dark:border-slate-800/80 pointer-events-none z-10" />
-                <div className="absolute top-[28%] -right-3.5 w-7 h-7 rounded-full bg-white dark:bg-[#0d1510] border border-gray-100 dark:border-slate-800/80 pointer-events-none z-10" />
+              {/* Right Side: High-End Printed-Ticket Boarding-Pass Summary Card */}
+              <div className="lg:col-span-5">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="relative bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border border-gray-100 dark:border-slate-800/80 rounded-3xl p-8 shadow-[0_30px_70px_rgba(0,0,0,0.02)] space-y-6 overflow-hidden"
+                >
+                  {/* Visual Ticket Cutout Accents (Left & Right Side Holes) */}
+                  <div className="absolute top-[28%] -left-3.5 w-7 h-7 rounded-full bg-white dark:bg-[#0d1510] border border-gray-100 dark:border-slate-800/80 pointer-events-none z-10" />
+                  <div className="absolute top-[28%] -right-3.5 w-7 h-7 rounded-full bg-white dark:bg-[#0d1510] border border-gray-100 dark:border-slate-800/80 pointer-events-none z-10" />
 
-                {/* Summary Header */}
-                <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-slate-800/80">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-accent-500/10 flex items-center justify-center text-accent-500">
-                      <ShoppingBag className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-lg font-black text-primary-500 dark:text-white tracking-tight leading-none">
-                      {tc('summary')}
-                    </h3>
-                  </div>
-                  <div className="bg-primary-500/10 text-primary-500 dark:text-primary-400 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase">
-                    {itemCount} {itemCount === 1 ? tc('item') : tc('items')}
-                  </div>
-                </div>
-
-                {/* Items Showroom */}
-                <div className="max-h-[350px] overflow-y-auto pr-1 space-y-4 scrollbar-none">
-                  {items.length === 0 ? (
-                    <div className="text-center py-10 space-y-4">
-                      <ShoppingCart className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto" />
-                      <p className="text-sm font-bold text-gray-400 dark:text-gray-500">
-                        {tc('empty')}
-                      </p>
-                      <Link
-                        href="/products"
-                        className="inline-flex items-center gap-2 text-xs font-black text-primary-500 hover:text-primary-600"
-                      >
-                        <ArrowLeft className="w-3.5 h-3.5 rtl:rotate-180" />
-                        {tc('continueShopping')}
-                      </Link>
-                    </div>
-                  ) : (
-                    items.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between gap-4 p-2.5 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors duration-300">
-                        <div className="flex items-center gap-4">
-                          {/* Image Thumbnail */}
-                          <div className="relative w-16 h-16 rounded-2xl border border-gray-100 dark:border-slate-800/80 overflow-hidden shrink-0">
-                            <Image
-                              src={getImageUrl(item.images?.[0])}
-                              alt={isRtl ? item.name_ar : item.name_en}
-                              fill
-                              className="object-cover"
-                              sizes="64px"
-                            />
-                          </div>
-
-                          {/* Name & Quantity */}
-                          <div className="text-left rtl:text-right">
-                            <h4 className="text-sm font-black text-gray-800 dark:text-white line-clamp-1 leading-tight mb-1">
-                              {isRtl ? item.name_ar : item.name_en}
-                            </h4>
-                            <span className="bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 font-extrabold text-[10px] px-2 py-0.5 rounded-md">
-                              QTY: {item.quantity}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Price */}
-                        <p className="font-black text-accent-500 text-sm tracking-tight shrink-0">
-                          {tp('price', { price: (item.price_discount || item.price) * item.quantity })}
-                        </p>
+                  {/* Summary Header */}
+                  <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-slate-800/80">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-accent-500/10 flex items-center justify-center text-accent-500">
+                        <ShoppingBag className="w-5 h-5" />
                       </div>
-                    ))
-                  )}
-                </div>
-
-                {/* Dashed Printed Ticket Divider */}
-                <div className="border-t-2 border-dashed border-gray-200 dark:border-slate-800 my-6 relative" />
-
-                {/* Calculations & Invoice Matrix */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between text-sm font-bold text-gray-500 dark:text-gray-400">
-                    <span>{tc('subtotal')}</span>
-                    <span className="text-primary-500 dark:text-white font-black">
-                      {tp('price', { price: subtotal })}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm font-bold text-gray-500 dark:text-gray-400">
-                    <span>{tc('shippingEstimate')}</span>
-                    <span className="text-emerald-500 dark:text-emerald-400 font-extrabold text-[11px] tracking-wider uppercase bg-emerald-500/10 px-2 py-0.5 rounded-md">
-                      {isRtl ? 'مجاني' : 'Free'}
-                    </span>
+                      <h3 className="text-lg font-black text-primary-500 dark:text-white tracking-tight leading-none">
+                        {tc('summary')}
+                      </h3>
+                    </div>
+                    <div className="bg-primary-500/10 text-primary-500 dark:text-primary-400 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase">
+                      {itemCount} {itemCount === 1 ? tc('item') : tc('items')}
+                    </div>
                   </div>
 
-                  {/* High-End Totals Capsule */}
-                  <div className="bg-[#f1f4f1] dark:bg-slate-800/40 rounded-3xl p-5 flex items-center justify-between border border-primary-500/5 mt-6">
-                    <div className="text-left rtl:text-right">
-                      <span className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-0.5">
-                        {isRtl ? 'المبلغ الإجمالي' : 'Total Amount'}
-                      </span>
-                      <span className="text-sm font-black text-gray-800 dark:text-white">
-                        {tc('total')}
+                  {/* Items Showroom */}
+                  <div className="max-h-[350px] overflow-y-auto pr-1 space-y-4 scrollbar-none">
+                    {items.length === 0 ? (
+                      <div className="text-center py-10 space-y-4">
+                        <ShoppingCart className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto" />
+                        <p className="text-sm font-bold text-gray-400 dark:text-gray-500">
+                          {tc('empty')}
+                        </p>
+                        <Link
+                          href="/products"
+                          className="inline-flex items-center gap-2 text-xs font-black text-primary-500 hover:text-primary-600"
+                        >
+                          <ArrowLeft className="w-3.5 h-3.5 rtl:rotate-180" />
+                          {tc('continueShopping')}
+                        </Link>
+                      </div>
+                    ) : (
+                      items.map((item) => (
+                        <div key={item.id} className="flex items-center justify-between gap-4 p-2.5 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors duration-300">
+                          <div className="flex items-center gap-4">
+                            {/* Image Thumbnail */}
+                            <div className="relative w-16 h-16 rounded-2xl border border-gray-100 dark:border-slate-800/80 overflow-hidden shrink-0">
+                              <Image
+                                src={getImageUrl(item.images?.[0])}
+                                alt={isRtl ? item.name_ar : item.name_en}
+                                fill
+                                className="object-cover"
+                                sizes="64px"
+                              />
+                            </div>
+
+                            {/* Name & Quantity */}
+                            <div className="text-left rtl:text-right">
+                              <h4 className="text-sm font-black text-gray-800 dark:text-white line-clamp-1 leading-tight mb-1">
+                                {isRtl ? item.name_ar : item.name_en}
+                              </h4>
+                              <span className="bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 font-extrabold text-[10px] px-2 py-0.5 rounded-md">
+                                QTY: {item.quantity}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Price */}
+                          <p className="font-black text-accent-500 text-sm tracking-tight shrink-0">
+                            {tp('price', { price: (item.price_discount || item.price) * item.quantity })}
+                          </p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Dashed Printed Ticket Divider */}
+                  <div className="border-t-2 border-dashed border-gray-200 dark:border-slate-800 my-6 relative" />
+
+                  {/* Calculations & Invoice Matrix */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between text-sm font-bold text-gray-500 dark:text-gray-400">
+                      <span>{tc('subtotal')}</span>
+                      <span className="text-primary-500 dark:text-white font-black">
+                        {tp('price', { price: subtotal })}
                       </span>
                     </div>
-                    <span className="text-3xl font-black text-primary-500 tracking-tighter">
-                      {tp('price', { price: total })}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+                    <div className="flex items-center justify-between text-sm font-bold text-gray-500 dark:text-gray-400">
+                      <span>{tc('shippingEstimate')}</span>
+                      <span className="text-emerald-500 dark:text-emerald-400 font-extrabold text-[11px] tracking-wider uppercase bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                        {isRtl ? 'مجاني' : 'Free'}
+                      </span>
+                    </div>
 
-          </div>
+                    {/* High-End Totals Capsule */}
+                    <div className="bg-[#f1f4f1] dark:bg-slate-800/40 rounded-3xl p-5 flex items-center justify-between border border-primary-500/5 mt-6">
+                      <div className="text-left rtl:text-right">
+                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-0.5">
+                          {isRtl ? 'المبلغ الإجمالي' : 'Total Amount'}
+                        </span>
+                        <span className="text-sm font-black text-gray-800 dark:text-white">
+                          {tc('total')}
+                        </span>
+                      </div>
+                      <span className="text-3xl font-black text-primary-500 tracking-tighter">
+                        {tp('price', { price: total })}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+            </div>
+          )}
         </div>
       </div>
     </div>

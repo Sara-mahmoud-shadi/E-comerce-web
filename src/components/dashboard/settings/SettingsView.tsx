@@ -94,7 +94,7 @@ export default function SettingsView() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Tabs Sidebar */}
-          <div className="lg:w-64 shrink-0 space-y-2">
+          <div className="lg:w-72 p-5 shrink-0 space-y-2 bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -117,7 +117,7 @@ export default function SettingsView() {
 
           {/* Form Content */}
           <div className="flex-grow">
-            <section className="bg-white dark:bg-[#081640] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm">
+            <section className="bg-white dark:bg-[#081640] border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
               <div className="p-6 md:p-8 space-y-8">
                 <AnimatePresence mode="wait">
                   {activeTab === 'general' && (

@@ -33,7 +33,7 @@ export default function OrdersList() {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [totalItems, setTotalItems] = React.useState(0);
-  const itemsPerPage = 10;
+  const itemsPerPage = 6;
   const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
   const [deleteId, setDeleteId] = React.useState<string | null>(null);
   const [isDeleting, setIsDeleting] = React.useState(false);

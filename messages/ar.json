@@ -137,7 +137,7 @@
     "addressPlaceholder": "الشارع، الحي، المبنى",
     "city": "المدينة",
     "cardNumber": "رقم البطاقة",
-    "orderSuccessTitle": "تم إتمام الطلب بنجاح!",
+    "orderSuccessTitle": "تم إتمام الطلب بنجاح",
     "orderSuccessMessage": "شكراً لشرائك. تم استلام طلبك وهو قيد التنفيذ حالياً.",
     "shippingDetailsRequired": "يرجى ملء جميع تفاصيل الشحن.",
     "cartEmpty": "حقيبة التسوق فارغة.",
@@ -324,6 +324,8 @@
     "instagramUrl": "رابط انستجرام",
     "twitterUrl": "رابط تويتر",
     "exitAdmin": "الخروج من لوحة التحكم",
+    "adminUser": "مستخدم إداري",
+    "superAdmin": "المدير العام",
     "rights": "جميع الحقوق محفوظة"
   },
   "pagination": {

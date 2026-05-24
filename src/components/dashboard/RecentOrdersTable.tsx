@@ -47,7 +47,7 @@ export default function RecentOrdersTable() {
       // Fetch latest 5 orders for overview
       const url = new URL(window.location.origin + '/api/orders');
       url.searchParams.append('page', '1');
-      url.searchParams.append('limit', '5');
+      url.searchParams.append('limit', '3');
 
       const res = await apiFetch(url.toString(), {
         headers: {
@@ -70,37 +70,7 @@ export default function RecentOrdersTable() {
   useEffect(() => { 
     fetchRecentOrders();
   }, []);
-
-  const getOrderStatusBadge = (status: string) => {
-    const statusKey = status || 'pending';
-    switch (statusKey) {
-      case 'delivered':
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black tracking-wider bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/10">
-            {to('status_delivered')}
-          </span>
-        );
-      case 'processing':
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black tracking-wider bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/10">
-            {to('status_processing')}
-          </span>
-        );
-      case 'shipped':
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black tracking-wider bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/10">
-            {to('status_shipped')}
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black tracking-wider bg-gray-500/10 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400 border border-gray-500/10">
-            {to('status_pending')}
-          </span>
-        );
-    }
-  };
-
+ 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}

@@ -95,36 +95,36 @@ export default function ProductsList() {
           { label: t('products') }
         ]}
       />
-     
+
 
       <div className="bg-white dark:bg-[#081640] rounded-[1rem] shadow border border-gray-100 dark:border-white/5 overflow-hidden">
         <div className="p-8 border-b border-gray-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex flex-col md:flex-row justify-between w-full items-start md:items-center gap-6">
-        <div>
-          <h1 className="text-xl font-black tracking-tighter dark:text-white mb-1">
-            {t('products')}
-          </h1>
-          <p className="text-[12px] font-bold text-gray-400 tracking-widest">
-            {t('productsListDesc')}
-          </p>
-        </div>
- <div className="relative w-full md:w-3xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder={t('search')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-200 rounded-md py-3  px-6 text-sm outline-none transition-all"
-            />
+            <div>
+              <h1 className="text-xl font-black tracking-tighter dark:text-white mb-1">
+                {t('products')}
+              </h1>
+              <p className="text-[12px] font-bold text-gray-400 tracking-widest">
+                {t('productsListDesc')}
+              </p>
+            </div>
+            <div className="relative w-full md:w-3xl">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder={t('search')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-200 rounded-md py-3  px-6 text-sm outline-none transition-all"
+              />
+            </div>
+            <Link href="/dashboard/products/new">
+              <button className="flex items-center gap-3 px-8 py-4 bg-primary-500 text-white rounded-md font-black cursor-pointer tracking-widest text-[12px] shadow-lg hover:scale-105 transition-transform">
+                <Plus className="w-4 h-4" />
+                {t('create')}
+              </button>
+            </Link>
           </div>
-        <Link href="/dashboard/products/new">
-          <button className="flex items-center gap-3 px-8 py-4 bg-primary-500 text-white rounded-md font-black cursor-pointer tracking-widest text-[12px] shadow-lg hover:scale-105 transition-transform">
-            <Plus className="w-4 h-4" />
-            {t('create')}
-          </button>
-        </Link>
-      </div>
         </div>
 
         <div className="overflow-x-auto">
