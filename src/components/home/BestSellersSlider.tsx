@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
+import { getApiBase } from '../dashboard/categories/CategoriesList';
 
 const getImageUrl = (url?: string) => {
   if (!url) return 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&h=300&fit=crop';
@@ -24,9 +25,8 @@ export default function BestSellersSlider() {
   useEffect(() => {
     const fetchBestSellers = async () => {
       setIsLoading(true);
-      try {
-        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
-        const res = await apiFetch(`${apiBase}products?page=1&limit=10`);
+      try { 
+        const res = await apiFetch(`${getApiBase()}products?page=1&limit=10`);
         if (res.ok) {
           const resData = await res.json();
           const list = Array.isArray(resData) ? resData : (resData.data || []);

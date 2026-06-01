@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
+import { getApiBase } from '../dashboard/categories/CategoriesList';
 
 const getImageUrl = (url?: string) => {
   if (!url) return 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&h=300&fit=crop';
@@ -47,14 +48,13 @@ export default function SearchBar() {
 
     const delayDebounceFn = setTimeout(async () => {
       setIsLoading(true);
-      try {
-        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+      try { 
         const params = new URLSearchParams({
           search: query.trim(),
           page: '1',
           limit: '8',
         });
-        const res = await apiFetch(`${apiBase}products?${params.toString()}`);
+        const res = await apiFetch(`${getApiBase()}products?${params.toString()}`);
         if (res.ok) {
           const data = await res.json();
           const productList = Array.isArray(data) ? data : (data.data || []);

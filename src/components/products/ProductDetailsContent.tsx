@@ -12,6 +12,7 @@ import { useCartStore } from '@/store/useCartStore';
 import { ShopBreadcrumb } from '../shared/ShopBreadcrumb';
 import { Product } from './ProductCard';  
 import LoaderIcon from '../shared/LoaderIcon';
+import { getApiBase } from '../dashboard/categories/CategoriesList';
 export default function ProductDetailsContent() {
   const { id } = useParams();
   const t = useTranslations('Products');
@@ -32,9 +33,8 @@ export default function ProductDetailsContent() {
   useEffect(() => {
     const fetchProduct = async () => {
       setIsLoading(true);
-      try {
-        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
-        const res = await apiFetch(`${apiBase}products/${id}`);
+      try { 
+        const res = await apiFetch(`${getApiBase()}products/${id}`);
         if (res.ok) {
           const resData = await res.json();
           if (resData) {

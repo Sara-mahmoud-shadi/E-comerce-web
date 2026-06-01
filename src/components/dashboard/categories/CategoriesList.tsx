@@ -13,7 +13,7 @@ import LoaderIcon from '@/components/shared/LoaderIcon';
 import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 import { toast } from 'sonner';
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}categories`;
+export const getApiBase = () => (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
 
 export default function CategoriesList() {
   const t = useTranslations('Dashboard');
@@ -34,15 +34,15 @@ export default function CategoriesList() {
   const fetchCategories = async () => {
     setIsLoading(true);
     try {
-      const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}categories/pagination`, window.location.origin);
-      url.searchParams.append('page', currentPage.toString());
-      url.searchParams.append('limit', itemsPerPage.toString());
+      const params = new URLSearchParams();
+      params.append('page', currentPage.toString());
+      params.append('limit', itemsPerPage.toString());
       if (searchTerm) {
-        url.searchParams.append('search', searchTerm);
+        params.append('search', searchTerm);
       }
 
       const token = localStorage.getItem('token');
-      const res = await apiFetch(url.toString(), {
+      const res = await apiFetch(`${getApiBase()}categories/pagination?${params.toString()}`, {
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         }
@@ -73,7 +73,7 @@ export default function CategoriesList() {
     setIsDeleting(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await apiFetch(`${API_URL}/${deleteId}`, {
+      const res = await apiFetch(`${getApiBase()}categories/${deleteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

@@ -12,6 +12,7 @@ import { ProductSort } from './products/ProductSort';
 import AppPagination from './shared/AppPagination'; 
 import SidebarFilters from './products/SidebarFilters';
 import FilterDrawer from './products/FilterDrawer';
+import { getApiBase } from './dashboard/categories/CategoriesList';
 
 
 
@@ -34,8 +35,7 @@ export default function CategoryDetailsContent() {
 
   const fetchData = async () => {
     setIsLoading(true);
-    try {
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+    try { 
       const params = new URLSearchParams();
       params.append('page', currentPage.toString());
       params.append('limit', itemsPerPage.toString());
@@ -44,7 +44,7 @@ export default function CategoryDetailsContent() {
         params.append('priceRanges', selectedPriceRanges.join(','));
       }
 
-      const finalUrl = `${apiBase}categories/${slug}/products?${params.toString()}`;
+      const finalUrl = `${getApiBase()}categories/${slug}/products?${params.toString()}`;
       const res = await apiFetch(finalUrl);
       if (res.ok) {
         const resData = await res.json();

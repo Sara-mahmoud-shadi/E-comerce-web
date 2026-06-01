@@ -14,6 +14,7 @@ import AppPagination from '../shared/AppPagination';
 import { ChevronDown, RefreshCcw, ShoppingBag, ShoppingCart, SlidersHorizontal, X } from 'lucide-react';
 import SidebarFilters from './SidebarFilters';
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { getApiBase } from '../dashboard/categories/CategoriesList';
 
 
 
@@ -36,9 +37,8 @@ export default function ProductsContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const fetchCategories = async () => {
-    try {
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
-      const res = await apiFetch(`${apiBase}categories`);
+    try { 
+      const res = await apiFetch(`${getApiBase()}categories`);
       if (res.ok) {
         const resData = await res.json();
         if (resData.data) {
@@ -61,14 +61,12 @@ export default function ProductsContent() {
 
   const fetchData = async (isReset = false) => {
     setIsLoading(true);
-    try {
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
-      
+    try { 
       let finalUrl = '';
       if (search && !isReset) {
         let queryStr = `?page=${isReset ? 1 : currentPage}&limit=${itemsPerPage}&search=${encodeURIComponent(search)}`;
         if (sortBy) queryStr += `&sort=${sortBy}`;
-        finalUrl = `${apiBase}products${queryStr}`;
+        finalUrl = `${getApiBase()}products${queryStr}`;
       } else {
         let queryStr = `?page=${isReset ? 1 : currentPage}&limit=${itemsPerPage}`;
         if (!isReset && sortBy) queryStr += `&sort=${sortBy}`;
@@ -78,7 +76,7 @@ export default function ProductsContent() {
         if (!isReset && selectedCategories.length > 0) {
           queryStr += `&categories=${selectedCategories.join(',')}`;
         }
-        finalUrl = `${apiBase}products/filter${queryStr}`;
+        finalUrl = `${getApiBase()}products/filter${queryStr}`;
       }
       
       const res = await apiFetch(finalUrl);

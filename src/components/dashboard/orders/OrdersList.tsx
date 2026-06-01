@@ -13,7 +13,8 @@ import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
 import { getStatusColors } from './OrderDetailsContent';
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}orders`;
+import { getApiBase } from '../categories/CategoriesList';
+ 
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
 
@@ -43,14 +44,14 @@ export default function OrdersList() {
     try {
       setIsLoading(true);
       const token = localStorage.getItem('token');
-      const url = new URL(API_URL, window.location.origin);
-      url.searchParams.append('page', currentPage.toString());
-      url.searchParams.append('limit', itemsPerPage.toString());
+      const params = new URLSearchParams();
+      params.append('page', currentPage.toString());
+      params.append('limit', itemsPerPage.toString());
       if (searchTerm) {
-        url.searchParams.append('search', searchTerm);
+        params.append('search', searchTerm);
       }
 
-      const res = await apiFetch(url.toString(), {
+      const res = await apiFetch(`${getApiBase()}orders?${params.toString()}`, {
         headers: { ...(token ? { 'Authorization': `Bearer ${token}` } : {}) }
       });
       if (res.ok) {
@@ -79,7 +80,7 @@ export default function OrdersList() {
     setIsDeleting(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await apiFetch(`${API_URL}/${deleteId}`, {
+      const res = await apiFetch(`${getApiBase()}orders/${deleteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import FeaturedCategories from './home/FeaturedCategories';
 import HeroSection from './home/HeroSection';
+import { getApiBase } from './dashboard/categories/CategoriesList';
 
 const BestSellersSlider = dynamic(() => import('@/components/home/BestSellersSlider'), {
   ssr: false,
@@ -31,9 +32,8 @@ export default function HomePage() {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      try {
-        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
-        const res = await apiFetch(`${apiBase}categories`);
+      try { 
+        const res = await apiFetch(`${getApiBase()}categories`);
         if (res.ok) {
           const data = await res.json();
           const list = Array.isArray(data) ? data : (data.data || []);
