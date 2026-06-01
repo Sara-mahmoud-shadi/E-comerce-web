@@ -81,7 +81,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
 
   const fetchCategories = async () => {
     try {
-      const res = await apiFetch('/api/categories');
+      const res = await apiFetch(`${getApiBase()}categories`);
       if (res.ok) {
         const data = await res.json();
         const categoryList = Array.isArray(data) ? data : (data.data || []);
@@ -155,7 +155,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
       });
 
       const token = localStorage.getItem('token');
-      const url = isEditing && productId ? `/api/products/${productId}` : '/api/products';
+      const url = isEditing && productId ? `${getApiBase()}products/${productId}` : `${getApiBase()}products`;
 
       const response = await apiFetch(url, {
         method: isEditing ? 'PATCH' : 'POST',

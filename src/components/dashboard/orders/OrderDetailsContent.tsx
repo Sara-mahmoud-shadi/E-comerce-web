@@ -97,7 +97,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
     try {
       setIsUpdatingStatus(true);
       const token = localStorage.getItem('token');
-      let res = await apiFetch(`${process.env.NEXT_PUBLIC_API_URL || '/api/'}orders/${id}/status`, {
+      let res = await apiFetch(`${getApiBase()}orders/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
       
       // Fallback if the endpoint is actually /orders/:id instead of /orders/:id/status
       if (res.status === 404) {
-        res = await apiFetch(`${process.env.NEXT_PUBLIC_API_URL || '/api/'}orders/${id}`, {
+        res = await apiFetch(`${getApiBase()}orders/${id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

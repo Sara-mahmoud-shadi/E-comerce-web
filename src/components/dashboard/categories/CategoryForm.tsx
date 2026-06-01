@@ -113,7 +113,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
     setErrorMsg('');
 
     try {
-      const url = isEditing ? `${API_URL}/${id}` : API_URL;
+      const url = isEditing ? `${getApiBase()}categories/${id}` : `${getApiBase()}categories`;
       const method = isEditing ? 'PATCH' : 'POST';
 
       const res = await apiFetch(url, {
