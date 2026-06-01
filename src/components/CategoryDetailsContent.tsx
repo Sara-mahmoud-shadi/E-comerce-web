@@ -50,7 +50,7 @@ export default function CategoryDetailsContent() {
         const resData = await res.json();
         console.log(resData);
 
-        if (resData?.data[0]?.category) setCategory(resData?.data[0]?.category);
+        if (resData?.category) setCategory(resData?.category);
 
         if (resData?.data) {
           setProducts(resData.data);
