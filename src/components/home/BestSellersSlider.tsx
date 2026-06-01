@@ -25,8 +25,8 @@ export default function BestSellersSlider() {
     const fetchBestSellers = async () => {
       setIsLoading(true);
       try {
-        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-        const res = await apiFetch(`${apiBase}/products?page=1&limit=10`);
+        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+        const res = await apiFetch(`${apiBase}products?page=1&limit=10`);
         if (res.ok) {
           const resData = await res.json();
           const list = Array.isArray(resData) ? resData : (resData.data || []);
