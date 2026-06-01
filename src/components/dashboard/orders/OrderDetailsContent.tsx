@@ -191,12 +191,8 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
         </div>
 
         <div className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
-          <button
-            onClick={() => window.print()}
-            className="flex cursor-pointer items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 rounded-lg font-bold text-sm shadow-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
-          >
+          <button  onClick={() => window.print()}  className="flex cursor-pointer items-center justify-center gap-2 p-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 rounded-lg font-bold text-sm shadow-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-colors">
             <Printer className="w-4 h-4" />
-            <span className="hidden sm:inline">{to('printInvoice') || 'Print'}</span>
           </button>
           {isEditingStatus ? (
             <div className="flex items-end gap-2 w-full md:w-auto">
