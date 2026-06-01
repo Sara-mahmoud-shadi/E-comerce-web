@@ -67,7 +67,9 @@
     "securePayment": "دفع آمن",
     "securePaymentSub": "دفع آمن 100%",
     "featuredCategories": "التصنيفات المميزة",
-    "featuredProducts": "المنتجات المميزة"
+    "featuredProducts": "المنتجات المميزة",
+    "noCategoriesTitle": "لا توجد تصنيفات بعد",
+    "noCategoriesDesc": "مجموعاتنا قيد التنظيم، تفقد تشكيلاتنا المميزة قريباً."
   },
   "Products": {
     "allProducts": "جميع المنتجات",

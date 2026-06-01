@@ -67,7 +67,9 @@
     "securePayment": "Secure Payment",
     "securePaymentSub": "100% secure checkout",
     "featuredCategories": "Featured Categories",
-    "featuredProducts": "Featured Products"
+    "featuredProducts": "Featured Products",
+    "noCategoriesTitle": "No Categories Yet",
+    "noCategoriesDesc": "Our collections are being curated. Check back soon for our featured selections."
   },
   "Products": {
     "allProducts": "All Products",

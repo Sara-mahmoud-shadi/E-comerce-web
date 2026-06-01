@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
    experimental: {
      optimizePackageImports: ["lucide-react"],
    },
+   turbopack: {
+     root: process.cwd(),
+   },
   async rewrites() {
     return [
       {

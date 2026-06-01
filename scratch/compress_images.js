@@ -3,11 +3,11 @@ const fs = require('fs');
 const path = require('path');
 
 const imagesToCompress = [
-  { file: 'public/ar.png', width: 64, height: 64 },
-  { file: 'public/en.png', width: 64, height: 64 },
-  { file: 'public/floating_pan.png', width: 400, height: 400 },
-  { file: 'public/leaf-overlay.png', width: 400, height: 400 },
-  { file: 'public/kitchen_hero_products.png', width: 800, height: 800 }
+  { file: 'public/ar.webp', width: 64, height: 64 },
+  { file: 'public/en.webp', width: 64, height: 64 },
+  { file: 'public/floating_pan.webp', width: 400, height: 400 },
+  { file: 'public/leaf-overlay.webp', width: 400, height: 400 },
+  { file: 'public/kitchen_hero_products.webp', width: 800, height: 800 }
 ];
 
 console.log('Starting image compression using native Windows .NET APIs...');
@@ -30,7 +30,7 @@ imagesToCompress.forEach(item => {
     `$originalHeight = $src.Height`,
     `$targetWidth = ${item.width}`,
     `$targetHeight = ${item.height}`,
-    `if ($originalWidth -gt 0 -and $originalHeight -gt 0) { $ratioX = $targetWidth / $originalWidth; $ratioY = $targetHeight / $originalHeight; $ratio = if ($ratioX -lt $ratioY) { $ratioX } else { $ratioY }; if ('${item.file}'.Contains('ar.png') -or '${item.file}'.Contains('en.png')) { $newW = $targetWidth; $newH = $targetHeight } else { $newW = [Math]::Max(1, [Math]::Round($originalWidth * $ratio)); $newH = [Math]::Max(1, [Math]::Round($originalHeight * $ratio)) } } else { $newW = $targetWidth; $newH = $targetHeight }`,
+    `if ($originalWidth -gt 0 -and $originalHeight -gt 0) { $ratioX = $targetWidth / $originalWidth; $ratioY = $targetHeight / $originalHeight; $ratio = if ($ratioX -lt $ratioY) { $ratioX } else { $ratioY }; if ('${item.file}'.Contains('ar.webp') -or '${item.file}'.Contains('en.webp')) { $newW = $targetWidth; $newH = $targetHeight } else { $newW = [Math]::Max(1, [Math]::Round($originalWidth * $ratio)); $newH = [Math]::Max(1, [Math]::Round($originalHeight * $ratio)) } } else { $newW = $targetWidth; $newH = $targetHeight }`,
     `$bmp = New-Object System.Drawing.Bitmap($newW, $newH)`,
     `$g = [System.Drawing.Graphics]::FromImage($bmp)`,
     `$g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic`,

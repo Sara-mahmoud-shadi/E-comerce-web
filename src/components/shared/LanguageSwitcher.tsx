@@ -16,8 +16,8 @@ export default function LanguageSwitcher() {
   const targetLocale = locale === 'ar' ? 'en' : 'ar';
   
   const languages = {
-    ar: { name: 'العربية', icon: '/ar.png' },
-    en: { name: 'English', icon: '/en.png' }
+    ar: { name: 'العربية', icon: '/ar.webp' },
+    en: { name: 'English', icon: '/en.webp' }
   };
 
   const handleSwitch = () => {
