@@ -35,15 +35,16 @@ export default function CategoryDetailsContent() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}categories/${slug}/products`, window.location.origin);
-      url.searchParams.append('page', currentPage.toString());
-      url.searchParams.append('limit', itemsPerPage.toString());
-      if (sortBy) url.searchParams.append('sort', sortBy);
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+      const params = new URLSearchParams();
+      params.append('page', currentPage.toString());
+      params.append('limit', itemsPerPage.toString());
+      if (sortBy) params.append('sort', sortBy);
       if (selectedPriceRanges.length > 0) {
-        url.searchParams.append('priceRanges', selectedPriceRanges.join(','));
+        params.append('priceRanges', selectedPriceRanges.join(','));
       }
 
-      const finalUrl = decodeURIComponent(url.toString());
+      const finalUrl = `${apiBase}categories/${slug}/products?${params.toString()}`;
       const res = await apiFetch(finalUrl);
       if (res.ok) {
         const resData = await res.json();

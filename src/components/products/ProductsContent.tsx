@@ -37,8 +37,8 @@ export default function ProductsContent() {
 
   const fetchCategories = async () => {
     try {
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-      const res = await apiFetch(`${apiBase}/categories`);
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+      const res = await apiFetch(`${apiBase}categories`);
       if (res.ok) {
         const resData = await res.json();
         if (resData.data) {
@@ -62,13 +62,13 @@ export default function ProductsContent() {
   const fetchData = async (isReset = false) => {
     setIsLoading(true);
     try {
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
       
       let finalUrl = '';
       if (search && !isReset) {
         let queryStr = `?page=${isReset ? 1 : currentPage}&limit=${itemsPerPage}&search=${encodeURIComponent(search)}`;
         if (sortBy) queryStr += `&sort=${sortBy}`;
-        finalUrl = `${apiBase}/products${queryStr}`;
+        finalUrl = `${apiBase}products${queryStr}`;
       } else {
         let queryStr = `?page=${isReset ? 1 : currentPage}&limit=${itemsPerPage}`;
         if (!isReset && sortBy) queryStr += `&sort=${sortBy}`;
@@ -78,7 +78,7 @@ export default function ProductsContent() {
         if (!isReset && selectedCategories.length > 0) {
           queryStr += `&categories=${selectedCategories.join(',')}`;
         }
-        finalUrl = `${apiBase}/products/filter${queryStr}`;
+        finalUrl = `${apiBase}products/filter${queryStr}`;
       }
       
       const res = await apiFetch(finalUrl);

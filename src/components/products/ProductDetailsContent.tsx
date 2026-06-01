@@ -33,8 +33,8 @@ export default function ProductDetailsContent() {
     const fetchProduct = async () => {
       setIsLoading(true);
       try {
-        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-        const res = await apiFetch(`${apiBase}/products/${id}`);
+        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+        const res = await apiFetch(`${apiBase}products/${id}`);
         if (res.ok) {
           const resData = await res.json();
           if (resData) {

@@ -48,12 +48,13 @@ export default function SearchBar() {
     const delayDebounceFn = setTimeout(async () => {
       setIsLoading(true);
       try {
-        const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}products`, window.location.origin);
-        url.searchParams.append('search', query.trim());
-        url.searchParams.append('page', '1');
-        url.searchParams.append('limit', '8');
-
-        const res = await apiFetch(url.toString());
+        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+        const params = new URLSearchParams({
+          search: query.trim(),
+          page: '1',
+          limit: '8',
+        });
+        const res = await apiFetch(`${apiBase}products?${params.toString()}`);
         if (res.ok) {
           const data = await res.json();
           const productList = Array.isArray(data) ? data : (data.data || []);
