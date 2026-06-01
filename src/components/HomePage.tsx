@@ -32,8 +32,8 @@ export default function HomePage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}categories`, window.location.origin);
-        const res = await apiFetch(url.toString());
+        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+        const res = await apiFetch(`${apiBase}categories`);
         if (res.ok) {
           const data = await res.json();
           const list = Array.isArray(data) ? data : (data.data || []);
