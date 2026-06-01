@@ -14,10 +14,9 @@ import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
 import { getStatusColors } from './OrderDetailsContent';
 import { getApiBase } from '../categories/CategoriesList';
- 
+ import { toast } from 'sonner';
 export const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-
+  const date = new Date(dateString); 
   const day = date.toISOString().split("T")[0]; // 2026-05-17
 
   const time = date.toTimeString().slice(0, 5); // 13:08
@@ -87,12 +86,17 @@ export default function OrdersList() {
         }
       });
 
-      if (!res.ok) throw new Error('Failed to delete order');
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        toast.error(data.message || (isRtl ? 'فشل في الحذف' : 'Failed to delete'));
+        return;
+      }
 
       setOrders(prev => prev.filter(o => o.id !== deleteId));
       setDeleteId(null);
+      toast.success(isRtl ? 'تم حذف الطلب بنجاح' : 'Order deleted successfully');
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to delete');
+      toast.error(err instanceof Error ? err.message : (isRtl ? 'فشل في الحذف' : 'Failed to delete'));
     } finally {
       setIsDeleting(false);
     }

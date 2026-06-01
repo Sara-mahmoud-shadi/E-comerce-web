@@ -81,15 +81,15 @@ export default function CategoriesList() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        toast.error(data.message || 'Failed to delete category');
+        toast.error(data.message || (isRtl ? 'فشل في الحذف' : 'Failed to delete category'));
         return;
       }
 
       setCategories(prev => prev.filter(c => c.id !== deleteId));
       setDeleteId(null);
-      toast.success('Category deleted successfully');
+      toast.success(isRtl ? 'تم حذف القسم بنجاح' : 'Category deleted successfully');
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to delete');
+      toast.error(err instanceof Error ? err.message : (isRtl ? 'فشل في الحذف' : 'Failed to delete'));
     } finally {
       setIsDeleting(false);
     }

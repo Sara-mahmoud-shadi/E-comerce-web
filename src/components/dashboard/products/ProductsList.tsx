@@ -81,14 +81,14 @@ export default function ProductsList() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        toast.error(data.message || 'Failed to delete product');
+        toast.error(data.message || (isRtl ? 'فشل في الحذف' : 'Failed to delete'));
         return;
       }
       setProducts(prev => prev.filter(c => c.id !== deleteId));
       setDeleteId(null);
-      toast.success('Product deleted successfully');
+      toast.success(isRtl ? 'تم حذف المنتج بنجاح' : 'Product deleted successfully');
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to delete');
+      toast.error(err instanceof Error ? err.message : (isRtl ? 'فشل في الحذف' : 'Failed to delete'));
     } finally {
       setIsDeleting(false);
     }
