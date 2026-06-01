@@ -3,6 +3,9 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { Phone, MapPin, ArrowRight } from 'lucide-react';
+import InstgaramIcon from './Icons/instgaram';
+import TwitterIcon from './Icons/Twitter';
+import FacebookIcon from './Icons/Facebook';
 
 export default function Footer() {
   const t = useTranslations('Footer');
@@ -74,13 +77,21 @@ export default function Footer() {
             {/* Brand & Description */}
             <div className="lg:col-span-4 space-y-4">
               <Link href="/" className="text-4xl font-black tracking-tighter   flex items-center gap-2">
-                GoShop
+                Goshop
               </Link>
               <p className="text-gray-300 text-lg leading-relaxed max-w-sm font-medium">
                 {t('description')}
               </p>
-              <div className="flex gap-4">
-                {/* Add social links back if needed, currently matching user's last manual edit */}
+              <div className="flex gap-2 mt-6">
+                <Link href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center text-gray-300 hover:scale-110 transition-all">
+                  <FacebookIcon/>
+                </Link>
+                <Link href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center text-gray-300 hover:scale-110 transition-all">
+                  <InstgaramIcon/>
+                </Link>
+                <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center text-gray-300 hover:scal-scale-110 transition-all">
+                  <TwitterIcon/>
+                </Link>
               </div>
             </div>
 

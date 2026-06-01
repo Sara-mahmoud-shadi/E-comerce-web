@@ -38,7 +38,7 @@ export default function ModernInvoice({ order }: { order: any }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full p-8 sm:p-12 print:pt-20 print:px-2 rounded-2xl text-slate-900 dark:text-slate-100"
+          className="w-full py-8 px-4 md:p-12 print:pt-20 print:px-2 rounded-2xl text-slate-900 dark:text-slate-100"
         >
           {/* Brand Logo */}
           <div className="mb-4 flex justify-end">
@@ -137,7 +137,7 @@ export default function ModernInvoice({ order }: { order: any }) {
           {/* Items List */}
           <div className="space-y-6 print:space-y-2 mb-8 print:mb-4 print:text-black">
             {order.items.map((item: any, idx: number) => (
-              <div key={idx} className="flex flex-row items-center justify-between gap-4">
+              <div key={idx} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex gap-6 items-center">
                   <div className="relative w-20 h-20 rounded-2xl bg-white dark:bg-slate-800 flex-shrink-0 shadow-xs border border-[#eedcdd]/50 dark:border-slate-700 overflow-hidden p-2 print:border-slate-200">
                     {item.images?.[0] && (

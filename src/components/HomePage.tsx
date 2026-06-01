@@ -1,12 +1,23 @@
 'use client';
 import { apiFetch } from '@/lib/api';
-
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { ArrowRight, Truck, RotateCcw, ShieldCheck, Heart, Star, Headphones } from 'lucide-react';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import BestSellersSlider from '@/components/home/BestSellersSlider';
+import dynamic from 'next/dynamic';
+
+const BestSellersSlider = dynamic(() => import('@/components/home/BestSellersSlider'), {
+  ssr: false,
+  loading: () => (
+    <section className="pt-24 pb-20 relative -top-10 overflow-hidden bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-[#ffffff] dark:from-[#111c12] dark:via-[#19241b] dark:to-[#0f172a] transition-colors duration-500 flex items-center justify-center min-h-[500px]">
+      <div className="animate-pulse flex flex-col items-center gap-4">
+        <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-500 rounded-full animate-spin" />
+        <span className="text-gray-500 text-xs font-semibold uppercase tracking-wider">Loading Best Sellers...</span>
+      </div>
+    </section>
+  )
+});
 
 export default function HomePage() {
   const t = useTranslations('Home');
@@ -39,7 +50,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col py-6">
       {/* Hero Section - True Premium Curved Banner */}
-      <section className="relative w-full min-h-[620px] lg:h-[80vh] max-h-[850px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-[#ffffff] dark:from-[#111c12] dark:via-[#19241b] dark:to-[#0f172a] rounded-b-[40px] md:rounded-b-[80px] lg:rounded-b-[120px] overflow-hidden flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-gray-100/10 mb-8 transition-colors duration-500">
+      <section className="relative w-full h-[100vh] lg:h-[80vh] max-h-[850px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-[#ffffff] dark:from-[#111c12] dark:via-[#19241b] dark:to-[#0f172a] rounded-b-[40px] md:rounded-b-[80px] lg:rounded-b-[120px] overflow-hidden flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-gray-100/10 mb-8 transition-colors duration-500">
 
         {/* Soft Background Silhouette Vector Outlines */}
         <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] pointer-events-none mix-blend-overlay">
@@ -196,84 +207,100 @@ export default function HomePage() {
       </section>
 
       {/* Main Grid Content - Contained */}
-      <section className="container bg-white shadow mx-auto py-20  relative -top-30 rounded-3xl px-4 sm:px-6 lg:px-8">
+      <section className="container bg-white lg:shadow mx-auto py-20  relative -top-20 lg:-top-30 rounded-3xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between mb-10 gap-4">
           <div>
-            <h2 className="text-4xl font-black italic tracking-tighter uppercase text-gray-900 dark:text-white mb-2">
+            <h2 className="text-2xl md:text-4xl font-black italic tracking-tighter text-gray-900 dark:text-white mb-2">
               {t('featuredCategories')}
             </h2>
             <div className="h-2 w-32 bg-accent-500 rounded-full" />
           </div>
         </div>
 
-        {categories.length >= 4 ? (
+        {categories.length >= 1 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-4 h-[800px] md:h-[600px]">
+            <div className="grid grid-cols-2 md:grid-cols-4 md:grid-rows-2 gap-4 h-auto md:h-[600px]">
               {/* Main Large Card */}
-              <Link
-                href={`/categories/${categories[0].slug}`}
-                className="md:col-span-2 md:row-span-2 group relative rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-700 transform hover:-translate-y-1"
-              >
-                <Image src={getImageUrl(categories[0].image)} alt={isRtl ? categories[0].name_ar || categories[0].name : categories[0].name_en || categories[0].name} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
-                <div className="absolute bottom-8 left-8 rtl:left-auto rtl:right-8">
-                  <h3 className="text-3xl font-black text-white mb-2 uppercase tracking-tighter">{isRtl ? categories[0].name_ar || categories[0].name : categories[0].name_en || categories[0].name}</h3>
-                </div>
-              </Link>
+              {categories[0] && (
+                <Link
+                  href={`/categories/${categories[0].slug}`}
+                  className="relative rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-700 transform hover:-translate-y-1 h-72 sm:h-80 md:h-auto col-span-2 md:col-span-2 md:row-span-2 group"
+                >
+                  <Image src={getImageUrl(categories[0].image)} alt={isRtl ? categories[0].name_ar || categories[0].name : categories[0].name_en || categories[0].name} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" priority className="object-cover group-hover:scale-110 transition-transform duration-1000" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:via-black/40 transition-colors duration-700" />
+                  <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8 sm:right-8 rtl:left-auto rtl:right-8 flex flex-col items-start gap-1 sm:gap-2">
+                    <span className="text-[10px] text-accent-400 font-extrabold uppercase tracking-widest bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-sm">
+                      {isRtl ? "مجموعة مميزة" : "Featured Collection"}
+                    </span>
+                    <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter drop-shadow-md">{isRtl ? categories[0].name_ar || categories[0].name : categories[0].name_en || categories[0].name}</h3>
+                  </div>
+                </Link>
+              )}
 
               {/* Medium Horizontal Card */}
-              <Link
-                href={`/categories/${categories[1].slug}`}
-                className="md:col-span-2 group relative rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-700 transform hover:-translate-y-1"
-              >
-                <Image src={getImageUrl(categories[1].image)} alt={isRtl ? categories[1].name_ar || categories[1].name : categories[1].name_en || categories[1].name} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
-                <div className="absolute z-10 top-6 left-6 rtl:left-auto rtl:right-6">
-                  <h3 className="text-xl font-black text-white uppercase tracking-tighter">{isRtl ? categories[1].name_ar || categories[1].name : categories[1].name_en || categories[1].name}</h3>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent rtl:bg-gradient-to-l" />
-              </Link>
+              {categories[1] && (
+                <Link
+                  href={`/categories/${categories[1].slug}`}
+                  className="relative rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-700 transform hover:-translate-y-1 h-48 sm:h-56 md:h-auto col-span-2 md:col-span-2 group"
+                >
+                  <Image src={getImageUrl(categories[1].image)} alt={isRtl ? categories[1].name_ar || categories[1].name : categories[1].name_en || categories[1].name} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-1000" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent rtl:bg-gradient-to-l group-hover:from-black/95 transition-all duration-700" />
+                  <div className="absolute z-10 top-6 left-6 right-6 rtl:left-auto rtl:right-6 flex flex-col items-start gap-1 sm:gap-2">
+                    <span className="text-[9px] text-primary-400 font-extrabold uppercase tracking-widest bg-white/10 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/10 shadow-sm">
+                      {isRtl ? "الأكثر مبيعاً" : "Top Choice"}
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tighter drop-shadow-md">{isRtl ? categories[1].name_ar || categories[1].name : categories[1].name_en || categories[1].name}</h3>
+                  </div>
+                </Link>
+              )}
 
               {/* Small Square Cards */}
-              <Link
-                href={`/categories/${categories[2].slug}`}
-                className="group relative rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-700 transform hover:-translate-y-1"
-              >
-                <Image src={getImageUrl(categories[2].image)} alt={isRtl ? categories[2].name_ar || categories[2].name : categories[2].name_en || categories[2].name} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
-                <div className="absolute z-10 inset-0 flex items-center justify-center p-4 text-center">
-                  <h3 className="text-lg font-black text-white uppercase tracking-widest">{isRtl ? categories[2].name_ar || categories[2].name : categories[2].name_en || categories[2].name}</h3>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent rtl:bg-gradient-to-l" />
-              </Link>
+              {categories[2] && (
+                <Link
+                  href={`/categories/${categories[2].slug}`}
+                  className="relative rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-700 transform hover:-translate-y-1 h-40 sm:h-48 md:h-auto col-span-1 group"
+                >
+                  <Image src={getImageUrl(categories[2].image)} alt={isRtl ? categories[2].name_ar || categories[2].name : categories[2].name_en || categories[2].name} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-1000" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:via-black/40 transition-colors duration-700" />
+                  <div className="absolute z-10 bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 flex justify-center text-center">
+                    <span className="px-3 py-1.5 sm:px-4 sm:py-2 w-full bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl text-[11px] sm:text-xs font-black text-white uppercase tracking-widest transition-transform group-hover:scale-105 duration-500 shadow-md">
+                      {isRtl ? categories[2].name_ar || categories[2].name : categories[2].name_en || categories[2].name}
+                    </span>
+                  </div>
+                </Link>
+              )}
 
-              <Link
-                href={`/categories/${categories[3].slug}`}
-                className="group relative rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-700 transform hover:-translate-y-1"
-              >
-                <Image src={getImageUrl(categories[3].image)} alt={isRtl ? categories[3].name_ar || categories[3].name : categories[3].name_en || categories[3].name} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
-                <div className="absolute z-10 inset-0 flex items-center justify-center p-4 text-center">
-                  <h3 className="text-lg font-black text-white uppercase tracking-widest">{isRtl ? categories[3].name_ar || categories[3].name : categories[3].name_en || categories[3].name}</h3>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent rtl:bg-gradient-to-l" />
-              </Link>
+              {categories[3] && (
+                <Link
+                  href={`/categories/${categories[3].slug}`}
+                  className="relative rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-700 transform hover:-translate-y-1 h-40 sm:h-48 md:h-auto col-span-1 group"
+                >
+                  <Image src={getImageUrl(categories[3].image)} alt={isRtl ? categories[3].name_ar || categories[3].name : categories[3].name_en || categories[3].name} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-1000" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:via-black/40 transition-colors duration-700" />
+                  <div className="absolute z-10 bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 flex justify-center text-center">
+                    <span className="px-3 py-1.5 sm:px-4 sm:py-2 w-full bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl text-[11px] sm:text-xs font-black text-white uppercase tracking-widest transition-transform group-hover:scale-105 duration-500 shadow-md">
+                      {isRtl ? categories[3].name_ar || categories[3].name : categories[3].name_en || categories[3].name}
+                    </span>
+                  </div>
+                </Link>
+              )}
             </div>
 
             {categories.length > 4 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
                 {categories.slice(4).map((category, index) => (
                   <Link
                     key={index}
                     href={`/categories/${category.slug}`}
-                    className="group h-60 relative rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-700 transform hover:-translate-y-1"
+                    className="group h-44 sm:h-52 md:h-60 relative rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-700 transform hover:-translate-y-1"
                   >
-                    <Image src={getImageUrl(category.image)} alt={isRtl ? category.name_ar || category.name : category.name_en || category.name} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
-                    <div className="absolute z-10 inset-0 flex items-center justify-center p-4 text-center">
-                      <h3 className="text-lg font-black text-white uppercase tracking-widest">{isRtl ? category.name_ar || category.name : category.name_en || category.name}</h3>
+                    <Image src={getImageUrl(category.image)} alt={isRtl ? category.name_ar || category.name : category.name_en || category.name} fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-1000" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:via-black/40 transition-colors duration-700" />
+                    <div className="absolute z-10 bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 flex justify-center text-center">
+                      <span className="px-3 py-1.5 sm:px-4 sm:py-2 w-full bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl text-[11px] sm:text-xs font-black text-white uppercase tracking-widest transition-transform group-hover:scale-105 duration-500 shadow-md">
+                        {isRtl ? category.name_ar || category.name : category.name_en || category.name}
+                      </span>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent rtl:bg-gradient-to-l" />
                   </Link>
                 ))}
               </div>

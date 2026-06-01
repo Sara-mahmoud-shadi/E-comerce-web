@@ -169,7 +169,10 @@
     "status_delivered": "Delivered",
     "status_processing": "Processing",
     "status_pending": "Pending",
-    "status_shipped": "Shipped"
+    "status_shipped": "Shipped",
+    "statusUpdated": "Order status updated successfully",
+    "status_ondelivery": "On Delivery",
+    "status_done": "Done"
   },
   "Search": {
     "placeholder": "Search for products...",
@@ -288,7 +291,6 @@
     "profit": "Estimated Profit",
     "attributes": "Attributes",
     "specifications": "Specifications",
-    "inStock": "In Stock",
     "lowStock": "Low Stock",
     "outOfStock": "Out of Stock",
     "editProduct": "Edit Product",

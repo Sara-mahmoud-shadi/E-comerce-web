@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
 import { Link } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import { type VariantProps } from "class-variance-authority"
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
@@ -36,7 +37,7 @@ PaginationItem.displayName = "PaginationItem"
 
 type PaginationLinkProps = {
   isActive?: boolean
-} & Pick<React.ComponentProps<typeof buttonVariants>, "size"> &
+} & Pick<VariantProps<typeof buttonVariants>, "size"> &
   React.ComponentProps<typeof Link>
 
 const PaginationLink = ({

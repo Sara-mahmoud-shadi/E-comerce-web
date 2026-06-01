@@ -23,7 +23,7 @@ export function ShopBreadcrumb({ items, className }: ShopBreadcrumbProps) {
 
   return (
     <nav className={cn("mb-8", className)} aria-label="Breadcrumb">
-      <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+      <div className="flex flex-wrap items-center justify-start gap-3">
 
         <Link
           href="/"

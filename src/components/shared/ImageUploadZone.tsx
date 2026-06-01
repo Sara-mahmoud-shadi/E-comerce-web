@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { UploadCloud, Image as ImageIcon, X } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { useLocale } from 'next-intl';
 
 interface ImageUploadZoneProps {
   label: string;
@@ -13,6 +14,8 @@ interface ImageUploadZoneProps {
 export default function ImageUploadZone({ label, value, onChange, className }: ImageUploadZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const locale = useLocale();
+  const isRtl = locale === 'ar';
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -89,7 +92,7 @@ export default function ImageUploadZone({ label, value, onChange, className }: I
                   fileInputRef.current?.click();
                 }}
                 className="p-2 bg-white rounded-full text-gray-700 hover:text-primary-500 hover:scale-110 transition-all"
-                title="Change Image"
+                title={isRtl ? "تغيير الصورة" : "Change Image"}
               >
                 <ImageIcon className="w-5 h-5" />
               </button>
@@ -97,7 +100,7 @@ export default function ImageUploadZone({ label, value, onChange, className }: I
                 type="button"
                 onClick={removeImage}
                 className="p-2 bg-white rounded-full text-red-500 hover:text-red-600 hover:scale-110 transition-all"
-                title="Remove Image"
+                title={isRtl ? "إزالة الصورة" : "Remove Image"}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -109,10 +112,10 @@ export default function ImageUploadZone({ label, value, onChange, className }: I
               <UploadCloud className="w-6 h-6" />
             </div>
             <p className="text-sm font-semibold mb-1">
-              Click or drag and drop
+              {isRtl ? 'انقر أو اسحب وأفلت' : 'Click or drag and drop'}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              SVG, PNG, JPG or GIF (max. 2MB)
+              {isRtl ? 'SVG, PNG, JPG أو GIF (بحد أقصى 2 ميجابايت)' : 'SVG, PNG, JPG or GIF (max. 2MB)'}
             </p>
           </div>
         )}

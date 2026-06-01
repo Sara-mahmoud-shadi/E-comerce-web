@@ -90,13 +90,13 @@ export default function RecentProductsTable() {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-fullborder-collapse w-full">
+        <table className="border-collapse w-full">
           <thead>
             <tr className="border-b bg-gray-50 border-gray-100 dark:border-slate-800/80 text-[12px] font-black text-primary-500 dark:text-gray-500 tracking-wider">
-              <th className="p-3">{isRtl ? 'المنتج' : 'Product'}</th>
-              <th className="p-3">{isRtl ? 'القسم' : 'Category'}</th>
-              <th className="p-3">{isRtl ? 'السعر' : 'Price'}</th>
-              <th className="p-3">{isRtl ? 'الحالة' : 'Status'}</th>
+              <th className="p-3 text-start whitespace-nowrap w-auto">{isRtl ? 'المنتج' : 'Product'}</th>
+              <th className="p-3 text-start whitespace-nowrap w-auto">{isRtl ? 'القسم' : 'Category'}</th>
+              <th className="p-3 text-start whitespace-nowrap w-auto">{isRtl ? 'السعر' : 'Price'}</th>
+              <th className="p-3 text-start whitespace-nowrap w-auto">{isRtl ? 'الحالة' : 'Status'}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50 dark:divide-slate-800/40 text-sm">
@@ -156,7 +156,7 @@ export default function RecentProductsTable() {
 
                 return (
                   <tr key={product.id} className="group hover:bg-gray-50/50 dark:hover:bg-slate-800/20 transition-colors">
-                    <td className="py-4 pr-3">
+                    <td className="p-3 text-start whitespace-nowrap w-auto">
                       <div className="flex items-center gap-3">
                         <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-800 shrink-0 border border-gray-100 dark:border-slate-800/50 shadow-sm flex items-center justify-center">
                           {imageUrl ? (
@@ -170,7 +170,7 @@ export default function RecentProductsTable() {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <span className="font-extrabold text-gray-900 dark:text-white block truncate">
+                          <span className="font-extrabold text-gray-900 dark:text-white block truncate max-w-[150px] sm:max-w-[200px]">
                             {productName}
                           </span>
                           <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 tracking-wider block mt-0.5">
@@ -179,16 +179,16 @@ export default function RecentProductsTable() {
                         </div>
                       </div>
                     </td>
-                    <td className="py-4 dark:text-gray-400">
-                      <span className='font-bold bg-primary-500/10 px-3 shadow rounded-full text-[12px] text-primary-500 '>
+                    <td className="p-3 text-start whitespace-nowrap w-auto dark:text-gray-400">
+                      <span className='font-bold bg-primary-500/10 px-3 py-1 shadow rounded-full text-[12px] text-primary-500 '>
                         {categoryName || '—'}
                       </span>
                     </td>
-                    <td className="py-4 font-black text-gray-900 dark:text-white">
+                    <td className="p-3 text-start whitespace-nowrap w-auto font-black text-gray-900 dark:text-white">
                       {product.price_discount || product.price || 0} ر.س
                     </td>
 
-                    <td className="py-4">
+                    <td className="p-3 text-start whitespace-nowrap w-auto">
                       {getStockBadge(stockPercent)}
                     </td>
                   </tr>

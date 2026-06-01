@@ -7,24 +7,18 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion';
 import { ProductCard } from '@/components/products/ProductCard';
 import { ProductSort } from '@/components/products/ProductSort';
 import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
-import AppPagination from '../shared/AppPagination'; 
-import { cn } from '@/lib/utils';
-import { ChevronDown, RefreshCcw, ShoppingBag, ShoppingCart, SlidersHorizontal } from 'lucide-react';
+import AppPagination from '../shared/AppPagination';  
+import { ChevronDown, RefreshCcw, ShoppingBag, ShoppingCart, SlidersHorizontal, X } from 'lucide-react';
+import SidebarFilters from './SidebarFilters';
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 
 
 export default function ProductsContent() {
-  const t = useTranslations('Products'); 
-  const tn = useTranslations('Home'); 
+  const t = useTranslations('Products');  
   const locale = useLocale();
   const isRtl = locale === 'ar';
 
@@ -39,6 +33,7 @@ export default function ProductsContent() {
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 6;
   const [isLoading, setIsLoading] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const fetchCategories = async () => {
     try {
@@ -141,7 +136,7 @@ export default function ProductsContent() {
     <div className="min-h-screen">
       
       {/* Modern Premium All Products Header */}
-      <header className="relative w-full min-h-[500px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-white dark:from-[#111c12] dark:via-[#19241b] dark:to-[#080808] overflow-hidden flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-gray-100/10 transition-colors duration-500 py-32 animate-fade-in">
+      <header className="relative w-full min-h-[500px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-white dark:from-[#111c12] dark:via-[#19241b] dark:to-[#080808] overflow-hidden flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-gray-100/10 transition-colors duration-500 py-16 md:py-32 animate-fade-in">
         {/* Abstract Glowing Accent Circles */}
         <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[350px] bg-primary-500/10 rounded-full blur-[80px] pointer-events-none animate-pulse-slow" />
         <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-accent-500/10 rounded-full blur-[60px] pointer-events-none" />
@@ -164,7 +159,7 @@ export default function ProductsContent() {
                 />
 
                 {/* Subtitle Badge Row */}
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                <div className="flex flex-wrap items-center justify-start gap-3">
                   <span className="bg-primary-500 text-white font-extrabold tracking-widest text-[10px] px-3.5 py-1.5 rounded-full shadow-sm uppercase">
                     {t('allProducts')}
                   </span>
@@ -174,7 +169,7 @@ export default function ProductsContent() {
                 </div>
 
                 {/* Main Headline */}
-                <h1 className="text-5xl sm:text-6xl text-start md:text-7xl font-extrabold text-gray-900 dark:text-white leading-[1.1] tracking-tight uppercase">
+                <h1 className="text-4xl text-start md:text-7xl font-extrabold text-gray-900 dark:text-white leading-[1.1] tracking-tight uppercase">
                   {search ? `"${search}"` : t('allProducts')}
                 </h1>
 
@@ -225,126 +220,17 @@ export default function ProductsContent() {
       {/* Main Content Layout Card with Negative Margin */}
       <div className="flex flex-col bg-white dark:bg-[#0d1510] relative rounded-3xl shadow-[0_30px_70px_rgba(0,0,0,0.03)] dark:shadow-none lg:top-[-100px] lg:flex-row gap-12 container mx-auto px-4 py-12">
         
-        {/* Modern Sidebar Filters */}
-        <aside className="w-full lg:w-80 shrink-0">
-          <div className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-[2rem] p-6 border border-gray-100 dark:border-slate-800/80 shadow-[0_20px_50px_rgba(0,0,0,0.01)] dark:shadow-none space-y-6">
-            
-            {/* Main Sidebar Header */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center justify-between"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-primary-500/10 flex items-center justify-center text-primary-500 dark:text-primary-400">
-                  <SlidersHorizontal className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-black text-primary-600 dark:text-primary-400 leading-tight uppercase tracking-wider">{t('filters')}</h4>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('refineResults')}</p>
-                </div>
-              </div>
-
-              <motion.button
-                whileTap={{ rotate: 180 }}
-                onClick={handleReset}
-                className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-500 dark:text-gray-400 flex items-center justify-center transition-colors cursor-pointer"
-              >
-                <RefreshCcw className="w-4 h-4" />
-              </motion.button>
-            </motion.div>
-
-            {/* Accordion Filters */}
-            <div className="space-y-4 mt-6">
-              <Accordion type="multiple" defaultValue={['categories', 'price']} dir={isRtl ? 'rtl' : 'ltr'} className="space-y-4">
-                
-                {/* Category Filter */}
-                <AccordionItem value="categories" className="border border-gray-100 dark:border-slate-800/80 rounded-2xl overflow-hidden bg-white/50 dark:bg-slate-900/30">
-                  <AccordionTrigger className="px-5 py-4.5 hover:no-underline bg-gray-50/50 dark:bg-slate-800/30 border-b border-gray-100 dark:border-slate-800/80 [&>svg]:hidden">
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex items-center gap-3">
-                        <SlidersHorizontal className="w-4 h-4 text-primary-500 dark:text-primary-400" />
-                        <span className="text-xs font-black text-gray-800 dark:text-gray-200 uppercase tracking-wider">{t('categoryTitle')}</span>
-                      </div>
-                      <ChevronDown className="w-4 h-4 text-gray-400 transition-transform duration-300 group-data-[state=open]:rotate-180" />
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="p-6 space-y-4">
-                    {categoriesList.map((cat) => (
-                      <label key={cat.id} className="flex items-center justify-between group cursor-pointer">
-                        <span className={cn(
-                          "text-xs font-bold text-gray-600 dark:text-gray-300 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors mx-4 flex-grow",
-                          isRtl ? "text-right" : "text-left"
-                        )}>
-                          {isRtl ? (cat.name_ar || cat.name) : (cat.name_en || cat.name)}
-                        </span>
-                        
-                        {/* Premium custom checkbox */}
-                        <div className="relative w-5 h-5 flex items-center justify-center flex-shrink-0">
-                          <input 
-                            type="checkbox" 
-                            checked={selectedCategories.includes(cat.id.toString())}
-                            onChange={() => handleCategoryChange(cat.id.toString())}
-                            className="peer absolute inset-0 opacity-0 cursor-pointer z-10" 
-                          />
-                          <div className="absolute inset-0 border-2 border-gray-200 dark:border-slate-700 rounded-lg peer-checked:border-primary-500 dark:peer-checked:border-primary-400 peer-checked:bg-primary-500/10 transition-all duration-300" />
-                          <div className="w-2 h-2 bg-primary-500 dark:bg-primary-400 rounded-[3px] scale-0 peer-checked:scale-100 transition-transform duration-300" />
-                        </div>
-                      </label>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-
-                {/* Price Filter */}
-                <AccordionItem value="price" className="border border-gray-100 dark:border-slate-800/80 rounded-2xl overflow-hidden bg-white/50 dark:bg-slate-900/30">
-                  <AccordionTrigger className="px-5 py-4.5 hover:no-underline bg-gray-50/50 dark:bg-slate-800/30 border-b border-gray-100 dark:border-slate-800/80 [&>svg]:hidden">
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex items-center gap-3">
-                        <ShoppingBag className="w-4 h-4 text-primary-500 dark:text-primary-400" />
-                        <span className="text-xs font-black text-gray-800 dark:text-gray-200 uppercase tracking-wider">{t('priceRangeTitle')}</span>
-                      </div>
-                      <ChevronDown className="w-4 h-4 text-gray-400 transition-transform duration-300 group-data-[state=open]:rotate-180" />
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="p-6 space-y-4">
-                    {['lessThan50', '50-200', '200-500', 'greaterThan500'].map(range => (
-                      <label key={range} className="flex items-center justify-between group cursor-pointer">
-                        <span className={cn(
-                          "text-xs font-bold text-gray-600 dark:text-gray-300 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors mx-4 flex-grow",
-                          isRtl ? "text-right" : "text-left"
-                        )}>
-                          {tp(range)}
-                        </span>
-                        
-                        {/* Premium custom checkbox */}
-                        <div className="relative w-5 h-5 flex items-center justify-center flex-shrink-0">
-                          <input
-                            type="checkbox"
-                            checked={selectedPriceRanges.includes(range)}
-                            onChange={() => handlePriceChange(range)}
-                            className="peer absolute inset-0 opacity-0 cursor-pointer z-10"
-                          />
-                          <div className="absolute inset-0 border-2 border-gray-200 dark:border-slate-700 rounded-lg peer-checked:border-primary-500 dark:peer-checked:border-primary-400 peer-checked:bg-primary-500/10 transition-all duration-300" />
-                          <div className="w-2 h-2 bg-primary-500 dark:bg-primary-400 rounded-[3px] scale-0 peer-checked:scale-100 transition-transform duration-300" />
-                        </div>
-                      </label>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-
-            {/* Sidebar CTA Action */}
-            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-800/80">
-              <button
-                onClick={() => fetchData(false)}
-                className="w-full bg-primary-500 hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-black text-xs uppercase tracking-widest py-4.5 rounded-2xl transition-all shadow-[0_10px_25px_rgba(107,142,107,0.15)] dark:shadow-none hover:-translate-y-0.5 active:scale-98 cursor-pointer"
-              >
-                {t('refineResults')}
-              </button>
-            </div>
-
-          </div>
+        {/* Modern Sidebar Filters (Inline on desktop) */}
+        <aside className="hidden lg:block w-80 shrink-0">
+          <SidebarFilters
+            selectedPriceRanges={selectedPriceRanges}
+            handlePriceChange={handlePriceChange}
+            categoriesList={categoriesList}
+            selectedCategories={selectedCategories}
+            handleCategoryChange={handleCategoryChange}
+            handleReset={handleReset}
+            fetchData={() => fetchData(false)}
+          />
         </aside>
 
         {/* Products Display Area */}
@@ -354,7 +240,7 @@ export default function ProductsContent() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-[2rem] p-5 sm:p-6 border border-gray-100 dark:border-slate-800/80 shadow-[0_20px_50px_rgba(0,0,0,0.01)] dark:shadow-none flex flex-col sm:flex-row items-center justify-between gap-6"
+            className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-[2rem] p-5 sm:p-6 border border-gray-100 dark:border-slate-800/80 shadow-[0_20px_50px_rgba(0,0,0,0.01)] dark:shadow-none flex flex-col sm:flex-row lg:items-center justify-between gap-6"
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-primary-500/10 shadow-inner rounded-2xl flex items-center justify-center text-primary-500 dark:text-primary-400 font-black text-2xl">
@@ -366,8 +252,44 @@ export default function ProductsContent() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 w-full sm:w-auto">
+            <div className="flex items-center gap-4 w-full sm:w-auto justify-end">
               <ProductSort value={sortBy} onValueChange={setSortBy} isRtl={isRtl} />
+              
+              {/* Responsive Filter Drawer trigger on mobile/tablet */}
+              <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                <SheetTrigger asChild>
+                  <button className="lg:hidden p-3 bg-primary-500/10 hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 rounded-2xl flex items-center justify-center transition-all cursor-pointer">
+                    <SlidersHorizontal className="w-5 h-5" />
+                  </button>
+                </SheetTrigger>
+                <SheetContent
+                  side={isRtl ? 'right' : 'left'}
+                  className="w-[300px] sm:w-[350px] p-0 bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 flex flex-col h-full"
+                >
+                         <SheetHeader className="p-6 border-b border-gray-100 dark:border-gray-800 flex flex-row items-center justify-between space-y-0">
+                    <SheetTitle className="flex items-center gap-2 text-2xl font-black text-primary-500 select-none">
+                      {t('filters')}
+                    </SheetTitle>
+                    <SheetClose asChild>
+                      <button className="p-2 rounded-md bg-primary-500/10 text-primary-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors cursor-pointer shrink-0">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </SheetClose>
+                  </SheetHeader>
+                    <div className="space-y-6">
+                      <SidebarFilters
+                        selectedPriceRanges={selectedPriceRanges}
+                        handlePriceChange={handlePriceChange}
+                        categoriesList={categoriesList}
+                        selectedCategories={selectedCategories}
+                        handleCategoryChange={handleCategoryChange}
+                        handleReset={handleReset}
+                        fetchData={() => fetchData(false)}
+                        onClose={() => setIsFilterOpen(false)}
+                      />
+                    </div> 
+                </SheetContent>
+              </Sheet>
             </div>
           </motion.div>
 

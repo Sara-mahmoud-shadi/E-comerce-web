@@ -124,6 +124,7 @@ export default function ProductDetailsContent() {
                       src={getImageUrl(product.images?.[activeImage] || '')}
                       alt={product.name_en}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
                       className="object-contain transition-transform duration-[3000ms] group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
@@ -180,7 +181,7 @@ export default function ProductDetailsContent() {
                       : "border border-gray-200  hover:opacity-100 grayscale hover:grayscale-0"
                   )}
                 >
-                  <Image src={getImageUrl(img || '')} alt={product.name_en} fill className="object-cover" />
+                  <Image src={getImageUrl(img || '')} alt={product.name_en} fill sizes="130px" className="object-cover" />
                   {activeImage === idx && (
                     <div className="absolute inset-0 bg-accent-500/10 backdrop-blur-[2px]" />
                   )}
@@ -236,7 +237,7 @@ export default function ProductDetailsContent() {
               </div>
 
               {/* Selectors */}
-              <div className="flex   items-center gap-4 border-t mb-4 border-gray-100 dark:border-white/10 pt-6">
+              <div className="flex  lg:flex-row flex-col items-center gap-4 border-t mb-4 border-gray-100 dark:border-white/10 pt-6">
 
                 <div className="flex items-center justify-between w-[200px] bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full px-6 py-1">
                   <button

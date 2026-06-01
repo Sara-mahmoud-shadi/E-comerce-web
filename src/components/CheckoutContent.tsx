@@ -3,16 +3,15 @@
 import { apiFetch } from '@/lib/api';
 import React, { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { ShieldCheck, MapPin, User, Mail, CheckCircle2, Phone, ShoppingBag, ShoppingCart, ArrowLeft } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { ShieldCheck, MapPin, User, Mail, Phone, ShoppingBag, ShoppingCart, ArrowLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
 import DynamicInput from './shared/DynamicInput';
 import { useCartStore } from '@/store/useCartStore';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import { getImageUrl } from './products/ProductCard';
 import { Link } from '@/i18n/routing';
-import { ShopBreadcrumb } from './shared/ShopBreadcrumb';
+import { CheckoutHeader } from './shared/CheckoutHeader';
 import ModernInvoice from './ModernInvoice';
 
 export default function CheckoutContent() {
@@ -177,88 +176,10 @@ export default function CheckoutContent() {
   return (
     <div className="min-h-screen  dark:to-[#0f172a] transition-colors duration-500">
 
-      {/* Refined Modern Header */}
-      <header className="relative pt-32 pb-20 overflow-hidden min-h-[500px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-white">
-        {/* Soft Background Accent Glows */}
-        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-primary-500/5 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-accent-500/5 rounded-full blur-[80px] pointer-events-none" />
+      {/* Modern Checkout Header Component */}
+      <CheckoutHeader title={t('title')} subtitle={t('subtitle')} itemCount={itemCount} />
 
-        <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-            <div className="flex flex-col   justify-center  gap-6 max-w-3xl  ">
-
-              {/* Centered Content (Metadata & Titles) */}
-              <div className="w-full flex flex-col items-center justify-center">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="space-y-6 flex flex-col  "
-                >
-                  {/* Shop Breadcrumb */}
-                  <ShopBreadcrumb
-                    items={[{ label: t('title') }]}
-                    className="justify-center"
-                  />
-
-                  {/* Subtitle Badge Row */}
-                  <div className="flex flex-wrap  gap-3">
-                    <span className="bg-primary-600 text-white font-extrabold tracking-widest text-[10px] px-3.5 py-1.5 rounded-full shadow-sm uppercase">
-                      {isRtl ? 'إتمام الدفع الآمن' : 'SECURE CHECKOUT'}
-                    </span>
-                    <span className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md text-primary-600 dark:text-primary-400 border border-primary-500/10 font-bold text-[10px] px-3.5 py-1.5 rounded-full shadow-sm animate-pulse">
-                      {itemCount} {itemCount === 1 ? tc('item') : tc('items')}
-                    </span>
-                  </div>
-
-                  {/* Main Headline */}
-                  <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold  text-gray-900 dark:text-white leading-[1.1] tracking-tight uppercase">
-                    {t('title')}
-                  </h1>
-
-                  {/* Description */}
-                  <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 font-medium leading-relaxed max-w-xl ">
-                    {t('subtitle')}
-                  </p>
-                </motion.div>
-              </div>
-
-            </div>
-            {/* Right Content (Modern 3D Interactive Framed Image Collage) */}
-            <div className="flex-1 max-w-2xl text-center flex flex-col items-center  ">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, rotate: 3 }}
-                animate={{ opacity: 1, scale: 1, rotate: isRtl ? -3 : 3 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="relative w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] group select-none cursor-pointer"
-              >
-                {/* Glowing Background Accent */}
-                <div className="absolute inset-0 bg-primary-500/20 rounded-[2.5rem] blur-xl group-hover:scale-105 transition-transform duration-500 animate-pulse" />
-
-                {/* Elegant White Outer Container with Glassmorphism */}
-                <div className="absolute inset-0 bg-white dark:bg-slate-800 border-4 border-white dark:border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] rounded-[2.5rem] overflow-hidden group-hover:rotate-0 transition-transform duration-700">
-                  <Image
-                    src={"https://pngimg.com/uploads/shopping_cart/shopping_cart_PNG73.png"}
-                    alt="allProducts"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-1000"
-                    sizes="320px"
-                    priority
-                  />
-                  {/* Subtle Gradient Overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10" />
-                </div>
-
-                {/* Ornamental Floating Shapes */}
-                <div className="absolute -top-4 -left-4 w-12 h-12 bg-accent-500 rounded-2xl shadow-lg -rotate-12 animate-float pointer-events-none" />
-                <div className="absolute -bottom-4 -right-4 w-16 h-16 border-4 border-primary-500 rounded-full shadow-lg rotate-45 pointer-events-none" />
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Slide-Up HUD Content Container */}
+      {/* Content Container */}
       <div className="relative -top-10  dark:bg-[#0d1510] transition-colors duration-500 pb-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {isCompleted && orderData ? (
@@ -342,7 +263,7 @@ export default function CheckoutContent() {
                 </motion.div>
               </div>
 
-              {/* Right Side: High-End Printed-Ticket Boarding-Pass Summary Card */}
+              {/* Right Side: Summary Card */}
               <div className="lg:col-span-5">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -350,7 +271,6 @@ export default function CheckoutContent() {
                   transition={{ delay: 0.1 }}
                   className="relative bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border border-gray-100 dark:border-slate-800/80 rounded-3xl p-8 shadow-[0_30px_70px_rgba(0,0,0,0.02)] space-y-6 overflow-hidden"
                 >
-                  {/* Visual Ticket Cutout Accents (Left & Right Side Holes) */}
                   <div className="absolute top-[28%] -left-3.5 w-7 h-7 rounded-full bg-white dark:bg-[#0d1510] border border-gray-100 dark:border-slate-800/80 pointer-events-none z-10" />
                   <div className="absolute top-[28%] -right-3.5 w-7 h-7 rounded-full bg-white dark:bg-[#0d1510] border border-gray-100 dark:border-slate-800/80 pointer-events-none z-10" />
 
@@ -423,7 +343,7 @@ export default function CheckoutContent() {
                   {/* Dashed Printed Ticket Divider */}
                   <div className="border-t-2 border-dashed border-gray-200 dark:border-slate-800 my-6 relative" />
 
-                  {/* Calculations & Invoice Matrix */}
+                  {/* Calculations & Invoice */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between text-sm font-bold text-gray-500 dark:text-gray-400">
                       <span>{tc('subtotal')}</span>
@@ -438,7 +358,6 @@ export default function CheckoutContent() {
                       </span>
                     </div>
 
-                    {/* High-End Totals Capsule */}
                     <div className="bg-[#f1f4f1] dark:bg-slate-800/40 rounded-3xl p-5 flex items-center justify-between border border-primary-500/5 mt-6">
                       <div className="text-left rtl:text-right">
                         <span className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-0.5">

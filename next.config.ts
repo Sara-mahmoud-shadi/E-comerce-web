@@ -5,6 +5,9 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
    allowedDevOrigins: ["192.168.0.195", "localhost:3001"],
+   experimental: {
+     optimizePackageImports: ["lucide-react"],
+   },
   async rewrites() {
     return [
       {

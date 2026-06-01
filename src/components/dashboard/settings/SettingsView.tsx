@@ -11,21 +11,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 type TabType = 'general' | 'store' | 'seo' | 'social';
 
 export default function SettingsView() {
-  const t = useTranslations('Dashboard');
-  const locale = useLocale();
-  const isRtl = locale === 'ar';
-
+  const t = useTranslations('Dashboard'); 
   const [activeTab, setActiveTab] = useState<TabType>('general');
   const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     siteName: 'My Store',
     siteDescription: 'Best online shopping store',
+    defaultLanguage: 'en',  
     logo: "",
     favicon: "",
-    defaultLanguage: 'en',
-    timezone: 'Africa/Cairo',
-    currency: 'SAR',
     storeEmail: 'info@store.com',
     storePhone: '+966500000000',
     storeAddress: 'Riyadh, Saudi Arabia',
@@ -60,7 +55,7 @@ export default function SettingsView() {
   };
 
   return (
-    <div className="container 2xl:max-w-5xl mx-auto space-y-8 mt-8">
+    <div className="container 2xl:max-w-5xl mx-auto space-y-6 sm:space-y-8 mt-4 sm:mt-8">
       <ShopBreadcrumb
         items={[
           { label: t('dashboard'), href: '/dashboard' },
@@ -71,20 +66,20 @@ export default function SettingsView() {
       <form onSubmit={handleSubmit}>
         <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
-            <h1 className="text-3xl font-black tracking-tighter uppercase dark:text-white mb-2 flex items-center gap-3">
-              <Settings className="w-8 h-8 text-primary-500" />
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase dark:text-white mb-2 flex items-center gap-3">
+              <Settings className="w-6 h-6 sm:w-8 sm:h-8 text-primary-500" />
               {t('settings')}
             </h1>
-            <p className="text-sm font-bold text-gray-400 tracking-widest">
+            <p className="text-xs sm:text-sm font-bold text-gray-400 tracking-widest">
               {t('settingsSubtitle')}
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 w-full md:w-auto">
             <button
               type="submit"
               disabled={isLoading}
-              className="flex items-center gap-2 cursor-pointer px-6 py-3 bg-primary-500 text-white rounded-lg font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all disabled:opacity-50"
+              className="flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto px-6 py-3 bg-primary-500 text-white rounded-lg font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
               {isLoading ? t('saving') : t('save')}
@@ -94,7 +89,7 @@ export default function SettingsView() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Tabs Sidebar */}
-          <div className="lg:w-72 p-5 shrink-0 space-y-2 bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+          <div className="flex flex-row lg:flex-col overflow-x-auto mx-auto  overflow-visible w-72 md:w-full lg:w-72 p-4 lg:p-5 shrink-0 gap-2 bg-white dark:bg-[#081640] border border-gray-200 dark:border-white/5 rounded-xl shadow-sm scrollbar-hide px-4 sm:px-5">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -103,9 +98,9 @@ export default function SettingsView() {
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id as TabType)}
-                  className={`w-full cursor-pointer border border-gray-200 flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm text-start
+                  className={`whitespace-nowrap shrink-0 lg:w-full cursor-pointer border border-gray-200 dark:border-white/5 flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm text-start
                     ${isActive
-                      ? 'bg-primary-500 text-white'
+                      ? 'bg-primary-500 text-white border-primary-500'
                       : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10'}`}
                 >
                   <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
@@ -118,7 +113,7 @@ export default function SettingsView() {
           {/* Form Content */}
           <div className="flex-grow">
             <section className="bg-white dark:bg-[#081640] border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-              <div className="p-6 md:p-8 space-y-8">
+              <div className="p-4 sm:p-6 md:p-8 space-y-8">
                 <AnimatePresence mode="wait">
                   {activeTab === 'general' && (
                     <motion.div
@@ -129,14 +124,15 @@ export default function SettingsView() {
                       transition={{ duration: 0.2 }}
                       className="space-y-6"
                     >
-                      <h2 className="text-xl font-bold dark:text-white mb-6 border-b pb-4 border-gray-100 dark:border-white/5">{t('generalSettings')}</h2>
+                      <h2 className="text-lg sm:text-xl font-bold dark:text-white mb-4 sm:mb-6 border-b pb-3 sm:pb-4 border-gray-100 dark:border-white/5">{t('generalSettings')}</h2>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <DynamicInput label={t('siteName')} icon={Type} value={formData.siteName} onChange={(v) => handleInputChange('siteName', v)} placeholder={t('siteName')} />
-                        <DynamicInput label={t('siteDescription')} icon={Type} value={formData.siteDescription} onChange={(v) => handleInputChange('siteDescription', v)} placeholder={t('siteDescription')} />
-                       <div className='col-span-2'>
                         <DynamicInput label={t('defaultLanguage')} icon={Globe} value={formData.defaultLanguage} onChange={(v) => handleInputChange('defaultLanguage', v)} placeholder={t('defaultLanguage')} />
-              </div>
+
+                        <div className="col-span-1 md:col-span-2">
+                          <DynamicInput type="textarea" label={t('siteDescription')} icon={Type} value={formData.siteDescription} onChange={(v) => handleInputChange('siteDescription', v)} placeholder={t('siteDescription')} />
+                        </div>
                         <ImageUploadZone label={t('logo')} value={formData.logo} onChange={(v) => handleInputChange('logo', v)} />
                         <ImageUploadZone label={t('favicon')} value={formData.favicon} onChange={(v) => handleInputChange('favicon', v)} />
                       </div>
@@ -152,12 +148,14 @@ export default function SettingsView() {
                       transition={{ duration: 0.2 }}
                       className="space-y-6"
                     >
-                      <h2 className="text-xl font-bold dark:text-white mb-6 border-b pb-4 border-gray-100 dark:border-white/5">{t('storeSettings')}</h2>
+                      <h2 className="text-lg sm:text-xl font-bold dark:text-white mb-4 sm:mb-6 border-b pb-3 sm:pb-4 border-gray-100 dark:border-white/5">{t('storeSettings')}</h2>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <DynamicInput label={t('storeEmail')} icon={Mail} value={formData.storeEmail} onChange={(v) => handleInputChange('storeEmail', v)} placeholder={t('storeEmail')} />
                         <DynamicInput label={t('storePhone')} icon={Phone} value={formData.storePhone} onChange={(v) => handleInputChange('storePhone', v)} placeholder={t('storePhone')} />
-                        <DynamicInput label={t('storeAddress')} icon={MapPin} value={formData.storeAddress} onChange={(v) => handleInputChange('storeAddress', v)} placeholder={t('storeAddress')} />
+           
+                          <DynamicInput label={t('storeAddress')} icon={MapPin} value={formData.storeAddress} onChange={(v) => handleInputChange('storeAddress', v)} placeholder={t('storeAddress')} />
+                   
                         <DynamicInput label={t('supportEmail')} icon={Mail} value={formData.supportEmail} onChange={(v) => handleInputChange('supportEmail', v)} placeholder={t('supportEmail')} />
                       </div>
                     </motion.div>
@@ -172,11 +170,11 @@ export default function SettingsView() {
                       transition={{ duration: 0.2 }}
                       className="space-y-6"
                     >
-                      <h2 className="text-xl font-bold dark:text-white mb-6 border-b pb-4 border-gray-100 dark:border-white/5">{t('seoSettings')}</h2>
+                      <h2 className="text-lg sm:text-xl font-bold dark:text-white mb-4 sm:mb-6 border-b pb-3 sm:pb-4 border-gray-100 dark:border-white/5">{t('seoSettings')}</h2>
 
                       <div className="grid grid-cols-1 gap-6">
                         <DynamicInput label={t('metaTitle')} icon={Type} value={formData.metaTitle} onChange={(v) => handleInputChange('metaTitle', v)} placeholder={t('metaTitle')} />
-                        <DynamicInput label={t('metaDescription')} icon={Type} value={formData.metaDescription} onChange={(v) => handleInputChange('metaDescription', v)} placeholder={t('metaDescription')} />
+                        <DynamicInput type="textarea" label={t('metaDescription')} icon={Type} value={formData.metaDescription} onChange={(v) => handleInputChange('metaDescription', v)} placeholder={t('metaDescription')} />
                         <DynamicInput label={t('keywords')} icon={Hash} value={formData.keywords} onChange={(v) => handleInputChange('keywords', v)} placeholder={t('keywords')} />
                       </div>
                     </motion.div>
@@ -191,7 +189,7 @@ export default function SettingsView() {
                       transition={{ duration: 0.2 }}
                       className="space-y-6"
                     >
-                      <h2 className="text-xl font-bold dark:text-white mb-6 border-b pb-4 border-gray-100 dark:border-white/5">{t('socialMediaSettings')}</h2>
+                      <h2 className="text-lg sm:text-xl font-bold dark:text-white mb-4 sm:mb-6 border-b pb-3 sm:pb-4 border-gray-100 dark:border-white/5">{t('socialMediaSettings')}</h2>
 
                       <div className="grid grid-cols-1 gap-6">
                         <DynamicInput label="Facebook" icon={LinkIcon} value={formData.facebookUrl} onChange={(v) => handleInputChange('facebookUrl', v)} placeholder={t('facebookUrl')} />
@@ -207,25 +205,5 @@ export default function SettingsView() {
         </div>
       </form>
     </div>
-  );
-}
-
-function DollarSignIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="12" x2="12" y1="2" y2="22" />
-      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-    </svg>
   );
 }

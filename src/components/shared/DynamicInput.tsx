@@ -37,28 +37,50 @@ export default function DynamicInput({
         {label}
       </label>
       <div className="relative mt-2">
-        <div className="absolute ltr:left-6 rtl:right-6 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center transition-transform">
+        <div className={cn(
+          "absolute ltr:left-6 rtl:right-6 w-5 h-5 flex items-center justify-center transition-transform",
+          type === 'textarea' ? "top-3.5" : "top-1/2 -translate-y-1/2"
+        )}>
           <Icon className={cn(
             "w-4 h-4 transition-colors",
             error ? "text-red-400" : "text-gray-400 group-focus-within:text-primary-500"
           )} />
         </div>
-        <input
-          type={type}
-          required={required}
-          value={value}
-          onChange={(e) => {
-            onChange(e.target.value);
-            if (onClearError) onClearError();
-          }}
-          placeholder={placeholder}
-          className={cn(
-            "w-full py-3 bg-gray-100/80 dark:bg-gray-900/50 rounded-md border px-14 text-sm placeholder:text-gray-400 transition-all outline-none dark:text-white",
-            error
-              ? "border-red-400 focus:border-red-500"
-              : "border-gray-200 dark:border-white/5 focus:border-primary-500/30"
-          )}
-        />
+        {type === 'textarea' ? (
+          <textarea
+            required={required}
+            value={value}
+            onChange={(e) => {
+              onChange(e.target.value);
+              if (onClearError) onClearError();
+            }}
+            placeholder={placeholder}
+            rows={4}
+            className={cn(
+              "w-full py-3 bg-gray-100/80 dark:bg-gray-900/50 rounded-md border px-14 text-sm placeholder:text-gray-400 transition-all outline-none dark:text-white resize-y min-h-[100px]",
+              error
+                ? "border-red-400 focus:border-red-500"
+                : "border-gray-200 dark:border-white/5 focus:border-primary-500/30"
+            )}
+          />
+        ) : (
+          <input
+            type={type}
+            required={required}
+            value={value}
+            onChange={(e) => {
+              onChange(e.target.value);
+              if (onClearError) onClearError();
+            }}
+            placeholder={placeholder}
+            className={cn(
+              "w-full py-3 bg-gray-100/80 dark:bg-gray-900/50 rounded-md border px-14 text-sm placeholder:text-gray-400 transition-all outline-none dark:text-white",
+              error
+                ? "border-red-400 focus:border-red-500"
+                : "border-gray-200 dark:border-white/5 focus:border-primary-500/30"
+            )}
+          />
+        )}
       </div>
       {error && (
         <p className="mt-1 ml-1 text-[11px] text-red-400 flex items-center gap-1.5">

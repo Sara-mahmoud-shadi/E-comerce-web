@@ -161,7 +161,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
         {/* ── Header ─────────────────────────────────────────────────────────── */}
         <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
-            <h1 className="text-4xl font-black tracking-tighter uppercase dark:text-white mb-2">
+            <h1 className="md:text-4xl text-2xl font-black tracking-tighter uppercase dark:text-white mb-2">
               {isEditing ? t('edit') : t('create')} {t('categories')}
             </h1>
             <p className="text-sm font-bold text-gray-400 tracking-widest">

@@ -3,7 +3,7 @@ import { apiFetch } from '@/lib/api';
 
 import React, { useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Search, Eye, Clock, Trash2, PackageX } from 'lucide-react';
+import { Search, Eye, Clock, Trash2, PackageX, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/i18n/routing';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -12,6 +12,7 @@ import LoaderIcon from '@/components/shared/LoaderIcon';
 import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 
 import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
+import { getStatusColors } from './OrderDetailsContent';
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}orders`;
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -97,7 +98,7 @@ export default function OrdersList() {
   };
 
   return (
-    <div className="space-y-8 container mx-auto">
+    <div className="space-y-6 sm:space-y-8 px-4 sm:px-0 container mx-auto">
       <ShopBreadcrumb
         items={[
           { label: t('dashboard'), href: '/dashboard' },
@@ -107,40 +108,52 @@ export default function OrdersList() {
     
       {/* Table Container */}
       <div className="bg-white dark:bg-[#081640] rounded-[1rem] shadow border border-gray-100 dark:border-white/5 overflow-hidden">
-        <div className="p-8 border-b border-gray-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col w-full md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h1 className="text-xl font-black tracking-tighter dark:text-white mb-1">
-            {t('orders')}
-          </h1>
-          <p className="text-[12px] font-bold text-gray-400 tracking-widest">
-            {t('ordersListDesc')}
-          </p>
-        </div>
-  <div className="relative w-full md:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder={t('search')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-200 rounded-md py-3  px-6 text-sm outline-none transition-all"
-            />
+        <div className="p-5 sm:p-8 border-b border-gray-100 dark:border-white/5 flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 flex-grow w-full">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tighter dark:text-white mb-1">
+                {t('orders')}
+              </h1>
+              <p className="text-[11px] sm:text-[12px] font-bold text-gray-400 tracking-wider">
+                {t('ordersListDesc')}
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 max-w-full sm:max-w-2xl flex-grow lg:justify-end">
+              {/* Dynamic Search Box */}
+              <div className="relative w-full sm:max-w-xs md:max-w-md flex-grow">
+                <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 ${isRtl ? 'right-4' : 'left-4'}`} />
+                <input
+                  type="text"
+                  placeholder={t('search')}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className={`w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-white/5 rounded-xl py-2.5 px-6 text-sm outline-none transition-all focus:border-primary-500 focus:bg-white dark:focus:bg-slate-900 focus:shadow-md ${isRtl ? 'pr-11 pl-10' : 'pl-11 pr-10'}`}
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className={`absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer ${isRtl ? 'left-4' : 'right-4'}`}
+                    aria-label="Clear search"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
-      </div>
-
         </div>
 
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-gray-900/20 hover:bg-transparent">
-                <TableHead className="px-8 py-6 text-start text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">{to('orderId')}</TableHead>
-                <TableHead className="px-8 py-6 text-start text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">Customer</TableHead>
-                <TableHead className="px-8 py-6 text-start text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">{to('date')}</TableHead>
-                <TableHead className="px-8 py-6 text-start text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">{to('status')}</TableHead>
-                <TableHead className="px-8 py-6 text-start text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">{to('total')}</TableHead>
-                <TableHead className="px-8 py-6 text-start text-[10px] font-black uppercase tracking-widest text-gray-400 text-right h-auto">{t('actions')}</TableHead>
+                <TableHead className="px-4 sm:px-6 py-4 text-start whitespace-nowrap w-auto text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">{to('orderId')}</TableHead>
+                <TableHead className="px-4 sm:px-6 py-4 text-start whitespace-nowrap w-auto text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">{isRtl ? 'العميل' : 'Customer'}</TableHead>
+                <TableHead className="px-4 sm:px-6 py-4 text-start whitespace-nowrap w-auto text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">{to('date')}</TableHead>
+                <TableHead className="px-4 sm:px-6 py-4 text-start whitespace-nowrap w-auto text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">{to('status')}</TableHead>
+                <TableHead className="px-4 sm:px-6 py-4 text-start whitespace-nowrap w-auto text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">{to('total')}</TableHead>
+                <TableHead className="px-4 sm:px-6 py-4 text-end whitespace-nowrap w-auto text-[10px] font-black uppercase tracking-widest text-gray-400 h-auto">{t('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -185,26 +198,24 @@ export default function OrdersList() {
                     </TableCell>
                   </TableRow>
                 ) : orders.map((order, index) => {
-                  const customerName = order.user?.username || order.user?.name || order.customer || 'Unknown';
-                  const orderId = order.id?.toString().padStart(4, '0') || '0000';
-
+                
                   return (
                     <TableRow
                       key={order.id}
                       className="group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border-b border-gray-100 dark:border-white/5 last:border-0"
                     >
-                      <TableCell className="px-8 py-6">
+                      <TableCell className="px-4 sm:px-6 py-4 sm:py-5 text-start whitespace-nowrap w-auto">
                         <span className="font-black text-gray-900 dark:text-white">{order.order_number  || order.id}</span>
                       </TableCell>
-                      <TableCell className="px-8 py-6">
+                      <TableCell className="px-4 sm:px-6 py-4 sm:py-5 text-start whitespace-nowrap w-auto">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary-500 dark:bg-white/5 flex items-center justify-center font-black text-xs text-white uppercase">
+                          <div className="w-10 h-10 rounded-full bg-primary-500 dark:bg-white/5 flex items-center justify-center font-black text-xs text-white uppercase shrink-0">
                             {order.name.charAt(0)}
                           </div>
-                          <span className="font-bold text-gray-900 dark:text-white">{order.name}</span>
+                          <span className="font-bold text-gray-900 dark:text-white truncate max-w-[120px] sm:max-w-[200px] block">{order.name}</span>
                         </div>
                       </TableCell>
-                      <TableCell className="px-8 py-6">
+                      <TableCell className="px-4 sm:px-6 py-4 sm:py-5 text-start whitespace-nowrap w-auto">
                         <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
                           <Clock className="w-3.5 h-3.5" />
                           <span className="text-[10px] font-bold uppercase tracking-widest">
@@ -212,30 +223,29 @@ export default function OrdersList() {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="px-8 py-6">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-1.5 h-1.5 rounded-full ${order.status_order === 'delivered' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`} />
-                          <span className={`text-[10px] font-black uppercase tracking-widest ${order.status_order === 'delivered' ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
-                            {to(`status_${order.status_order}`) || order.status_order || 'Pending'}
+                      <TableCell className="px-4 sm:px-6 py-4 sm:py-5 text-start whitespace-nowrap w-auto">
+                        <div className="flex items-center gap-2"> 
+                          <span className={`text-[12px] px-3 py-1 shadow rounded-full font-semibold ${getStatusColors(order.status_order)}`}>
+                            {  order.status_order || 'Pending'}
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="px-8 py-6">
+                      <TableCell className="px-4 sm:px-6 py-4 sm:py-5 text-start whitespace-nowrap w-auto">
                         <span className="font-black text-gray-900 dark:text-white tracking-tighter">
                           {order.totalPrice}  ر.س
                         </span>
                       </TableCell>
-                      <TableCell className="px-8 py-6 ">
-                        <div className="flex items-center gap-3 opacity-40 group-hover:opacity-100 transition-opacity">
+                      <TableCell className="px-4 sm:px-6 py-4 sm:py-5 text-end whitespace-nowrap w-auto">
+                        <div className="flex items-center justify-end gap-3 md:opacity-40 md:group-hover:opacity-100 opacity-100 transition-opacity duration-300">
                           <Link
                             href={`/dashboard/orders/${order.id}`}
-                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-primary-500/10 hover:text-primary-500 transition-all"
+                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-primary-500/10 hover:text-primary-500 transition-all shadow-sm"
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => setDeleteId(order.id)}
-                            className="p-2.5 cursor-pointer rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-red-600 hover:text-white transition-all"
+                            className="p-2.5 cursor-pointer rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:bg-red-600 hover:text-white transition-all shadow-sm"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

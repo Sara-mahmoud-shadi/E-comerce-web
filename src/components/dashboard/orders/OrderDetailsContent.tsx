@@ -26,12 +26,24 @@ import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 interface OrderDetailsContentProps {
   id: string;
 }
+export  const getStatusColors = (status: string) => {
+    switch (status) {
+      case 'delivered':
+      case 'done':
+        return 'bg-green-100 text-green-800';
+      case 'shipped':
+      case 'ondelivery':
+        return 'bg-purple-100 text-purple-800';
+      case 'processing':
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-yellow-100 text-yellow-800';
+    }
+  };
 
 export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
   const t = useTranslations('Dashboard');
-  const to = useTranslations('Orders');
-  const tc = useTranslations('Categories');
-  const tch = useTranslations('Checkout');
+  const to = useTranslations('Orders'); 
   const router = useRouter();
   const locale = useLocale();
   const isRtl = locale === 'ar';
@@ -90,7 +102,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
           'Content-Type': 'application/json',
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
-        body: JSON.stringify({ status: newStatus, status_order: newStatus })
+        body: JSON.stringify({ status: newStatus })
       });
       
       // Fallback if the endpoint is actually /orders/:id instead of /orders/:id/status
@@ -101,7 +113,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
             'Content-Type': 'application/json',
             ...(token ? { 'Authorization': `Bearer ${token}` } : {})
           },
-          body: JSON.stringify({ status_order: newStatus, status: newStatus })
+          body: JSON.stringify({ status: newStatus })
         });
       }
 
@@ -149,21 +161,10 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
   const total = subtotal + shipping;
 
 
-  const getStatusColors = (status: string) => {
-    switch (status) {
-      case 'delivered':
-        return 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500';
-      case 'shipped':
-        return 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500';
-      case 'processing':
-        return 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500';
-      default:
-        return 'bg-gray-50 dark:bg-gray-500/10 text-gray-500 dark:text-gray-400 border-gray-400';
-    }
-  };
 
   return (
-    <div className="container 2xl:max-w-5xl mx-auto mt-4 pb-20">
+    <>
+      <div className="container 2xl:max-w-5xl mx-auto mt-4 pb-20">
       <ShopBreadcrumb
         items={[
           { label: t('dashboard'), href: '/dashboard' },
@@ -173,20 +174,13 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
       />
       <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="space-y-3">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-primary-500 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {to('backToOrders')}
-          </button>
+          
           <div className="flex items-center gap-4 flex-wrap">
             <h1 className="text-3xl font-black tracking-tighter uppercase dark:text-white">
               {to('orderId')}: #{order.order_number || order.id}
             </h1>
-            <div className={`px-3 py-1 bg-primary-500/10 text-primary-600 dark:text-primary-400 rounded-lg text-xs font-bold flex items-center gap-2 ${getStatusColors(order.status_order)}`}>
-              <div className={`w-1.5 h-1.5 rounded-full ${order.status_order === 'delivered' ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`} />
-              {to(`status_${order.status_order}`) || order.status_order || 'Pending'}
+            <div className={`px-3 py-1 ${getStatusColors(order.status_order)} rounded-lg text-xs font-bold flex items-center gap-2`}>
+               {order.status_order || 'Pending'}
             </div>
           </div>
           <p className="text-sm font-medium text-gray-500 flex items-center gap-2">
@@ -196,6 +190,13 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
         </div>
 
         <div className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
+          <button
+            onClick={() => window.print()}
+            className="flex cursor-pointer items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 rounded-lg font-bold text-sm shadow-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
+          >
+            <Printer className="w-4 h-4" />
+            <span className="hidden sm:inline">{to('printInvoice') || 'Print'}</span>
+          </button>
           {isEditingStatus ? (
             <div className="flex items-end gap-2 w-full md:w-auto">
               <DynamicSelect
@@ -205,8 +206,8 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
                 options={[
                   { value: 'pending', label: to('status_pending') },
                   { value: 'processing', label: to('status_processing') },
-                  { value: 'shipped', label: to('status_shipped') },
-                  { value: 'delivered', label: to('status_delivered') }
+                  { value: 'ondelivery', label: to('status_ondelivery') },
+                  { value: 'done', label: to('status_done') }
                 ]}
                 className="w-48"
               />
@@ -229,8 +230,8 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
       </header>
 
         {/* Main Content */}
-        <div className="space-y-8">
-          <section className="bg-white dark:bg-[#081640] border border-gray-200 dark:border-white/10 rounded-2xl p-6 sm:p-10 shadow-sm">
+        <div id="printable-section" className="space-y-8">
+          <section className="bg-white print:border-0 print:shadow-none dark:bg-[#081640] border border-gray-200 dark:border-white/10 rounded-2xl p-6 sm:p-10 shadow-sm">
                <div className="mb-6 flex justify-between  px-2 sm:px-8">
             <Link href="/" dir="ltr" className="flex items-center gap-2 text-4xl font-black tracking-tight text-primary-500">
               <div className="w-10 h-10 bg-primary-500/10 dark:bg-primary-500/10 rounded-xl flex items-center justify-center text-primary-500 dark:text-primary-400">
@@ -255,10 +256,10 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
                 {[
                   { id: 'pending', label: to('status_pending') },
                   { id: 'processing', label: to('status_processing') },
-                  { id: 'shipped', label: to('status_shipped') },
-                  { id: 'delivered', label: to('status_delivered') }
+                  { id: 'ondelivery', label: to('status_ondelivery') },
+                  { id: 'done', label: to('status_done') }
                 ].map((step, idx, arr) => {
-                  const statusScores: Record<string, number> = { pending: 1, processing: 2, shipped: 3, delivered: 4 };
+                  const statusScores: Record<string, number> = { pending: 1, processing: 2, shipped: 3, ondelivery: 3, delivered: 4, done: 4 };
                   const currentScore = statusScores[order.status_order || 'pending'] || 1;
                   const stepScore = statusScores[step.id];
                   const isActive = currentScore >= stepScore;
@@ -372,5 +373,23 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
           </section>
         </div> 
     </div>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          #printable-section, #printable-section * {
+            visibility: visible;
+          }
+          #printable-section {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+          }
+        }
+      `}} />
+    </>
   );
 }

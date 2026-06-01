@@ -208,7 +208,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
       <form onSubmit={(e: any) => handleSubmit(e)}>
         <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
-            <h1 className="text-3xl font-black tracking-tighter uppercase dark:text-white mb-2">
+            <h1 className="text-2xl md:text-4xl font-black tracking-tighter uppercase dark:text-white mb-2">
               {isEditing ? t('edit') : t('create')} {t('products')}
             </h1>
             <p className="text-sm font-bold text-gray-400 tracking-widest">

@@ -1,8 +1,11 @@
- 
+import { Suspense } from 'react';
 import ProductsContent from '@/components/products/ProductsContent';
+import LoaderIcon from '@/components/shared/LoaderIcon';
 
 export default function ProductsPage() {
   return ( 
-    <ProductsContent />
+    <Suspense fallback={<LoaderIcon />}>
+      <ProductsContent />
+    </Suspense>
   );
 }

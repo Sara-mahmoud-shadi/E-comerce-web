@@ -79,7 +79,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md bg-white dark:bg-[#081640] rounded-[2.5rem] border-white/20 dark:border-white/5 p-0 overflow-hidden shadow-2xl">
+      <DialogContent className="w-[90%] sm:max-w-md bg-white dark:bg-[#081640] rounded-xl md:rounded-[2.5rem] border-white/20 dark:border-white/5 p-0 overflow-hidden shadow-2xl">
         <div className="p-10">
           {/* Header */}
           <DialogHeader className="mb-5 text-center space-y-0">
