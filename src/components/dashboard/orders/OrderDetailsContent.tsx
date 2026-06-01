@@ -22,6 +22,7 @@ import { useRouter } from '@/i18n/routing';
 import { toast } from 'sonner';
 import DynamicSelect from '@/components/shared/DynamicSelect';
 import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
+import { getApiBase } from '../categories/CategoriesList';
 
 interface OrderDetailsContentProps {
   id: string;
@@ -71,7 +72,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
       try {
         setIsLoading(true);
         const token = localStorage.getItem('token');
-        const res = await apiFetch(`${process.env.NEXT_PUBLIC_API_URL || '/api/'}orders/${id}`, {
+        const res = await apiFetch(`${getApiBase()}orders/${id}`, {
           headers: {
             ...(token ? { 'Authorization': `Bearer ${token}` } : {})
           }

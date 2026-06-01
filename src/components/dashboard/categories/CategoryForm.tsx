@@ -7,6 +7,7 @@ import { Save, X, Tag, Upload, ImageIcon, Trash2, Loader2, CheckCircle, AlertCir
 import { useRouter } from '@/i18n/routing';
 import DynamicInput from '@/components/shared/DynamicInput';
 import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
+import { getApiBase } from './CategoriesList';
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}categories`;
 
@@ -46,7 +47,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
       const fetchData = async () => {
         setStatus('loading');
         try {
-          const res = await apiFetch(`${process.env.NEXT_PUBLIC_API_URL}categories/${id}`);
+          const res = await apiFetch(`${getApiBase()}categories/${id}`);
           if (!res.ok) throw new Error(t('failedToFetchCategory'));
           const data = await res.json();
           setFormData({

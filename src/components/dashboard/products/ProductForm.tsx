@@ -10,6 +10,7 @@ import { AnimatePresence } from 'framer-motion';
 import DynamicInput from '@/components/shared/DynamicInput';
 import DynamicSelect from '@/components/shared/DynamicSelect';
 import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
+import { getApiBase } from '../categories/CategoriesList';
 
 interface ProductFormProps {
   initialData?: any;
@@ -46,7 +47,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
         try {
           setIsLoading(true);
           const token = localStorage.getItem('token');
-          const res = await apiFetch(`/api/products/${productId}`, {
+          const res = await apiFetch(`${getApiBase()}products/${productId}`, {
             headers: {
               ...(token ? { 'Authorization': `Bearer ${token}` } : {})
             }
