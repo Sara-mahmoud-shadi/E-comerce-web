@@ -33,8 +33,11 @@ export default function ProductsList() {
   const fetchProducts = async () => {
     try {
       setIsLoading(true);
-      const token = localStorage.getItem('token');
-      const url = new URL(API_URL);
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+      const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+      const fullBase = apiBase.startsWith('http') ? apiBase : `${origin}${apiBase}`;
+      const url = new URL(`${fullBase}products`);
       url.searchParams.append('page', currentPage.toString());
       url.searchParams.append('limit', itemsPerPage.toString());
       if (searchTerm) {
