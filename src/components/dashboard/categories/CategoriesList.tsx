@@ -13,7 +13,7 @@ import LoaderIcon from '@/components/shared/LoaderIcon';
 import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 import { toast } from 'sonner';
 
-export const getApiBase = () => (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+export const getApiBase = () => (process.env.NEXT_PUBLIC_API_URL ?? 'https://e-comerce-backend-self.vercel.app/').replace(/\/?$/, '/');
 
 export default function CategoriesList() {
   const t = useTranslations('Dashboard');

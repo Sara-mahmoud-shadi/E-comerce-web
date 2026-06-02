@@ -45,10 +45,8 @@ export default function RecentOrdersTable() {
       setIsLoading(true);
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       // Fetch latest 5 orders for overview
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
-      const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
-      const fullBase = apiBase.startsWith('http') ? apiBase : `${origin}${apiBase}`;
-      const url = new URL(`${fullBase}orders`);
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? 'https://e-comerce-backend-self.vercel.app/').replace(/\/?$/, '/');
+      const url = new URL(`${apiBase}orders`);
       url.searchParams.append('page', '1');
       url.searchParams.append('limit', '3');
 
