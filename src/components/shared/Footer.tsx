@@ -72,10 +72,10 @@ export default function Footer() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-12">
+          <div className="grid grid-cols-2  lg:grid-cols-12 gap-8 md:gap-16 lg:gap-12">
 
             {/* Brand & Description */}
-            <div className="lg:col-span-4 space-y-4">
+            <div className="col-span-2 lg:col-span-4 space-y-4">
               <Link href="/" className="text-4xl font-black tracking-tighter   flex items-center gap-2">
                 Goshop
               </Link>
@@ -96,7 +96,7 @@ export default function Footer() {
             </div>
 
             {/* Navigation Columns */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="col-span-1 lg:col-span-2 space-y-5">
               <h4 className="text-xs font-black text-[#f2a93b]">{t('services')}</h4>
               <ul className="space-y-5">
                 <li><Link href="#" className="text-gray-300 hover:text-white transition-colors font-bold text-sm tracking-wide">{t('service_catering')}</Link></li>
@@ -105,7 +105,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            <div className="lg:col-span-2 space-y-8">
+            <div className="col-span-1 lg:col-span-2 space-y-5">
               <h4 className="text-xs font-black text-[#f2a93b]">{t('policies')}</h4>
               <ul className="space-y-5">
                 <li><Link href="#" className="text-gray-300 hover:text-white transition-colors font-bold text-sm tracking-wide">{t('policy_privacy')}</Link></li>
@@ -114,7 +114,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            <div className="lg:col-span-4 space-y-8">
+            <div className="col-span-2   lg:col-span-4 space-y-5">
               <h4 className="text-xs font-black text-[#f2a93b]">{t('contact_title')}</h4>
               <div className="space-y-6">
                 <div className="flex items-center gap-5 group cursor-pointer">

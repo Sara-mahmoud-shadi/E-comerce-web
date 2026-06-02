@@ -10,7 +10,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ isRtl, t }: HeroSectionProps) {
   return (
-    <section className="relative w-full h-[100vh] lg:h-[80vh] max-h-[850px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-[#ffffff] dark:from-[#111c12] dark:via-[#19241b] dark:to-[#0f172a] rounded-b-[40px] md:rounded-b-[80px] lg:rounded-b-[120px] overflow-hidden flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-gray-100/10 mb-8 transition-colors duration-500">
+    <section className="relative w-full min-h-[120vh] lg:min-h-[70vh] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-[#ffffff] dark:from-[#111c12] dark:via-[#19241b] dark:to-[#0f172a] rounded-b-[40px] md:rounded-b-[80px] lg:rounded-b-[120px] overflow-hidden flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-gray-100/10 mb-8 transition-colors duration-500">
 
       {/* Soft Background Silhouette Vector Outlines */}
       <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02] pointer-events-none mix-blend-overlay">
@@ -99,7 +99,7 @@ export default function HeroSection({ isRtl, t }: HeroSectionProps) {
           </div>
 
           {/* Discount Badge */}
-          <div className="absolute top-1/3 -left-8 md:-left-4 lg:left-2 z-25 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md p-6 rounded-[2.25rem] shadow-[0_25px_50px_rgba(107,142,107,0.12)] border border-white/60 dark:border-slate-800/40 hover:scale-105 active:scale-98 transition-all duration-300 pointer-events-auto flex flex-col items-center justify-center text-center w-[165px] md:w-[185px] animate-float-delayed select-none group">
+          <div className="absolute top-1/3 rtl:-left-8 rtl:md:-left-4 rtl:lg:left-2 ltr:-right-6 ltr:md:-right-5 ltr:lg:-right-20 z-25 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md p-6 rounded-[2.25rem] shadow-[0_25px_50px_rgba(107,142,107,0.12)] border border-white/60 dark:border-slate-800/40 hover:scale-105 active:scale-98 transition-all duration-300 pointer-events-auto flex flex-col items-center justify-center text-center w-[165px] md:w-[185px] animate-float-delayed select-none group">
             <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-tr from-primary-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             <span className="text-[10px] text-primary-600 dark:text-primary-400 font-extrabold uppercase tracking-widest leading-none mb-4 whitespace-nowrap bg-primary-500/10 dark:bg-primary-500/20 px-3 py-1.5 rounded-full">
               {isRtl ? 'خصومات لفترة محدودة' : 'Limited Offers'}

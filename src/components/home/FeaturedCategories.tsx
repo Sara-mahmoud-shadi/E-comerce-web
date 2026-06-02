@@ -45,7 +45,7 @@ export default function FeaturedCategories({ categories, isRtl, t, getImageUrl }
   }, [categories.length]);
 
   return (
-    <section className="container bg-white lg:shadow mx-auto py-20 relative -top-20 lg:-top-30 rounded-3xl px-4 sm:px-6 lg:px-8">
+    <section className="container bg-white xl:shadow mx-auto py-20 relative -top-20 lg:-top-30 rounded-3xl px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col items-center justify-between mb-10 gap-4">
         <div>
           <h2 className="text-2xl md:text-4xl font-black italic tracking-tighter text-gray-900 dark:text-white mb-2">
@@ -68,7 +68,7 @@ export default function FeaturedCategories({ categories, isRtl, t, getImageUrl }
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:via-black/40 transition-colors duration-700" />
                 <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8 sm:right-8 rtl:left-auto rtl:right-8 flex flex-col items-start gap-1 sm:gap-2">
                   
-                  <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter drop-shadow-md">{isRtl ? categories[0].name_ar || categories[0].name : categories[0].name_en || categories[0].name}</h3>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tighter drop-shadow-md">{isRtl ? categories[0].name_ar || categories[0].name : categories[0].name_en || categories[0].name}</h3>
                 </div>
               </Link>
             )}
@@ -83,7 +83,7 @@ export default function FeaturedCategories({ categories, isRtl, t, getImageUrl }
                 <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent rtl:bg-gradient-to-l group-hover:from-black/95 transition-all duration-700" />
                 <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8 sm:right-8 rtl:left-auto rtl:right-8 flex flex-col items-start gap-1 sm:gap-2">
                
-                  <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tighter drop-shadow-md">{isRtl ? categories[1].name_ar || categories[1].name : categories[1].name_en || categories[1].name}</h3>
+                  <h3 className="text-xl sm:text-2xl font-black text-white tracking-tighter drop-shadow-md">{isRtl ? categories[1].name_ar || categories[1].name : categories[1].name_en || categories[1].name}</h3>
                 </div>
               </Link>
             )}
@@ -97,7 +97,7 @@ export default function FeaturedCategories({ categories, isRtl, t, getImageUrl }
                 <Image src={getImageUrl(categories[2].image)} alt={isRtl ? categories[2].name_ar || categories[2].name : categories[2].name_en || categories[2].name} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:via-black/40 transition-colors duration-700" />
                 <div className="absolute z-10 bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 flex justify-center text-center">
-                  <span className="px-3 py-1.5 sm:px-4 sm:py-2 w-full bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl text-[11px] sm:text-xs xl:text-xl font-black text-white uppercase tracking-widest transition-transform group-hover:scale-105 duration-500 shadow-md">
+                  <span className="px-3 py-1.5 sm:px-4 sm:py-2 w-full bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl text-[11px] sm:text-xs xl:text-xl font-black text-white transition-transform group-hover:scale-105 duration-500 shadow-md">
                     {isRtl ? categories[2].name_ar || categories[2].name : categories[2].name_en || categories[2].name}
                   </span>
                 </div>
@@ -112,7 +112,7 @@ export default function FeaturedCategories({ categories, isRtl, t, getImageUrl }
                 <Image src={getImageUrl(categories[3].image)} alt={isRtl ? categories[3].name_ar || categories[3].name : categories[3].name_en || categories[3].name} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:via-black/40 transition-colors duration-700" />
                 <div className="absolute z-10 bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 flex justify-center text-center">
-                  <span className="px-3 py-1.5 sm:px-4 sm:py-2 w-full bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl text-[11px] sm:text-xs xl:text-xl font-black text-white uppercase tracking-widest transition-transform group-hover:scale-105 duration-500 shadow-md">
+                  <span className="px-3 py-1.5 sm:px-4 sm:py-2 w-full bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl text-[11px] sm:text-xs xl:text-xl font-black text-white transition-transform group-hover:scale-105 duration-500 shadow-md">
                     {isRtl ? categories[3]?.name_ar || categories[3].name : categories[3]?.name_en || categories[3].name}
                   </span>
                 </div>
@@ -131,7 +131,7 @@ export default function FeaturedCategories({ categories, isRtl, t, getImageUrl }
                   <Image src={getImageUrl(category.image)} alt={isRtl ? category.name_ar || category.name : category.name_en || category.name} fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-1000" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:via-black/40 transition-colors duration-700" />
                   <div className="absolute z-10 bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 flex justify-center text-center">
-                    <span className="px-3 py-1.5 sm:px-4 sm:py-2 w-full bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl text-[11px] sm:text-xs xl:text-xl font-black text-white uppercase tracking-widest transition-transform group-hover:scale-105 duration-500 shadow-md">
+                    <span className="px-3 py-1.5 sm:px-4 sm:py-2 w-full bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl text-[11px] sm:text-xs xl:text-xl font-black text-white transition-transform group-hover:scale-105 duration-500 shadow-md">
                       {isRtl ? category.name_ar || category.name : category.name_en || category.name}
                     </span>
                   </div>
@@ -149,7 +149,7 @@ export default function FeaturedCategories({ categories, isRtl, t, getImageUrl }
               <LayoutGrid className="w-5 h-5 text-primary-400 animate-pulse" />
             </div>
           </div>
-          <p className="text-sm font-semibold text-gray-400 dark:text-gray-500 tracking-widest uppercase tabular-nums">
+          <p className="text-sm font-semibold text-gray-400 dark:text-gray-500 tabular-nums">
             {isRtl ? `جارٍ التحميل${dots}` : `Loading${dots}`}
           </p>
         </div>

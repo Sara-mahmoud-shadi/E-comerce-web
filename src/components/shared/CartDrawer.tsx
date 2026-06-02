@@ -25,14 +25,14 @@ export function CartDrawer() {
   const tp = useTranslations('Products');
   const locale = useLocale();
   const { items, removeItem, updateQuantity, getTotalPrice } = useCartStore();
-  const [isHydrated, setIsHydrated] = useState(false); 
+  const [isHydrated, setIsHydrated] = useState(false);
   const [open, setOpen] = useState(false);
   const isRtl = locale === 'ar';
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
-  
+
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
   const subtotal = getTotalPrice();
 
@@ -43,8 +43,33 @@ export function CartDrawer() {
   return (
     <Drawer open={open} onOpenChange={setOpen} direction={direction}>
       <DrawerTrigger asChild>
-        <button className="relative cursor-pointer p-2 rounded-full !m-0 hover:bg-black/5 dark:hover:bg-white/10 transition group">
-          <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
+        <button className="relative cursor-pointer p-2 rounded-full !m-0 hover:bg-black/5 hover:scale-110 dark:hover:bg-white/10 transition group">
+           <svg
+            width={25}
+            height={25}
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M2.83179 4.38657H3.34341C4.20256 4.38657 4.96125 4.94691 5.21392 5.76808L8.27786 15.7259C8.53053 16.547 9.28921 17.1074 10.1484 17.1074H17.1114C17.9373 17.1074 18.6743 16.5889 18.9534 15.8116L20.9925 10.1312C21.679 8.21867 20.2616 6.20383 18.2295 6.20383H10.66"
+              stroke="#226a19"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+            />
+            <circle
+              cx="10.1707"
+              cy="20.5322"
+              r="1.46779"
+              fill="#226a19"
+            />
+            <circle
+              cx="17.0204"
+              cy="20.5322"
+              r="1.46779"
+              fill="#226a19"
+            />
+          </svg>
           {itemCount > 0 && (
             <motion.span
               initial={{ scale: 0 }}

@@ -25,6 +25,8 @@ function getBackendHostname(url: string): { protocol: string; hostname: string; 
 const backendPattern = getBackendHostname(backendUrl);
 
 const nextConfig: NextConfig = {
+  // Allow HMR WebSocket connections when accessing from the network IP
+  allowedDevOrigins: ['192.168.0.195'],
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
