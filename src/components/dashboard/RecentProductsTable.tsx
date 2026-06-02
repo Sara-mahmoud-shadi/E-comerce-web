@@ -19,7 +19,8 @@ export default function RecentProductsTable() {
         setIsLoading(true);
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         // Limit to 5 recent products for dashboard overview
-        const url = new URL(window.location.origin + '/api/products');
+        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? 'https://e-comerce-backend-self.vercel.app/').replace(/\/?$/, '/');
+        const url = new URL(`${apiBase}products`);
         url.searchParams.append('page', '1');
         url.searchParams.append('limit', '5');
 

@@ -20,9 +20,9 @@ interface LoginModalProps {
   onClose: () => void;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api/';
-const API_LOGIN = baseUrl.endsWith('/') 
-  ? `${baseUrl}auth/login` 
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://e-comerce-backend-self.vercel.app/';
+const API_LOGIN = baseUrl.endsWith('/')
+  ? `${baseUrl}auth/login`
   : `${baseUrl}/auth/login`;
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {

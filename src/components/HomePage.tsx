@@ -13,7 +13,6 @@ const BestSellersSlider = dynamic(() => import('@/components/home/BestSellersSli
     <section className="pt-24 pb-20 relative -top-10 overflow-hidden bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-[#ffffff] dark:from-[#111c12] dark:via-[#19241b] dark:to-[#0f172a] transition-colors duration-500 flex items-center justify-center min-h-[500px]">
       <div className="animate-pulse flex flex-col items-center gap-4">
         <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-500 rounded-full animate-spin" />
-        <span className="text-gray-500 text-xs font-semibold uppercase tracking-wider">Loading Best Sellers...</span>
       </div>
     </section>
   )

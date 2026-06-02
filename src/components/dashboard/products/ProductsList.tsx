@@ -34,7 +34,7 @@ export default function ProductsList() {
     try {
       setIsLoading(true);
       const token = localStorage.getItem('token');
-      const url = new URL(window.location.origin + '/api/products');
+      const url = new URL(API_URL);
       url.searchParams.append('page', currentPage.toString());
       url.searchParams.append('limit', itemsPerPage.toString());
       if (searchTerm) {
@@ -114,7 +114,7 @@ export default function ProductsList() {
                 {t('productsListDesc')}
               </p>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 max-w-full sm:max-w-2xl flex-grow lg:justify-end">
               {/* Dynamic Search Box */}
               <div className="relative w-full sm:max-w-xs md:max-w-md flex-grow">

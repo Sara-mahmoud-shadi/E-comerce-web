@@ -13,7 +13,7 @@ import LoaderIcon from '@/components/shared/LoaderIcon';
 import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 import { toast } from 'sonner';
 
-export const getApiBase = () => (process.env.NEXT_PUBLIC_API_URL ?? '/api/').replace(/\/?$/, '/');
+export const getApiBase = () => (process.env.NEXT_PUBLIC_API_URL ?? 'https://e-comerce-backend-self.vercel.app/').replace(/\/?$/, '/');
 
 export default function CategoriesList() {
   const t = useTranslations('Dashboard');
@@ -115,7 +115,7 @@ export default function CategoriesList() {
                 {t('categoriesListDesc')}
               </p>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 max-w-full sm:max-w-2xl flex-grow lg:justify-end">
               {/* Dynamic Search Box */}
               <div className="relative w-full sm:max-w-xs md:max-w-md flex-grow">

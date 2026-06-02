@@ -3,10 +3,11 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-// The deployed backend URL (e.g. https://my-api.up.railway.app)
-// Falls back to localhost for local development
-const backendUrl =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+// The deployed backend URL
+// Falls back to the Vercel deployment
+const backendUrl = (
+  process.env.NEXT_PUBLIC_BACKEND_URL || "https://e-comerce-backend-self.vercel.app/"
+).replace(/\/$/, "");
 
 // Parse hostname from the backend URL for image remotePatterns
 function getBackendHostname(url: string): { protocol: string; hostname: string; port?: string } {
@@ -89,6 +90,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "pngimg.com",
       },
+      // Vercel production backend
+      {
+        protocol: "https",
+        hostname: "e-comerce-backend-cyan.vercel.app",
+      },
       // Local development backend
       {
         protocol: "http",
@@ -100,7 +106,7 @@ const nextConfig: NextConfig = {
         hostname: "192.168.0.195",
         port: "3001",
       },
-      // Production backend (Railway) — derived from NEXT_PUBLIC_BACKEND_URL
+      // Production backend — derived from NEXT_PUBLIC_BACKEND_URL
       {
         protocol: backendPattern.protocol as "http" | "https",
         hostname: backendPattern.hostname,
@@ -110,4 +116,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default withNextIntl(nextConfig);
