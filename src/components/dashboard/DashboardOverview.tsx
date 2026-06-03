@@ -4,12 +4,38 @@ import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import RecentProductsTable from './RecentProductsTable';
 import RecentOrdersTable from './RecentOrdersTable'; 
+import { apiFetch } from '@/lib/api';
+import { getApiBase } from './categories/CategoriesList';
+import { useEffect, useState } from 'react';
 
 
 function DashboardOverviewPage() { 
   const params = useParams();
   const locale = params.locale as string;
   const isRtl = locale === 'ar';
+  const [stats, setStats] = useState<any>({}); 
+   const fetchStatus = async () => {
+      try { 
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        // Fetch latest 5 orders for overview
+  
+        const params = new URLSearchParams();
+        params.append('page', '1');
+        params.append('limit', '3');
+        const res = await apiFetch(`${getApiBase()}dashboard/stats `);
+  
+        if (res.ok) {
+          const data = await res.json(); 
+          setStats(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch', error);
+      } 
+    };
+  
+    useEffect(() => {
+      fetchStatus();
+    }, []);
  
 
   return (
@@ -59,7 +85,7 @@ function DashboardOverviewPage() {
               {isRtl ? 'إجمالي الأقسام' : 'Total Categories'}
             </span>
             <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight block">
-              12
+             {stats?.totalCategories}
             </span>
             <span className="text-[10px] sm:text-xs font-bold text-emerald-500 block truncate">
               {isRtl ? 'أقسام نشطة بالكامل' : 'fully active categories'}
@@ -87,7 +113,7 @@ function DashboardOverviewPage() {
               {isRtl ? 'إجمالي الطلبات' : 'Total Orders'}
             </span>
             <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight block">
-              1,420
+              {stats?.totalOrders}
             </span>
             <span className="text-[10px] sm:text-xs font-bold text-amber-500 block truncate">
               {isRtl ? '١٢ طلبات عاجلة' : '12 priority pending'}
@@ -115,7 +141,7 @@ function DashboardOverviewPage() {
               {isRtl ? 'إجمالي المنتجات' : 'Total Products'}
             </span>
             <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight block">
-              480
+              {stats?.totalProducts}
             </span>
             <span className="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 block truncate">
               {isRtl ? 'موزعة على الأقسام' : 'Across active sections'}

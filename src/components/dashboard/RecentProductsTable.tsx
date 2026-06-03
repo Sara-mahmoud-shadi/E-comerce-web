@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { Package, Image as ImageIcon, PackageX } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import LoaderIcon from '../shared/LoaderIcon';
+import { getApiBase } from './categories/CategoriesList';
+import LoadingState from '../shared/LoadingState';
 
 export default function RecentProductsTable() {
   const locale = useLocale();
@@ -19,12 +21,10 @@ export default function RecentProductsTable() {
         setIsLoading(true);
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         // Limit to 5 recent products for dashboard overview
-        const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? 'https://e-comerce-backend-self.vercel.app/').replace(/\/?$/, '/');
-        const url = new URL(`${apiBase}products`);
-        url.searchParams.append('page', '1');
-        url.searchParams.append('limit', '5');
-
-        const res = await apiFetch(url.toString(), {
+        const params = new URLSearchParams();
+        params.append('page', '1');
+        params.append('limit', '5');
+        const res = await apiFetch(`${getApiBase()}products?${params.toString()} `, {
           headers: {
             ...(token ? { 'Authorization': `Bearer ${token}` } : {})
           }
@@ -102,10 +102,10 @@ export default function RecentProductsTable() {
           </thead>
           <tbody className="divide-y divide-gray-50 dark:divide-slate-800/40 text-sm">
             {isLoading ? (
-              <tr>
-                <td colSpan={4} className="py-10 text-center">
-                  <div className="flex justify-center">
-                    <LoaderIcon />
+              <tr className='w-full'>
+                <td colSpan={5}  className="py-10 text-center  w-full">
+                  <div className="flex justify-center h-32 items-center w-full">
+                    <LoadingState />
                   </div>
                 </td>
               </tr>

@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { ClipboardList, ChevronRight, PackageX } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import LoaderIcon from '../shared/LoaderIcon';
+import { getApiBase } from './categories/CategoriesList';
+import LoadingState from '../shared/LoadingState';
 export const getRelativeTime = (dateString: string, isRtl: boolean) => {
   if (!dateString) return '—';
   const date = new Date(dateString);
@@ -33,8 +35,7 @@ export const getRelativeTime = (dateString: string, isRtl: boolean) => {
 
 export default function RecentOrdersTable() {
   const locale = useLocale();
-  const isRtl = locale === 'ar';
-  const to = useTranslations('Orders');
+  const isRtl = locale === 'ar'; 
   const tc = useTranslations('Cart');
 
   const [orders, setOrders] = useState<any[]>([]);
@@ -45,12 +46,11 @@ export default function RecentOrdersTable() {
       setIsLoading(true);
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       // Fetch latest 5 orders for overview
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? 'https://e-comerce-backend-self.vercel.app/').replace(/\/?$/, '/');
-      const url = new URL(`${apiBase}orders`);
-      url.searchParams.append('page', '1');
-      url.searchParams.append('limit', '3');
 
-      const res = await apiFetch(url.toString(), {
+      const params = new URLSearchParams();
+      params.append('page', '1');
+      params.append('limit', '3');
+      const res = await apiFetch(`${getApiBase()}orders?${params.toString()} `, {
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         }
@@ -96,7 +96,7 @@ export default function RecentOrdersTable() {
       {/* Deliveries List Area */}
       <div className="flex flex-col gap-6">
         {isLoading ? (
-          <LoaderIcon />
+           <LoadingState />
         ) : orders.length === 0 ? (
           <div className="py-8 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 font-bold text-sm">
             <motion.div
