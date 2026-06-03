@@ -85,7 +85,7 @@ function DashboardOverviewPage() {
               {isRtl ? 'إجمالي الأقسام' : 'Total Categories'}
             </span>
             <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight block">
-             {stats?.totalCategories}
+             {stats?.totalCategories || 0}
             </span>
             <span className="text-[10px] sm:text-xs font-bold text-emerald-500 block truncate">
               {isRtl ? 'أقسام نشطة بالكامل' : 'fully active categories'}
@@ -113,7 +113,7 @@ function DashboardOverviewPage() {
               {isRtl ? 'إجمالي الطلبات' : 'Total Orders'}
             </span>
             <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight block">
-              {stats?.totalOrders}
+              {stats?.totalOrders || 0}
             </span>
             <span className="text-[10px] sm:text-xs font-bold text-amber-500 block truncate">
               {isRtl ? '١٢ طلبات عاجلة' : '12 priority pending'}
@@ -141,7 +141,7 @@ function DashboardOverviewPage() {
               {isRtl ? 'إجمالي المنتجات' : 'Total Products'}
             </span>
             <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight block">
-              {stats?.totalProducts}
+              {stats?.totalProducts || 0}
             </span>
             <span className="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 block truncate">
               {isRtl ? 'موزعة على الأقسام' : 'Across active sections'}
