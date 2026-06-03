@@ -3,6 +3,7 @@ import { Link } from '@/i18n/routing';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { LayoutGrid, RefreshCw } from 'lucide-react';
+import LoadingState from '../shared/LoadingState';
 
 interface FeaturedCategoriesProps {
   categories: any[];
@@ -45,7 +46,7 @@ export default function FeaturedCategories({ categories, isRtl, t, getImageUrl }
   }, [categories.length]);
 
   return (
-    <section className="container bg-white xl:shadow mx-auto py-20 relative -top-20 lg:-top-30 rounded-3xl px-4 sm:px-6 lg:px-8">
+    <section  className="container bg-white xl:shadow mx-auto py-20 relative -top-20 lg:-top-30 rounded-3xl px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col items-center justify-between mb-10 gap-4">
         <div>
           <h2 className="text-2xl md:text-4xl font-black italic tracking-tighter text-gray-900 dark:text-white mb-2">
@@ -142,17 +143,7 @@ export default function FeaturedCategories({ categories, isRtl, t, getImageUrl }
         </>
       ) : isLoading ? (
         /* ── Loading State ── */
-        <div className="w-full h-56 flex flex-col items-center justify-center gap-5">
-          <div className="relative">
-            <div className="w-14 h-14 rounded-full border-4 border-gray-100 border-t-primary-500 animate-spin" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <LayoutGrid className="w-5 h-5 text-primary-400 animate-pulse" />
-            </div>
-          </div>
-          <p className="text-sm font-semibold text-gray-400 dark:text-gray-500 tabular-nums">
-            {isRtl ? `جارٍ التحميل${dots}` : `Loading${dots}`}
-          </p>
-        </div>
+        <LoadingState />
       ) : (
         /* ── Empty State ── */
         <div className="w-full py-16 flex flex-col items-center justify-center gap-6 text-center select-none">

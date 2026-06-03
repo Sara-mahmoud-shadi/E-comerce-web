@@ -23,6 +23,8 @@ import { toast } from 'sonner';
 import DynamicSelect from '@/components/shared/DynamicSelect';
 import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 import { getApiBase } from '../categories/CategoriesList';
+import LoadingState from '@/components/shared/LoadingState';
+import Image from 'next/image';
 
 interface OrderDetailsContentProps {
   id: string;
@@ -136,9 +138,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-8 h-8 border-4 border-primary-500/210 border-t-primary-500 rounded-full animate-spin" />
-      </div>
+       <LoadingState />
     );
   }
 
@@ -190,7 +190,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
           </p>
         </div>
 
-        <div className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
+        <div className={`flex  gap-4 w-full md:w-auto mt-4 md:mt-0 ${isEditingStatus ? "items-end" : "items-center"}`}>
           <button  onClick={() => window.print()}  className="flex cursor-pointer items-center justify-center gap-2 p-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 rounded-lg font-bold text-sm shadow-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-colors">
             <Printer className="w-4 h-4" />
           </button>
@@ -199,7 +199,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
               <DynamicSelect
                 label={to('status')}
                 value={order.status_order}
-                onChange={handleStatusChange}
+                onChange={handleStatusChange} 
                 options={[
                   { value: 'pending', label: to('status_pending') },
                   { value: 'processing', label: to('status_processing') },
@@ -327,8 +327,8 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
                   return (
                     <div key={item.id || index} className="flex flex-row items-center justify-between gap-4">
                       <div className="flex gap-6 items-center">
-                        <div className="relative w-20 h-20 rounded-2xl bg-white dark:bg-white/5 flex-shrink-0 border border-gray-100 dark:border-white/5 overflow-hidden p-2">
-                          <img src={productImage} alt={productName} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal" />
+                        <div className="relative w-20 h-20 rounded-2xl bg-white dark:bg-white/5 flex-shrink-0 border border-gray-100 dark:border-white/5 overflow-hidden">
+                          <Image width={1000} height={1000} src={productImage} alt={productName} className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal" />
                         </div>
                         <div className="flex flex-col justify-center">
                           <p className="font-bold text-slate-900 dark:text-white text-base">

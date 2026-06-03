@@ -143,14 +143,9 @@ export default function CategoryDetailsContent() {
                 <div className="w-20 h-20 bg-primary-500/10 rounded-full flex items-center justify-center text-primary-500 mb-6 animate-pulse">
                   <ShoppingBag className="w-8 h-8" />
                 </div>
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight">
-                  {IsRtl ? 'لم نجد أي منتجات' : 'No Products Found'}
-                </h3>
-                <p className="text-sm font-semibold text-gray-400 dark:text-gray-500 max-w-sm mb-8 leading-relaxed">
-                  {IsRtl
-                    ? 'جرب تعديل نطاق الأسعار أو إعادة تعيين الفلاتر لعرض التشكيلة الكاملة.'
-                    : 'Try resetting the active price filters or sorting parameters to discover our full product catalogue.'}
-                </p>
+                 <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight">
+                  {isRtl ? 'لم نجد أي منتجات' : 'No Products Found'}
+                </h3> 
               </motion.div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 sm:gap-10">

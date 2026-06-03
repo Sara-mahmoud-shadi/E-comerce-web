@@ -124,14 +124,14 @@ export default function BestSellersSlider() {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-5 space-y-4">
-          <div className="flex items-center justify-center gap-2">
+          <div data-aos="fade-down" className="flex items-center justify-center gap-2">
             <span className="h-[1px] w-6 bg-primary-500/50" />
             <span className="text-primary-500 dark:text-primary-400 font-extrabold tracking-widest text-xs uppercase animate-pulse-slow">
               {t('bestSellingProducts')}
             </span>
             <span className="h-[1px] w-6 bg-primary-500/50" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-primary-500 dark:text-white tracking-tight uppercase">
+          <h2 data-aos="fade-up" data-aos-delay="100" className="text-4xl md:text-5xl font-black text-primary-500 dark:text-white tracking-tight uppercase">
             {isRtl ? 'المنتجات الأكثر طلباً' : 'Sizzling Best Sellers'}
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium max-w-xl mx-auto">

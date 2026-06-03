@@ -153,7 +153,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
       imageFiles.forEach(file => {
         submitData.append('images', file);
       });
-
+ 
       const token = localStorage.getItem('token');
       const url = isEditing && productId ? `${getApiBase()}products/${productId}` : `${getApiBase()}products`;
 

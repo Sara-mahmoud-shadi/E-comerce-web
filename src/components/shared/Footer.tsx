@@ -6,6 +6,7 @@ import { Phone, MapPin, ArrowRight } from 'lucide-react';
 import InstgaramIcon from './Icons/instgaram';
 import TwitterIcon from './Icons/Twitter';
 import FacebookIcon from './Icons/Facebook';
+import Image from 'next/image';
 
 export default function Footer() {
   const t = useTranslations('Footer');
@@ -46,7 +47,13 @@ export default function Footer() {
           />
         </svg>
       </div>
-      <footer className="bg-[linear-gradient(90deg,rgba(18,64,18,1)_0%,rgba(31,102,44,1)_43%,rgba(18,64,18,1)_100%)] text-white">
+      <footer className="relative bg-[linear-gradient(90deg,rgba(18,64,18,1)_0%,rgba(31,102,44,1)_43%,rgba(18,64,18,1)_100%)] text-white">
+         {/* Decorative leaves */}
+                 <div className="absolute top-8 hidden 2xl:block opacity-40 -left-25 rtl:right-8 z-25 w-24 h-24 pointer-events-none opacity-85 animate-float-delayed blur-[0.8px]">
+                  </div>
+                 <div className="absolute bottom-8 left-8 z-0 w-16 h-16 pointer-events-none opacity-40 animate-float blur-[1.8px]">
+                   <Image src="/leaf-overlay.webp" alt="Leaf" width={64} height={64} className="object-contain -rotate-[60deg]" />
+                 </div>
         {/* Top CTA Section (Green Hero) */}
         <div className="py-10 border-b border-white/5 relative overflow-hidden">
           {/* Decorative Glow */}

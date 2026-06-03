@@ -15,6 +15,8 @@ import { ChevronDown, RefreshCcw, ShoppingBag, ShoppingCart, SlidersHorizontal, 
 import SidebarFilters from './SidebarFilters';
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { getApiBase } from '../dashboard/categories/CategoriesList';
+import LoaderIcon from '../shared/LoaderIcon';
+import LoadingState from '../shared/LoadingState';
 
 
 
@@ -122,14 +124,11 @@ export default function ProductsContent() {
       fetchData(true);
     }
   };
- 
-  const tp = useTranslations('PriceRange');
-
+  
   const breadcrumbItems = [
     { label: t('allProducts'), href: '/products' },
     ...(search ? [{ label: `"${search}"` }] : [])
-  ];
- 
+  ]; 
   return (
     <div className="min-h-screen">
       
@@ -293,7 +292,7 @@ export default function ProductsContent() {
 
           {/* Dynamic Grid Layout */}
           <div>
-            {products.length === 0 ? (
+            {products.length === 0 && !isLoading? (
               /* Beautiful Modern Empty State */
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -309,7 +308,12 @@ export default function ProductsContent() {
                  
                 
               </motion.div>
-            ) : (
+            ) : products.length === 0 && isLoading ? (
+              <div className="flex items-center justify-center h-[400px]">
+                
+              <LoadingState/>
+              </div>
+            ) :(
               /* High-end Responsive 3-Column Grid */
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 sm:gap-10">
                 {products.map((product, i) => (

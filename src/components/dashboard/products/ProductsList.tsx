@@ -13,8 +13,7 @@ import DeleteConfirmDialog from '@/components/shared/DeleteConfirmDialog';
 import LoaderIcon from '@/components/shared/LoaderIcon';
 import { ShopBreadcrumb } from '@/components/shared/ShopBreadcrumb';
 import { toast } from 'sonner';
-
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}products`;
+import { getApiBase } from '../categories/CategoriesList';
 
 
 export default function ProductsList() {
@@ -34,14 +33,14 @@ export default function ProductsList() {
     try {
       setIsLoading(true);
       const token = localStorage.getItem('token');
-      const url = new URL(API_URL);
-      url.searchParams.append('page', currentPage.toString());
-      url.searchParams.append('limit', itemsPerPage.toString());
+    
+    const params = new URLSearchParams();
+      params.append('page', currentPage.toString());
+      params.append('limit', itemsPerPage.toString());
       if (searchTerm) {
-        url.searchParams.append('search', searchTerm);
+        params.append('search', searchTerm);
       }
-
-      const res = await apiFetch(url.toString(), {
+      const res = await apiFetch(`${getApiBase()}products?${params.toString()} `, {
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         }
@@ -72,7 +71,7 @@ export default function ProductsList() {
     setIsDeleting(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await apiFetch(`${API_URL}/${deleteId}`, {
+      const res = await apiFetch(`${getApiBase()}products/${deleteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

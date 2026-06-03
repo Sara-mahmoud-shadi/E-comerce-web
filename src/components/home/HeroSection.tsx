@@ -24,7 +24,7 @@ export default function HeroSection({ isRtl, t }: HeroSectionProps) {
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 py-12 md:py-20 h-full flex flex-col lg:flex-row items-center gap-12 lg:gap-8 z-10">
 
         {/* Left Column: Premium Typography Content */}
-        <div className="flex-1 max-w-2xl text-center lg:text-left rtl:lg:text-right flex flex-col justify-center items-center lg:items-start relative z-10">
+        <div data-aos="fade-right" data-aos-delay="100" className="flex-1 max-w-2xl text-center lg:text-left rtl:lg:text-right flex flex-col justify-center items-center lg:items-start relative z-10">
 
           {/* Floating Frying Pan Asset */}
           <div className="absolute -top-20 -left-16 rtl:left-auto rtl:-right-16 w-44 h-44 pointer-events-none opacity-50 dark:opacity-30 animate-float z-0 select-none mix-blend-multiply dark:mix-blend-normal filter blur-[0.5px] hover:scale-105 hover:rotate-45 transition-all duration-700">
@@ -78,7 +78,7 @@ export default function HeroSection({ isRtl, t }: HeroSectionProps) {
         </div>
 
         {/* Right Column: Premium Interactive Showcase */}
-        <div className="flex-1 relative w-full flex items-center justify-center min-h-[400px] lg:min-h-[600px]">
+        <div data-aos="fade-left" data-aos-delay="200" className="flex-1 relative w-full flex items-center justify-center min-h-[400px] lg:min-h-[600px]">
 
           {/* Spinning background halo */}
           <div className="absolute w-[300px] h-[300px] md:w-[460px] md:h-[460px] rounded-full bg-gradient-to-tr from-white/80 to-white/10 dark:from-slate-800/40 dark:to-transparent border border-white/40 dark:border-slate-700/20 shadow-2xl flex items-center justify-center animate-spin-slow pointer-events-none z-0" />

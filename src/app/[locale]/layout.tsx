@@ -8,6 +8,7 @@ import "../globals.css";
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import { Toaster } from '@/components/ui/sonner';
+import AosInit from '@/components/AosInit';
 
 const cairo = Cairo({ subsets: ["arabic", "latin"], variable: "--font-cairo" });
 
@@ -47,6 +48,7 @@ export default async function LocaleLayout({
         className={`${cairo.variable} antialiased bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex flex-col font-sans`}
       >
         <NextIntlClientProvider messages={messages}> 
+          <AosInit />
           <main className="">
             {children}
           </main> 
