@@ -15,7 +15,7 @@ interface DashboardHeaderProps {
 export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
   const t = useTranslations('Dashboard'); 
   return (
-    <header className="h-20 sm:h-24 shrink-0 bg-white dark:bg-[#081640] border-b border-gray-100 dark:border-white/5 flex items-center justify-between px-4 sm:px-6 md:px-10 gap-4">
+    <header className="h-20 sm:h-24 shrink-0 bg-white dark:bg-[#081640] border-b border-gray-100 dark:border-white/5 flex items-center justify-between px-4 sm:px-6 md:px-10 gap-2">
       <div className="flex items-center gap-3 sm:gap-4 flex-grow max-w-2xl">
         {/* Hamburger Menu for Mobile & Tablet Viewports */}
         <div className='lg:hidden'>  <Logo /> </div>

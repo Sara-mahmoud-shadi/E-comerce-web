@@ -205,7 +205,7 @@ export default function SettingsView() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Tabs Sidebar */}
-          <div className="flex flex-row lg:flex-col overflow-x-auto mx-auto  overflow-visible w-72 md:w-full lg:w-72 p-4 lg:p-5 shrink-0 gap-2 bg-white dark:bg-[#081640] border border-gray-200 dark:border-white/5 rounded-xl shadow-sm scrollbar-hide px-4 sm:px-5">
+          <div className="flex flex-row lg:flex-col overflow-x-auto mx-auto  overflow-visible w-full lg:w-72 p-4 lg:p-5 shrink-0 gap-2 bg-white dark:bg-[#081640] border border-gray-200 dark:border-white/5 rounded-xl shadow-sm scrollbar-hide px-4 sm:px-5">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
