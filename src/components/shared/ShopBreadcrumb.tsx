@@ -22,7 +22,7 @@ export function ShopBreadcrumb({ items, className }: ShopBreadcrumbProps) {
   const isRtl = locale === 'ar';
 
   return (
-    <nav className={cn("mb-8", className)} aria-label="Breadcrumb">
+    <nav className={cn("mb-5", className)} aria-label="Breadcrumb">
       <div className="flex flex-wrap items-center justify-start gap-3">
 
         <Link

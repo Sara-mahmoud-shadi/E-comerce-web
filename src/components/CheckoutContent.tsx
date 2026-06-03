@@ -268,13 +268,13 @@ export default function CheckoutContent() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="relative bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border border-gray-100 dark:border-slate-800/80 rounded-3xl p-5 sm:p-8 shadow-[0_30px_70px_rgba(0,0,0,0.02)] space-y-6 overflow-hidden"
+                  className="relative bg-white/70 dark:bg-slate-900/60 backdrop-blur-2xl border border-gray-100 dark:border-slate-800/80 rounded-3xl p-3 md:p-8 shadow-[0_30px_70px_rgba(0,0,0,0.02)] space-y-6 overflow-hidden"
                 >
                   <div className="absolute top-[28%] -left-3.5 w-7 h-7 rounded-full bg-white dark:bg-[#0d1510] border border-gray-100 dark:border-slate-800/80 pointer-events-none z-10" />
                   <div className="absolute top-[28%] -right-3.5 w-7 h-7 rounded-full bg-white dark:bg-[#0d1510] border border-gray-100 dark:border-slate-800/80 pointer-events-none z-10" />
 
                   {/* Summary Header */}
-                  <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-slate-800/80">
+                  <div className="flex items-center justify-between pb-6 border-b border-gray-200 dark:border-slate-800/80">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-2xl bg-accent-500/10 flex items-center justify-center text-accent-500">
                         <ShoppingBag className="w-5 h-5" />
@@ -306,8 +306,8 @@ export default function CheckoutContent() {
                       </div>
                     ) : (
                       items.map((item) => (
-                        <div key={item.id} className="flex items-center justify-between gap-4 p-2.5 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors duration-300">
-                          <div className="flex items-center gap-4">
+                        <div key={item.id} className="p-2.5 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors duration-300">
+                          <div className="flex items-center gap-4 w-full">
                             {/* Image Thumbnail */}
                             <div className="relative w-16 h-16 rounded-2xl border border-gray-100 dark:border-slate-800/80 overflow-hidden shrink-0">
                               <Image
@@ -320,20 +320,23 @@ export default function CheckoutContent() {
                             </div>
 
                             {/* Name & Quantity */}
-                            <div className="text-left rtl:text-right">
-                              <h4 className="text-sm font-black text-gray-800 dark:text-white line-clamp-1 leading-tight mb-1">
-                                {isRtl ? item.name_ar : item.name_en}
-                              </h4>
+                            <div className='w-full'>
+                              <div className='flex justify-between flex-wrap gap-2'>
+                                <h4 className="text-sm font-black text-gray-800 dark:text-white line-clamp-1 leading-tight">
+                                  {isRtl ? item.name_ar : item.name_en}
+                                </h4>
+                                   {/* Price */}
+                          <p className="font-black text-accent-500 text-sm tracking-tight shrink-0">
+                            {tp('price', { price: (item.price_discount || item.price) * item.quantity })}
+                          </p>
+                                </div>
                               <span className="bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500 font-extrabold text-[10px] px-2 py-0.5 rounded-md">
                                 QTY: {item.quantity}
                               </span>
                             </div>
                           </div>
 
-                          {/* Price */}
-                          <p className="font-black text-accent-500 text-sm tracking-tight shrink-0">
-                            {tp('price', { price: (item.price_discount || item.price) * item.quantity })}
-                          </p>
+                       
                         </div>
                       ))
                     )}
@@ -357,16 +360,14 @@ export default function CheckoutContent() {
                       </span>
                     </div>
 
-                    <div className="bg-[#f1f4f1] dark:bg-slate-800/40 rounded-3xl p-5 flex items-center justify-between border border-primary-500/5 mt-6">
-                      <div className="text-left rtl:text-right">
-                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-0.5">
-                          {isRtl ? 'المبلغ الإجمالي' : 'Total Amount'}
-                        </span>
+                    <div className="bg-[#f1f4f1] dark:bg-slate-800/40 rounded-md p-5 flex items-center justify-between border border-primary-500/5 mt-6">
+                      <div>
+                      
                         <span className="text-sm font-black text-gray-800 dark:text-white">
                           {tc('total')}
                         </span>
                       </div>
-                      <span className="text-3xl font-black text-primary-500 tracking-tighter">
+                      <span className="text-sm md:text-3xl font-black text-primary-500 tracking-tighter">
                         {tp('price', { price: total })}
                       </span>
                     </div>

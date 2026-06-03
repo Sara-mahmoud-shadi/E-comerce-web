@@ -333,8 +333,8 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
                         <Image width={1000} height={1000} src={productImage} alt={productName} className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal" />
                       </div>
                       <div className="flex flex-col justify-center flex-1">
-                        <div className="flex justify-between items-start gap-2">
-                          <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base pr-2">
+                        <div className="flex flex-wrap justify-between items-start gap-2">
+                          <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
                             {productName}
                           </p>
                           <div className="font-bold text-slate-900 dark:text-white text-sm sm:hidden shrink-0">

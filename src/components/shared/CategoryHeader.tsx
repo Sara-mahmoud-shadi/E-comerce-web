@@ -24,7 +24,7 @@ export function CategoryHeader({ category, productsCount }: CategoryHeaderProps)
   };
 
   return (
-    <header className="relative w-full min-h-[500px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-white dark:from-[#111c12] dark:via-[#19241b] dark:to-[#080808] overflow-hidden flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-gray-100/10 transition-colors duration-500 py-32">
+    <header className="relative w-full min-h-[500px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-white dark:from-[#111c12] dark:via-[#19241b] dark:to-[#080808] overflow-hidden flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-gray-100/10 transition-colors duration-500 py-16 md:py-32">
       {/* Abstract Glowing Accent Circles */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[350px] bg-primary-500/10 rounded-full blur-[80px] pointer-events-none animate-pulse-slow" />
       <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-accent-500/10 rounded-full blur-[60px] pointer-events-none" />
@@ -57,7 +57,7 @@ export function CategoryHeader({ category, productsCount }: CategoryHeaderProps)
               </div>
 
               {/* Main Headline */}
-              <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-start text-gray-900 dark:text-white leading-[1.1] tracking-tight uppercase">
+              <h1 className="text-2xl md:text-6xl font-extrabold text-start text-gray-900 dark:text-white leading-[1.1] tracking-tight uppercase">
                 {IsRtl ? category?.name_ar : category?.name_en}
               </h1>
 

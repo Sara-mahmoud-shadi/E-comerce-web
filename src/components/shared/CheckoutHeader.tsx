@@ -17,14 +17,14 @@ export function CheckoutHeader({ title, subtitle, itemCount }: CheckoutHeaderPro
   const tc = useTranslations('Cart');
 
   return (
-    <header className="relative pt-32 pb-20 overflow-hidden min-h-[500px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-white dark:from-[#111c12] dark:via-[#19241b] dark:to-[#080808]">
+    <header className="relative py-16 md:py-32 overflow-hidden min-h-[500px] bg-gradient-to-b from-[#f3f7f2] via-[#e8efe7] to-white dark:from-[#111c12] dark:via-[#19241b] dark:to-[#080808]">
       {/* Soft Background Accent Glows */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-primary-500/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-accent-500/5 rounded-full blur-[80px] pointer-events-none" />
 
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 relative z-10 w-full">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-          <div className="flex flex-col justify-center gap-6 max-w-3xl">
+          <div className="flex flex-col justify-center gap-6 w-full md:max-w-3xl">
 
             {/* Centered Content (Metadata & Titles) */}
             <div className="w-full flex flex-col items-center justify-center">
@@ -32,7 +32,7 @@ export function CheckoutHeader({ title, subtitle, itemCount }: CheckoutHeaderPro
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="space-y-6 flex flex-col"
+                className="space-y-6 flex flex-col w-full md:w-auto"
               >
                 {/* Shop Breadcrumb */}
                 <ShopBreadcrumb
@@ -51,7 +51,7 @@ export function CheckoutHeader({ title, subtitle, itemCount }: CheckoutHeaderPro
                 </div>
 
                 {/* Main Headline */}
-                <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-gray-900 dark:text-white leading-[1.1] tracking-tight uppercase">
+                <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-white leading-[1.1] tracking-tight uppercase">
                   {title}
                 </h1>
 

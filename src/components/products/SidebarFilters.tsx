@@ -78,7 +78,7 @@ export default function SidebarFilters({
       </div>
 
       {/* Accordion Filter Wrapper */}
-      <div className="space-y-4 mt-6 overflow-y-auto">
+      <div className="space-y-4 mt-6 overflow-y-auto h-[55vh]">
         <Accordion type="multiple" defaultValue={defaultValues} dir={isRtl ? 'rtl' : 'ltr'} className="space-y-4">
           {/* Category Filter (Optional) */}
           {categoriesList && selectedCategories && handleCategoryChange && (

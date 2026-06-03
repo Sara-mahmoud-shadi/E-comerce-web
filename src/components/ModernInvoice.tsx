@@ -38,7 +38,7 @@ export default function ModernInvoice({ order }: { order: any }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full py-8 px-4 md:p-12 print:pt-20 print:px-2 rounded-2xl text-slate-900 dark:text-slate-100"
+          className="w-full py-8   md:p-12 print:pt-20 print:px-2 rounded-2xl text-slate-900 dark:text-slate-100"
         >
           {/* Brand Logo */}
           <div className="mb-4 flex justify-end">
@@ -56,7 +56,7 @@ export default function ModernInvoice({ order }: { order: any }) {
           </h2>
 
           {/* Order Status Timeline Row */}
-          <div className="flex items-start justify-between mb-12 mt-8 px-2 sm:px-8 print:text-black">
+          <div className="flex items-start justify-between mb-12 mt-8 md:px-8 print:text-black">
             {[
               { id: 'pending', label: isRtl ? 'قيد الانتظار' : 'Pending' },
               { id: 'processing', label: isRtl ? 'قيد المعالجة' : 'Processing' },
@@ -145,17 +145,20 @@ export default function ModernInvoice({ order }: { order: any }) {
                     )}
                   </div>
                   <div className="flex flex-col justify-center">
-                    <p className="font-bold text-slate-900 dark:text-white text-base print:text-black">
-                      {isRtl ? item.name_ar || item.name_en : item.name_en}
-                    </p>
+                    <div className='flex justify-between flex-wrap gap-2'>
+                      <p className="font-bold text-slate-900 dark:text-white text-base print:text-black">
+                        {isRtl ? item.name_ar || item.name_en : item.name_en}
+                      </p>
+                       <div className="font-bold text-slate-900 dark:text-white text-base print:text-black">
+                  {tp('price', { price: (item.price_discount || item.price) * item.quantity })}
+                </div>
+                      </div>
                     <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
                       {isRtl ? 'الكمية' : 'Quantity'}: {item.quantity}
                     </p>
                   </div>
                 </div>
-                <div className="font-bold text-slate-900 dark:text-white text-base print:text-black">
-                  {tp('price', { price: (item.price_discount || item.price) * item.quantity })}
-                </div>
+               
               </div>
             ))}
           </div>
