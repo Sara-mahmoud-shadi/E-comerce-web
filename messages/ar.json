@@ -265,7 +265,7 @@
     "addImage": "إضافة صورة",
     "pricing": "التسعير",
     "pricingDesc": "قم بتعيين التفاصيل المالية لهذا المنتج.",
-    "basePrice": "السعر الأساسي ($)",
+    "basePrice": "السعر الأساسي",
     "basePriceDesc": "سعر البيع القياسي.",
     "discountPrice": "سعر الخصم (اختياري)",
     "discountPriceDesc": "السعر الترويجي (اختياري).",
