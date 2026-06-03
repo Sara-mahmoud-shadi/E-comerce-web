@@ -116,7 +116,7 @@ function DashboardOverviewPage() {
               {stats?.totalOrders || 0}
             </span>
             <span className="text-[10px] sm:text-xs font-bold text-amber-500 block truncate">
-              {isRtl ? '١٢ طلبات عاجلة' : '12 priority pending'}
+              {isRtl ? ' طلبات عاجلة' : ' priority pending'}
             </span>
           </div>
 
