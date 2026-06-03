@@ -4,7 +4,7 @@ import { apiFetch } from '@/lib/api';
 import React, { useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Save, X, Package, DollarSign, Box, Image as ImageIcon, Plus, Trash2, ListTree, Star, Type, AlignLeft, Percent, Receipt } from 'lucide-react';
+import { Save, X, Package, DollarSign, Box, Image as ImageIcon, Plus, Trash2, ListTree, Star, Type, AlignLeft, Percent, Receipt, Loader2 } from 'lucide-react';
 import { useRouter } from '@/i18n/routing';
 import { AnimatePresence } from 'framer-motion';
 import DynamicInput from '@/components/shared/DynamicInput';
@@ -171,7 +171,8 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
         if (Array.isArray(errorData?.errors) && errorData.errors.length > 0) {
           const mapped: Record<string, string> = {};
           errorData.errors.forEach((e: { field: string; message: string }) => {
-            if (e.field === 'name') mapped['name'] = e.message;
+            if (e.field === 'name' || e.field === 'name_en') mapped['name_en'] = e.message;
+            if (e.field === 'name_ar') mapped['name_ar'] = e.message;
             if (e.field === 'description') mapped['description'] = e.message;
             if (e.field === 'price') mapped['price'] = e.message;
             if (e.field === 'price_discount') mapped['price_discount'] = e.message;
@@ -233,7 +234,8 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
               className="flex items-center gap-2 cursor-pointer px-6 py-3 bg-primary-500 text-white rounded-lg font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              {isLoading ? '...' : t('save')}
+               {isLoading ? t('saving') : t('save')}
+              {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
             </button>
           </div>
         </header>
@@ -546,6 +548,7 @@ export default function ProductForm({ initialData, isEditing, productId }: Produ
                       onChange={(val) => handleInputChange('categoryId', val)}
                       placeholder={t('selectCategory')}
                       options={categories}
+                      error={fieldErrors['categoryId']}
                     />
                   ) : (
                     <div className="w-full h-[50px] bg-gray-100/80 dark:bg-gray-900/50 rounded-lg animate-pulse border border-gray-200 dark:border-white/5"></div>
