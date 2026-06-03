@@ -177,7 +177,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
         <div className="space-y-3">
           
           <div className="flex items-center gap-4 flex-wrap">
-            <h1 className="text-3xl font-black tracking-tighter uppercase dark:text-white">
+            <h1 className="text-md md:text-3xl font-black tracking-tighter uppercase dark:text-white">
               {to('orderId')}: #{order.order_number || order.id}
             </h1>
             <div className={`px-3 py-1 ${getStatusColors(order.status_order)} rounded-lg text-xs font-bold flex items-center gap-2`}>
@@ -190,7 +190,7 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
           </p>
         </div>
 
-        <div className={`flex  gap-4 w-full md:w-auto mt-4 md:mt-0 ${isEditingStatus ? "items-end" : "items-center"}`}>
+        <div className={`flex flex-wrap gap-4 w-full md:w-auto mt-4 md:mt-0 ${isEditingStatus ? "items-end" : "items-center"}`}>
           <button  onClick={() => window.print()}  className="flex cursor-pointer items-center justify-center gap-2 p-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 rounded-lg font-bold text-sm shadow-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-colors">
             <Printer className="w-4 h-4" />
           </button>
@@ -228,145 +228,152 @@ export default function OrderDetailsContent({ id }: OrderDetailsContentProps) {
 
         {/* Main Content */}
         <div id="printable-section" className="space-y-8">
-          <section className="bg-white print:border-0 print:shadow-none dark:bg-[#081640] border border-gray-200 dark:border-white/10 rounded-2xl p-6 sm:p-10 shadow-sm">
-               <div className="mb-6 flex justify-between  px-2 sm:px-8">
-            <Link href="/" dir="ltr" className="flex items-center gap-2 text-4xl font-black tracking-tight text-primary-500">
-              <div className="w-10 h-10 bg-primary-500/10 dark:bg-primary-500/10 rounded-xl flex items-center justify-center text-primary-500 dark:text-primary-400">
-                <ShoppingBag className="w-6 h-6" />
+          <section className="bg-white print:border-0 print:shadow-none dark:bg-[#081640] border border-gray-200 dark:border-white/10 rounded-2xl p-4 sm:p-10 shadow-sm">
+            <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between px-2 sm:px-8">
+              <Link href="/" dir="ltr" className="flex items-center gap-2 text-2xl sm:text-4xl font-black tracking-tight text-primary-500">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-500/10 dark:bg-primary-500/10 rounded-xl flex items-center justify-center text-primary-500 dark:text-primary-400">
+                  <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <span>Go<span className="text-xl sm:text-2xl text-black dark:text-white">Shop</span></span>
+              </Link>
+              <div>
+                <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base mb-1">{isRtl ? 'تاريخ الطلب' : 'Order Date'}</p>
+                <p className="font-bold dark:text-white text-sm sm:text-base">
+                  {new Date(order.createdAt || order.date || new Date()).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' })}
+                </p>
               </div>
-              <span>Go<span className="text-2xl text-black dark:text-white">Shop</span></span>
-            </Link>
- <div>
-                 <p className="text-slate-600 dark:text-slate-400 mb-1">{isRtl ? 'تاريخ الطلب' : 'Order Date'}</p>
-                 <p className="font-bold dark:text-white">
-                   {new Date(order.createdAt || order.date || new Date()).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' })}
-                 </p>
-               </div>
-          </div>
+            </div>
 
-             {/* Title */}
-             <h2 className="text-2xl sm:text-3xl text-center font-bold mb-6 dark:text-white">
-                 {to('orderId')}: #{order.order_number || order.id} ✨
-             </h2> 
-             {/* Order Status Timeline Row */}
-             <div className="flex items-start justify-between mb-12 mt-8 px-2 sm:px-8">
-                {[
-                  { id: 'pending', label: to('status_pending') },
-                  { id: 'processing', label: to('status_processing') },
-                  { id: 'ondelivery', label: to('status_ondelivery') },
-                  { id: 'done', label: to('status_done') }
-                ].map((step, idx, arr) => {
-                  const statusScores: Record<string, number> = { pending: 1, processing: 2, shipped: 3, ondelivery: 3, delivered: 4, done: 4 };
-                  const currentScore = statusScores[order.status_order || 'pending'] || 1;
-                  const stepScore = statusScores[step.id];
-                  const isActive = currentScore >= stepScore;
-                  const isCurrent = currentScore === stepScore;
-                  const isPast = currentScore > stepScore;
+            {/* Title */}
+            <h2 className="text-xl sm:text-3xl text-center font-bold mb-6 dark:text-white px-2">
+                {to('orderId')}: #{order.order_number || order.id} ✨
+            </h2> 
+            
+            {/* Order Status Timeline Row */}
+            <div className="flex items-start justify-between mb-12 mt-8 px-0 sm:px-8">
+              {[
+                { id: 'pending', label: to('status_pending') },
+                { id: 'processing', label: to('status_processing') },
+                { id: 'ondelivery', label: to('status_ondelivery') },
+                { id: 'done', label: to('status_done') }
+              ].map((step, idx, arr) => {
+                const statusScores: Record<string, number> = { pending: 1, processing: 2, shipped: 3, ondelivery: 3, delivered: 4, done: 4 };
+                const currentScore = statusScores[order.status_order || 'pending'] || 1;
+                const stepScore = statusScores[step.id];
+                const isActive = currentScore >= stepScore;
+                const isCurrent = currentScore === stepScore;
+                const isPast = currentScore > stepScore;
 
-                  return (
-                    <React.Fragment key={idx}>
-                      <div className="relative z-10 flex flex-col items-center gap-3 flex-shrink-0 w-16 sm:w-24">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center border-[3px] border-white dark:border-[#081640] transition-colors duration-500 shadow-sm ${isActive ? 'bg-primary-500 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-300 dark:text-gray-600'}`}>
-                          {isActive ? <CheckCircle2 className="w-4 h-4" /> : <div className="w-1.5 h-1.5 rounded-full bg-current" />}
-                        </div>
-                        <span className={`text-[10px] sm:text-xs font-bold text-center transition-colors ${isCurrent ? 'text-primary-500' : isActive ? 'text-slate-800 dark:text-slate-200' : 'text-gray-400 dark:text-gray-500'}`}>
-                          {step.label}
-                        </span>
+                return (
+                  <React.Fragment key={idx}>
+                    <div className="relative z-10 flex flex-col items-center gap-2 sm:gap-3 flex-shrink-0 w-14 sm:w-24">
+                      <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center border-[2px] sm:border-[3px] border-white dark:border-[#081640] transition-colors duration-500 shadow-sm ${isActive ? 'bg-primary-500 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-300 dark:text-gray-600'}`}>
+                        {isActive ? <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" /> : <div className="w-1.5 h-1.5 rounded-full bg-current" />}
                       </div>
-                      {idx < arr.length - 1 && (
-                        <div className="flex-1 mt-4 h-1 bg-gray-100 dark:bg-white/5 rounded-full relative">
-                          <div className={`absolute top-0 bottom-0 rtl:right-0 ltr:left-0 bg-primary-500 rounded-full transition-all duration-1000 ${isPast ? 'w-full' : 'w-0'}`} />
-                        </div>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-             </div>
+                      <span className={`text-[9px] sm:text-xs font-bold text-center transition-colors leading-tight ${isCurrent ? 'text-primary-500' : isActive ? 'text-slate-800 dark:text-slate-200' : 'text-gray-400 dark:text-gray-500'}`}>
+                        {step.label}
+                      </span>
+                    </div>
+                    {idx < arr.length - 1 && (
+                      <div className="flex-1 mt-3 sm:mt-4 h-1 bg-gray-100 dark:bg-white/5 rounded-full relative">
+                        <div className={`absolute top-0 bottom-0 rtl:right-0 ltr:left-0 bg-primary-500 rounded-full transition-all duration-1000 ${isPast ? 'w-full' : 'w-0'}`} />
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
 
-             {/* Greeting & Message */}
-             <div className="mb-10 text-slate-700 dark:text-slate-300 text-base leading-relaxed">
-               <p className="font-bold text-slate-900 dark:text-white mb-2">
-                 {isRtl ? 'مرحباً' : 'Hello'} {order.name},
-               </p>
-               <p>
-                 {isRtl
-                   ? 'يتم معالجة طلبك وقريباً ستتمكن من الاستمتاع بمنتجاتك الجديدة.'
-                   : 'Your order is being processed and you will soon be able to enjoy your new products.'}
-               </p>
-             </div>
+            {/* Greeting & Message */}
+            <div className="mb-8 sm:mb-10 text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed px-2 sm:px-8">
+              <p className="font-bold text-slate-900 dark:text-white mb-2">
+                {isRtl ? 'مرحباً' : 'Hello'} {order.name},
+              </p>
+              <p>
+                {isRtl
+                  ? 'يتم معالجة طلبك وقريباً ستتمكن من الاستمتاع بمنتجاتك الجديدة.'
+                  : 'Your order is being processed and you will soon be able to enjoy your new products.'}
+              </p>
+            </div>
 
-             <hr className="border-t border-gray-200 dark:border-white/10 mb-8" />
+            <hr className="border-t border-gray-200 dark:border-white/10 mb-8 mx-2 sm:mx-8" />
 
-             {/* Customer Details Row */}
-             <div className="flex justify-between flex-wrap gap-4 mb-8 text-sm">
-                  <div>
-                   <p className="text-slate-600 dark:text-slate-400 mb-1">{isRtl ? 'العميل' : 'Customer'}</p>
-                   <p className="font-bold dark:text-white">{order.name}</p>
-                 </div> 
-               <div>
-                 <p className="text-slate-600 dark:text-slate-400 mb-1">{isRtl ? 'البريد الإلكتروني' : 'Email Address'}</p>
-                 <p className="font-bold dark:text-white">{order.email}</p>
-               </div>
-               <div>
-                 <p className="text-slate-600 dark:text-slate-400 mb-1">{isRtl ? 'رقم الهاتف' : 'Phone Number'}</p>
-                 <p className="font-bold dark:text-white">{order.phone}</p>
-               </div>
-                 <div>
-                 <p className="text-slate-600 dark:text-slate-400 mb-1">{isRtl ? 'عنوان التوصيل' : 'Shipping Address'}</p>
-                 <p className="font-bold leading-tight dark:text-white max-w-[200px] truncate">{order.address}</p>
-               </div>
-             </div>
+            {/* Customer Details Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8 text-sm px-2 sm:px-8">
+              <div>
+                <p className="text-slate-600 dark:text-slate-400 mb-1">{isRtl ? 'العميل' : 'Customer'}</p>
+                <p className="font-bold dark:text-white">{order.name}</p>
+              </div> 
+              <div>
+                <p className="text-slate-600 dark:text-slate-400 mb-1">{isRtl ? 'البريد الإلكتروني' : 'Email Address'}</p>
+                <p className="font-bold dark:text-white break-all">{order.email}</p>
+              </div>
+              <div>
+                <p className="text-slate-600 dark:text-slate-400 mb-1">{isRtl ? 'رقم الهاتف' : 'Phone Number'}</p>
+                <p className="font-bold dark:text-white">{order.phone}</p>
+              </div>
+              <div>
+                <p className="text-slate-600 dark:text-slate-400 mb-1">{isRtl ? 'عنوان التوصيل' : 'Shipping Address'}</p>
+                <p className="font-bold leading-tight dark:text-white sm:max-w-[200px] break-words">{order.address}</p>
+              </div>
+            </div>
 
-             <hr className="border-t border-gray-200 dark:border-white/10 mb-8" /> 
-             {/* Items List */}
-             <div className="space-y-6 mb-8">
-                {(order.items || []).map((item: any, index: number) => {
-                  const product = item.product || {};
-                  const productName = isRtl ? product.name_ar || product.name || 'Unknown Product' : product.name_en || product.name || 'Unknown Product';
-                  const productImage = product.images?.[0] || 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?w=200&h=200&fit=crop';
-                  return (
-                    <div key={item.id || index} className="flex flex-row items-center justify-between gap-4">
-                      <div className="flex gap-6 items-center">
-                        <div className="relative w-20 h-20 rounded-2xl bg-white dark:bg-white/5 flex-shrink-0 border border-gray-100 dark:border-white/5 overflow-hidden">
-                          <Image width={1000} height={1000} src={productImage} alt={productName} className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal" />
-                        </div>
-                        <div className="flex flex-col justify-center">
-                          <p className="font-bold text-slate-900 dark:text-white text-base">
+            <hr className="border-t border-gray-200 dark:border-white/10 mb-8 mx-2 sm:mx-8" /> 
+            
+            {/* Items List */}
+            <div className="space-y-6 mb-8 px-2 sm:px-8">
+              {(order.items || []).map((item: any, index: number) => {
+                const product = item.product || {};
+                const productName = isRtl ? product.name_ar || product.name || 'Unknown Product' : product.name_en || product.name || 'Unknown Product';
+                const productImage = product.images?.[0] || 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?w=200&h=200&fit=crop';
+                return (
+                  <div key={item.id || index} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex gap-4 sm:gap-6 items-center w-full sm:w-auto">
+                      <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white dark:bg-white/5 flex-shrink-0 border border-gray-100 dark:border-white/5 overflow-hidden">
+                        <Image width={1000} height={1000} src={productImage} alt={productName} className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal" />
+                      </div>
+                      <div className="flex flex-col justify-center flex-1">
+                        <div className="flex justify-between items-start gap-2">
+                          <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base pr-2">
                             {productName}
                           </p>
-                          <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
-                            {isRtl ? 'الكمية' : 'Quantity'}: {item.quantity}
-                          </p>
+                          <div className="font-bold text-slate-900 dark:text-white text-sm sm:hidden shrink-0">
+                            {Number(item.price * item.quantity).toFixed(2)} ر.س
+                          </div>
                         </div>
-                      </div>
-                      <div className="font-bold text-slate-900 dark:text-white text-base">
-                        {Number(item.price * item.quantity).toFixed(2)} ر.س
+                        <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-1">
+                          {isRtl ? 'الكمية' : 'Quantity'}: {item.quantity}
+                        </p>
                       </div>
                     </div>
-                  );
-                })}
-             </div>
+                    <div className="hidden sm:block font-bold text-slate-900 dark:text-white text-base">
+                      {Number(item.price * item.quantity).toFixed(2)} ر.س
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
-             <hr className="border-t border-gray-200 dark:border-white/10 mb-8" />
+            <hr className="border-t border-gray-200 dark:border-white/10 mb-8 mx-2 sm:mx-8" />
 
-             {/* Footer / Summary */}
-             <div className="flex flex-col sm:flex-row justify-end items-start gap-8">
-                <div className="w-full sm:w-72 space-y-3 order-1 sm:order-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500 dark:text-slate-400">{to('subtotal')}:</span>
-                    <span className="font-bold dark:text-white">{subtotal.toFixed(2)} ر.س</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500 dark:text-slate-400">{isRtl ? 'التوصيل' : 'Shipping'}:</span>
-                    <span className="font-bold dark:text-white">{shipping === 0 ? (isRtl ? 'مجاني' : 'Free') : `${shipping} ر.س`}</span>
-                  </div>
-                  <hr className="border-t border-gray-200 dark:border-white/10 my-4" />
-                  <div className="flex justify-between text-base">
-                    <span className="font-bold text-primary-500 dark:text-white">{to('total')}</span>
-                    <span className="font-bold text-slate-900 dark:text-white">{total.toFixed(2)} ر.س</span>
-                  </div>
+            {/* Footer / Summary */}
+            <div className="flex flex-col sm:flex-row justify-end items-start gap-8 px-2 sm:px-8">
+              <div className="w-full sm:w-72 space-y-3 order-1 sm:order-2 bg-gray-50/50 dark:bg-slate-800/30 p-5 rounded-2xl sm:bg-transparent sm:dark:bg-transparent sm:p-0">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500 dark:text-slate-400">{to('subtotal')}:</span>
+                  <span className="font-bold dark:text-white">{subtotal.toFixed(2)} ر.س</span>
                 </div>
-             </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500 dark:text-slate-400">{isRtl ? 'التوصيل' : 'Shipping'}:</span>
+                  <span className="font-bold dark:text-white">{shipping === 0 ? (isRtl ? 'مجاني' : 'Free') : `${shipping} ر.س`}</span>
+                </div>
+                <hr className="border-t border-gray-200 dark:border-white/10 my-4" />
+                <div className="flex justify-between text-base">
+                  <span className="font-bold text-primary-500 dark:text-white">{to('total')}</span>
+                  <span className="font-bold text-slate-900 dark:text-white text-xl sm:text-base">{total.toFixed(2)} ر.س</span>
+                </div>
+              </div>
+            </div>
           </section>
         </div> 
     </div>
