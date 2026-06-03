@@ -13,7 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ShoppingBag,
-  X
+  X,
+  Search
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -82,6 +83,15 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
         }
       </div>
 
+<div className="relative flex gap-1 items-center mx-4 group lg:hidden mt-3 px-3 
+ border border-gray-200 rounded-md bg-gray-50 py-2 sm:py-2.5 pl-9 sm:pl-11 pr-4 sm:pr-6 text-xs sm:text-sm outline-none transition-all focus:border-primary-500 dark:focus:border-primary-500 focus:bg-white dark:focus:bg-[#050b2e] focus:shadow-md">
+          <Search className=" w-4 h-4 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
+          <input
+            type="text"
+            placeholder={t('search')}
+            className="w-full  "
+          />
+        </div>
       {/* Navigation */}
       <nav className="flex-grow py-6 sm:py-8 px-4 space-y-2 overflow-y-auto scrollbar-hide">
         {navItems.map((item) => {

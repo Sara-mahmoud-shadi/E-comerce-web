@@ -5,6 +5,7 @@ import React from 'react';
 import LanguageSwitcher from '../shared/LanguageSwitcher';
 import { useTranslations } from 'next-intl';
 import { SheetTrigger } from '@/components/ui/sheet';
+import { Logo } from '../shared/Header';
 
 interface DashboardHeaderProps {
   onMenuClick?: () => void;
@@ -16,6 +17,7 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
     <header className="h-20 sm:h-24 shrink-0 bg-white dark:bg-[#081640] border-b border-gray-100 dark:border-white/5 flex items-center justify-between px-4 sm:px-6 md:px-10 gap-4">
       <div className="flex items-center gap-3 sm:gap-4 flex-grow max-w-2xl">
         {/* Hamburger Menu for Mobile & Tablet Viewports */}
+        <div className='lg:hidden'>  <Logo /> </div>
         <SheetTrigger asChild>
           <button
             onClick={(e) => { 
@@ -35,7 +37,7 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
         </SheetTrigger>
 
         {/* Dynamic Search Box */}
-        <div className="relative w-full group">
+        <div className="relative w-full group hidden lg:block ">
           <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
           <input
             type="text"
