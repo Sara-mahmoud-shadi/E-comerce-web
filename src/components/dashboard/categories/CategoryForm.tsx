@@ -192,6 +192,7 @@ export default function CategoryForm({ id, initialData, isEditing }: CategoryFor
                 <Save className="w-4 h-4" />
               )}
               {isLoading ? t('saving') : t('save')}
+              {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
             </button>
           </div>
         </header>

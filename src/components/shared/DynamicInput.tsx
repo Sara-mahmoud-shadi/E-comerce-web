@@ -57,7 +57,7 @@ export default function DynamicInput({
             placeholder={placeholder}
             rows={4}
             className={cn(
-              "w-full py-3 bg-gray-100/80 dark:bg-gray-900/50 rounded-md border px-14 text-sm placeholder:text-gray-400 transition-all outline-none dark:text-white resize-y min-h-[100px]",
+              "w-full py-3 bg-gray-100/80 dark:bg-gray-900/50 rounded-md border rtl:pr-14 rtl:pl-6 ltr:pl-14 ltr:pr-6 text-sm placeholder:text-gray-400 transition-all outline-none dark:text-white resize-y min-h-[100px]",
               error
                 ? "border-red-400 focus:border-red-500"
                 : "border-gray-200 dark:border-white/5 focus:border-primary-500/30"
@@ -74,7 +74,7 @@ export default function DynamicInput({
             }}
             placeholder={placeholder}
             className={cn(
-              "w-full py-3 bg-gray-100/80 dark:bg-gray-900/50 rounded-md border px-14 text-sm placeholder:text-gray-400 transition-all outline-none dark:text-white",
+              "w-full py-3 bg-gray-100/80 dark:bg-gray-900/50 rounded-md border rtl:pr-14 rtl:pl-6 ltr:pl-14 ltr:pr-6 text-sm placeholder:text-gray-400 transition-all outline-none dark:text-white",
               error
                 ? "border-red-400 focus:border-red-500"
                 : "border-gray-200 dark:border-white/5 focus:border-primary-500/30"

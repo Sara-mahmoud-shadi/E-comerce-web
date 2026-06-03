@@ -13,6 +13,7 @@ import { getImageUrl } from './products/ProductCard';
 import { Link } from '@/i18n/routing';
 import { CheckoutHeader } from './shared/CheckoutHeader';
 import ModernInvoice from './ModernInvoice';
+import { getApiBase } from './dashboard/categories/CategoriesList';
 
 export default function CheckoutContent() {
   const t = useTranslations('Checkout');
@@ -47,9 +48,8 @@ export default function CheckoutContent() {
   const fetchCartItems = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-      const res = await apiFetch(`${apiBase}/cart`, {
+      if (!token) return; 
+      const res = await apiFetch(`${getApiBase()}/cart`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -103,8 +103,7 @@ export default function CheckoutContent() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
-      const res = await apiFetch(`${apiBase}/orders`, {
+      const res = await apiFetch(`${getApiBase()}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,7 +136,7 @@ export default function CheckoutContent() {
         clearCart();
 
         try {
-          await apiFetch(`${apiBase}/cart`, {
+          await apiFetch(`${getApiBase()}/cart`, {
             method: 'DELETE',
             headers: {
               ...(token ? { 'Authorization': `Bearer ${token}` } : {})

@@ -265,7 +265,7 @@
     "addImage": "Add Image",
     "pricing": "Pricing",
     "pricingDesc": "Set the financial details for this product.",
-    "basePrice": "Base Price ($)",
+    "basePrice": "Base Price",
     "basePriceDesc": "The standard selling price.",
     "discountPrice": "Discount Price (Optional)",
     "discountPriceDesc": "Promotional price (optional).",
