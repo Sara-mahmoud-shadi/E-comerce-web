@@ -1,11 +1,12 @@
 'use client';
 
-import { Search, User } from 'lucide-react';
+import { Search, User, LogOut } from 'lucide-react'; 
 import React from 'react';
 import LanguageSwitcher from '../shared/LanguageSwitcher';
 import { useTranslations } from 'next-intl';
 import { SheetTrigger } from '@/components/ui/sheet';
 import { Logo } from '../shared/Header';
+import { Link } from '@/i18n/routing';
 
 interface DashboardHeaderProps {
   onMenuClick?: () => void;
@@ -49,6 +50,15 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
 
       <div className="flex items-center gap-3 sm:gap-6 shrink-0">
         <LanguageSwitcher /> 
+        
+        {/* Logout icon for Mobile & Tablet */}
+        <Link 
+          href="/" 
+          className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors shrink-0 cursor-pointer"
+        >
+          <LogOut className="w-4 h-4" />
+        </Link>
+
         <div className="h-8 w-px bg-gray-300 dark:bg-white/5 hidden md:block" /> 
         <div className=" items-center gap-2 sm:gap-3 hidden md:flex">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary-500/10 dark:bg-blue-500/10 flex items-center justify-center text-primary-500 dark:text-blue-400 shrink-0">
